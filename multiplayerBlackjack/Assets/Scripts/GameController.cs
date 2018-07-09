@@ -63,15 +63,10 @@ public class GameController : MonoBehaviour {
     } //end of function
 
 
-    public void GetBet(string bet){
-
-        Debug.Log("this is your bet: " + bet);
-    }
+    //toggle function to accept the stake
 
 
-
-
-
+    //generate dictionary where key is the userName and the value is the initial stake
     //generate dictionary where key is the userName and the value is the bet
 
 

@@ -5,8 +5,6 @@ using UnityEngine.SceneManagement;
 
 public class JoinMenu : MonoBehaviour {
 
-    public Animator screenAnimation;
-
 	public void JoinGame()
     {
         //add the name of the next scene
