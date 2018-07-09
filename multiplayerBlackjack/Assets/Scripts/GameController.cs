@@ -1,72 +1,77 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour {
 
     private string userName;
 
-    private List<string>users = new List<string>();
+    [SerializeField]
+    private InputField inputField;
 
-
-	// Use this for initialization
-	void Start () {
-
-        Debug.Log(users + "list cpacity"+ users.Capacity);
-		
-	}
-
+    //dictionary where key is the userName and the value is the stake
+    public Dictionary<string, int> usersMoney = new Dictionary<string, int>();
 
     //validate user input
-    public void isInputValid(string input){}
+    public bool isInputValid()
+    {
         //TODO 
         //check if input is empty
+        if (inputField.text == ""){
+            Debug.LogError("empty field");
+            return false;
+        }
         //check if entered only first name
         //check if entered numbers
         //check if entered invald characters
 
-
+        return true;
+    }
 
     public void GenerateUserName(string text){
-        
-        int code = Random.Range(100, 500);
 
-        string[] input = text.Split(); //split the input by space
-
-        string uname = input[0].Substring(0, 1); //get the first letter of the name
-
-        string lastName = input[1].Substring(0, 4); //get the first 4 letters of the last name
-
-        userName = uname + lastName + code; //generate the user name 
-
-        // if the list is empty add element to the list
-        if (users.Capacity == 0)
+        if (isInputValid())
         {
-            users.Add(userName);
-            Debug.Log("empty list add element");
-        }
-        else if (!users.Contains(userName)) //if not empty and userName not in list
-        { 
-            users.Add(userName);
 
-            foreach (string s in users)
-            {
-                Debug.Log("your user name is: " + s);
-            }
+            int code = Random.Range(100, 500);
 
-        } else{
-            
-            Debug.LogError("user name repeated");
+            string[] input = text.Split(); //split the input by space
 
+            string uname = input[0].Substring(0, 1); //get the first letter of the name
+
+            string lastName = input[1].Substring(0, 4); //get the first 4 letters of the last name
+
+            userName = uname + lastName + code; //generate the user name 
+
+            inputField.text = "";
         }
 
     } //end of function
 
 
-    //toggle function to accept the stake
+    public void JoinGame()
+    {
+        //add that when hitting enter also pases to the game
+
+        usersMoney.Add(userName, 50); //initial stake, it updates whenever the user win or loose a bet while playing
 
 
-    //generate dictionary where key is the userName and the value is the initial stake
+        //log to console user and value
+        foreach (string key in usersMoney.Keys)
+        {
+            int val = usersMoney[key];
+            Debug.Log(key + " joined with an initial stake of: " + val);
+        }
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+
+    }
+
+
+
+
     //generate dictionary where key is the userName and the value is the bet
 
 
