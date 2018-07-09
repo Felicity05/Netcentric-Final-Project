@@ -11,6 +11,8 @@ public class GameController : MonoBehaviour {
     [SerializeField]
     private InputField inputField;
 
+    private bool ok = false;
+
     //dictionary where key is the userName and the value is the stake
     public Dictionary<string, int> usersMoney = new Dictionary<string, int>();
 
@@ -22,9 +24,11 @@ public class GameController : MonoBehaviour {
         if (inputField.text == ""){
             Debug.LogError("empty field");
             return false;
-        }
-        //check if entered only first name
-        //check if entered numbers
+        } //check if entered only first name
+        else if(!inputField.text.Contains(" ")){
+            Debug.LogError("need last name also");
+            return false;
+        } //check if entered numbers
         //check if entered invald characters
 
         return true;
@@ -46,6 +50,8 @@ public class GameController : MonoBehaviour {
             userName = uname + lastName + code; //generate the user name 
 
             inputField.text = "";
+
+            ok = true;
         }
 
     } //end of function
@@ -55,18 +61,19 @@ public class GameController : MonoBehaviour {
     {
         //add that when hitting enter also pases to the game
 
-        usersMoney.Add(userName, 50); //initial stake, it updates whenever the user win or loose a bet while playing
-
-
-        //log to console user and value
-        foreach (string key in usersMoney.Keys)
+        if (ok)
         {
-            int val = usersMoney[key];
-            Debug.Log(key + " joined with an initial stake of: " + val);
+            usersMoney.Add(userName, 50); //initial stake, it updates whenever the user win or loose a bet while playing
+
+            //log to console user and value
+            foreach (string key in usersMoney.Keys)
+            {
+                int val = usersMoney[key];
+                Debug.Log(key + " joined with an initial stake of: " + val);
+            }
+
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
-
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-
     }
 
 
