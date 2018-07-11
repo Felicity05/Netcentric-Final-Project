@@ -11,7 +11,6 @@ public class Server : MonoBehaviour
 
     public int port = 8080;
 
-
     private List<ServerClient> clients;
     private List<ServerClient> disconnectList;
 

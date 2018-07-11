@@ -24,6 +24,8 @@ public class LoadingAnimation : MonoBehaviour {
             Vector3 iconAngle = mainIcon.localEulerAngles;
 
             iconAngle.z += stepAngle;
+            iconAngle.x = 0;
+            iconAngle.y = 0;
 
             mainIcon.localEulerAngles = iconAngle;
 

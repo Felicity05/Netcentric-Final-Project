@@ -113,6 +113,7 @@
     <Compile Include="Assets\Scripts\MainMenu.cs" />
     <Compile Include="Assets\Scripts\OptionsMenu.cs" />
     <Compile Include="Assets\Scripts\Scripts for testing\blackjackServer.cs" />
+    <Compile Include="Assets\Scripts\Scripts for testing\myClient.cs" />
     <Compile Include="Assets\Scripts\Scripts for testing\myServer.cs" />
     <Compile Include="Assets\Scripts\Server.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />

@@ -15,8 +15,6 @@ public class Client : MonoBehaviour {
     private StreamWriter streamWriter;
     private StreamReader streamReader;
 
-    private Server server;
-
     public void ConnectToServer()
     {
         //if already connected ignore this fucntion 
