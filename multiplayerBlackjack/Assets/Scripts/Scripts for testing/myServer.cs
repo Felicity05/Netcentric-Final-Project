@@ -78,7 +78,7 @@ public class myServer : MonoBehaviour {
                     //serverSocket.Send(buffer, 0, buffer.Length, 0);
 
 
-                    //Debug.Log("needs to send something to client");
+                Debug.Log("Client has connected from " + clients[clients.Count - 1].clientName);
             }
         }
 
@@ -117,8 +117,8 @@ public class myServer : MonoBehaviour {
             new AsyncCallback(ReadCallback), state);  
 
 
-        //ad client to dictionary key: client value: stake
-        //clients.Add(new ServerClient(listener.EndAcceptTcpClient(ar), "guest"));
+        //ad client to dictionary key: client value: stak
+        clients.Add(new ServerClient(handler, "guest"));
 
         AcceptConnections();
 

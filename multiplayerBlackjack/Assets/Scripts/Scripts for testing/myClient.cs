@@ -67,7 +67,7 @@ public class myClient : MonoBehaviour {
             clientSocket.BeginConnect(conn, ConnectCallback, clientSocket);
             //send data to server
             socketReady = true;
-            Debug.Log("client connected");
+            Debug.Log("Client socket ready: "+ socketReady);
             //Debug.Log("client " + host + " connected to port: " + port.ToString());
 
             //send message to server
@@ -98,7 +98,7 @@ public class myClient : MonoBehaviour {
             Debug.Log("Socket connected to: " + client.RemoteEndPoint.ToString());
             
         } catch (Exception e) {  
-            Debug.Log("error connecting: "+ e);  
+            Debug.Log("Error connecting: "+ e);  
         }  
     } 
 
