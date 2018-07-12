@@ -63,23 +63,6 @@ public class myServer : MonoBehaviour {
             {
 
                 AcceptConnections();
-                
-                //receive data from client
-
-                    //byte[] buffer_r = new byte[255];
-
-                    //int rec = serverSocket.Receive(buffer_r, 0, buffer_r.Length, 0);
-
-                    //Array.Resize(ref buffer_r, rec);
-
-
-                //process data
-
-                //send data back to the client
-                    //byte[] buffer = Encoding.Default.GetBytes("hello from the server");
-
-                    //serverSocket.Send(buffer, 0, buffer.Length, 0);
-
 
                 Debug.Log("Client has connected from " + clients[clients.Count - 1].clientName);
             }
@@ -162,7 +145,7 @@ public class myServer : MonoBehaviour {
         Debug.Log("data received in the server: " + content);
 
         //send data back to client
-        Send(handler, content);
+        Send(handler, "hello from server");
     }
 
     private static void Send(Socket handler, String data) {  

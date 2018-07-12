@@ -67,7 +67,7 @@ public class myClient : MonoBehaviour {
 
 
             // Write the response to the console.
-            Debug.Log("response from server: " + response);
+
 
 
 
@@ -161,6 +161,8 @@ public class myClient : MonoBehaviour {
                     new AsyncCallback(ReceiveCallback), state);
 
             response = Encoding.Default.GetString(state.buffer);
+
+            Debug.Log("answer from server: " + response);
              
         }
         catch (Exception e)
