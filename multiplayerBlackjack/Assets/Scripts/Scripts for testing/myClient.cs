@@ -11,6 +11,7 @@ public class myClient : MonoBehaviour {
 
     private bool socketReady;
     public static string response;
+    private static byte[] clientBuffer = new byte[1024];
 
     //creating the socket TCP
     public Socket clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -21,7 +22,7 @@ public class myClient : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
+        Debug.Log("response = " + response);
 	}
 	
 	// Update is called once per frame
@@ -66,10 +67,7 @@ public class myClient : MonoBehaviour {
             ReceiveData(clientSocket);
 
 
-            // Write the response to the console.
-
-
-
+            // Write the response to the console
 
         }
         catch (Exception ex)
@@ -96,18 +94,20 @@ public class myClient : MonoBehaviour {
         }  
     }
 
+
+    //enclose these in one function
     //send data to server
     public static void SendData(Socket client, string data)
     {
         //convert the string data to bytes
-        byte[] byteData = Encoding.Default.GetBytes(data);
+        byte[] byteData = Encoding.ASCII.GetBytes(data);
 
         // Begin sending the data to the remote device.  
         client.BeginSend(byteData, 0, byteData.Length, 0,
             new AsyncCallback(SendCallBack), client);
     }
 
-    public static void SendCallBack(IAsyncResult ar)
+    private static void SendCallBack(IAsyncResult ar)
     {
         try
         {
@@ -123,19 +123,18 @@ public class myClient : MonoBehaviour {
             Debug.Log("error sending message: " + e);
         }
     }
+    //enclose this in one function 
 
-    //receive dta from server
+
+
+    //receive data from server
     public static void ReceiveData(Socket client){
-
+        
         try
         {
-            // Create the state object.  
-            StateObject state = new StateObject();
-            state.workSocket = client;
-
             // Begin receiving the data from the remote device.  
-            client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
-                new AsyncCallback(ReceiveCallback), state);
+            client.BeginReceive(clientBuffer, 0, clientBuffer.Length, 0,
+                                new AsyncCallback(ReceiveCallback), client);
         }
         catch (Exception e)
         {
@@ -148,21 +147,26 @@ public class myClient : MonoBehaviour {
     {
         try
         {
-            // Retrieve the state object and the client socket   
-            // from the asynchronous state object.  
-            StateObject state = (StateObject)ar.AsyncState;
-            Socket client = state.workSocket;
-
             // Read data from the remote device.  
+            Socket client = (Socket) ar.AsyncState;
             int bytesRead = client.EndReceive(ar);
 
-           // Get the data.  
-           client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
-                    new AsyncCallback(ReceiveCallback), state);
+            //don't know why after receiving my info this gets called. 
+            if (bytesRead == 0){
+                Debug.Log("no data received");
+                return;
+            }
 
-            response = Encoding.Default.GetString(state.buffer);
+            var data = new byte[bytesRead];
+            Array.Copy(clientBuffer, data, bytesRead);
 
-            Debug.Log("answer from server: " + response);
+           // Get the data  
+            client.BeginReceive(clientBuffer, 0, clientBuffer.Length, 0,
+                                new AsyncCallback(ReceiveCallback), client);
+
+            response = Encoding.Default.GetString(clientBuffer);
+
+            Debug.Log("data from server received in the client: " + response);
              
         }
         catch (Exception e)
@@ -178,21 +182,5 @@ public class myClient : MonoBehaviour {
         Debug.Log("server answer: " + data);
     }
 
-    public class StateObject
-    {
-
-        // Client  socket.  
-        public Socket workSocket = null;
-
-        // Size of receive buffer.  
-        public const int BufferSize = 1024;
-
-        // Receive buffer.  
-        public byte[] buffer = new byte[BufferSize];
-
-        // Received data string.  
-        public StringBuilder sb = new StringBuilder();
-
-    }
 
 }

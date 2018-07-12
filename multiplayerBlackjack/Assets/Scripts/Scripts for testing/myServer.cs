@@ -37,8 +37,6 @@ public class myServer : MonoBehaviour {
         {
             Debug.Log("Error when creating the server " + ex.Message);
         }
-
-		
 	}
 	
 	// Update is called once per frame
@@ -67,8 +65,6 @@ public class myServer : MonoBehaviour {
                 Debug.Log("Client has connected from " + clients[clients.Count - 1].clientName);
             }
         }
-
-
     }
 
     
@@ -111,38 +107,35 @@ public class myServer : MonoBehaviour {
         Socket handler = server.EndAccept(ar);  
 
         // Create the state object  
-        StateObject state = new StateObject();  
-        state.workSocket = handler;
+        //StateObject state = new StateObject();  
+        //state.workSocket = handler;
 
-        handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0,  
-            new AsyncCallback(ReadCallback), state);  
+        handler.BeginReceive( serverBuffer, 0, serverBuffer.Length, 0,  
+            new AsyncCallback(ReadCallback), handler);  
 
         //add client to dictionary key: client value: stake
         clients.Add(new ServerClient(handler, "guest"));
 
         AcceptConnections();
 
-        ////send a message to everyone say someone has connected
+        //send a message to everyone say someone has connected
         //BroadCastMessage(clients[clients.Count - 1].clientName + " has connected", clients);
 
     }
 
     private void ReadCallback(IAsyncResult ar){
 
-        // Retrieve the state object and the handler socket  
-        // from the asynchronous state object.  
-        StateObject state = (StateObject) ar.AsyncState;  
-        Socket handler = state.workSocket;  
+
+        Socket handler = (Socket) ar.AsyncState;  
 
         // Read data from the client socket.   
-        int bytesRead = handler.EndReceive(ar);  
+        int bytesRead = handler.EndReceive(ar);
+
+        string content = Encoding.ASCII.GetString(serverBuffer);
 
         //store the data received
-        state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, state.buffer.Length));  
 
-        string content = state.sb.ToString();
-
-        Debug.Log("data received in the server: " + content);
+        Debug.Log("data received in the server: " + content + "bytes received: "+ bytesRead);
 
         //send data back to client
         Send(handler, "hello from server");
@@ -210,21 +203,21 @@ public class myServer : MonoBehaviour {
 
 
     // State object for reading client data asynchronously  
-    public class StateObject {  
+    //public class StateObject {  
         
-        // Client  socket.  
-        public Socket workSocket = null;  
+    //    // Client  socket.  
+    //    public Socket workSocket = null;  
 
-        // Size of receive buffer.  
-        public const int BufferSize = 1024; 
+    //    // Size of receive buffer.  
+    //    public const int BufferSize = 1024; 
 
-        // Receive buffer.  
-        public byte[] buffer = new byte[BufferSize];
+    //    // Receive buffer.  
+    //    public byte[] buffer = new byte[BufferSize];
 
-        // Received data string.  
-        public StringBuilder sb = new StringBuilder();
+    //    // Received data string.  
+    //    public StringBuilder sb = new StringBuilder();
 
-    }  
+    //}  
 }
 
 
