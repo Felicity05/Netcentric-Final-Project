@@ -3,8 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System;
 
 public class GameController : MonoBehaviour {
+
+    public static GameController Instance { set; get; }
+
+    public GameObject serverPrefab;
+    public GameObject clientPrefab;
+
+    public GameObject ConnectMenu;
+
 
     private string userName;
 
@@ -13,8 +22,17 @@ public class GameController : MonoBehaviour {
 
     private bool ok = false;
 
+
     //dictionary where key is the userName and the value is the stake
     public Dictionary<string, int> usersMoney = new Dictionary<string, int>();
+
+   
+
+    public void Start()
+    {
+        Instance = this;
+        DontDestroyOnLoad(gameObject); //to don't destroy the game controller object
+    }
 
     //validate user input
     public bool isInputValid()
@@ -39,7 +57,7 @@ public class GameController : MonoBehaviour {
         if (isInputValid())
         {
 
-            int code = Random.Range(100, 500);
+            int code = UnityEngine.Random.Range(100, 500);
 
             string[] input = text.Split(); //split the input by space
 
@@ -57,23 +75,64 @@ public class GameController : MonoBehaviour {
     } //end of function
 
 
+    public void HostGame(){
+
+        Debug.Log("host game");
+
+        try
+        {
+            myServer1 server1 = Instantiate(serverPrefab).GetComponent<myServer1>();
+            server1.Init();
+        }
+        catch (Exception ex)
+        {
+            Debug.Log("Error when creating the server: " + ex.Message);
+        }
+    }
+
+
     public void JoinGame()
     {
         //add that when hitting enter also pases to the game
+        Debug.Log("connect");
 
-        if (ok)
+        ////TODO add input field for port as well
+
+        //gets the addres that's in the input filed which is localhost
+        string hostAdd = GameObject.Find("InputHost").GetComponent<InputField>().text;
+        if (hostAdd == "")
+            hostAdd = "127.0.0.1";
+
+
+        //create the client
+        try
         {
-            usersMoney.Add(userName, 50); //initial stake, it updates whenever the user win or loose a bet while playing
+            myClient1 client1 = Instantiate(clientPrefab).GetComponent<myClient1>();
+            client1.ConnectToServer(hostAdd, 8000);
+            ConnectMenu.SetActive(false);
 
-            //log to console user and value
-            foreach (string key in usersMoney.Keys)
-            {
-                int val = usersMoney[key];
-                Debug.Log(key + " joined with an initial stake of: " + val);
-            }
 
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            //TODO change scene to go to GAME
         }
+        catch (Exception ex)
+        {
+            Debug.Log("Error when creating the client: " + ex.Message);
+        }
+
+
+
+        //dictionary that holds the initial stake of each client 
+        //it updates whenever the user win or loose a bet while playing
+        //usersMoney.Add(userName, 50); 
+
+        ////print to console user and value
+        //foreach (string key in usersMoney.Keys)
+        //{
+        //    int val = usersMoney[key];
+        //    Debug.Log(key + " joined with an initial stake of: " + val);
+        //}
+
+
     }
 
 

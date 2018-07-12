@@ -22,7 +22,7 @@ public class myClient : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        Debug.Log("response = " + response);
+       
 	}
 	
 	// Update is called once per frame

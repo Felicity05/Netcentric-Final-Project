@@ -13,7 +13,7 @@ public class myServer : MonoBehaviour {
     public int port = 8000;
     string host = "";
 
-    private List<ServerClient> clients;
+    private static List<ServerClient> clients;
     private List<ServerClient> disconnectList;
 
     //creating the socket TCP
@@ -23,6 +23,30 @@ public class myServer : MonoBehaviour {
     private byte[] serverBuffer = new byte[1024];
 
     public bool serverStarted;
+
+    /*instead of creating the server in Start I need to created in aother function, 
+    because the server gets called when the player cliks the button "host game" 
+    and then wait for more players to join, and we need to change scenes so 
+    we don't want to destroy the server after loading the new scene
+    */
+
+    public void Init(){
+        DontDestroyOnLoad(gameObject); //don't destroy the server once the new scene is loaded
+
+        //instaciating the lists
+        clients = new List<ServerClient>();
+        disconnectList = new List<ServerClient>();
+
+        try
+        {
+            //call the function create server here
+        }
+        catch (Exception ex)
+        {
+            Debug.Log("Error when creating the server: " + ex);
+            //Show dialog error to the player
+        }
+    }
 
 	
     // Use this for initialization
@@ -60,7 +84,7 @@ public class myServer : MonoBehaviour {
             else // client is connected to the server
             {
 
-                AcceptConnections();
+                //AcceptConnections();
 
                 Debug.Log("Client has connected from " + clients[clients.Count - 1].clientName);
             }
@@ -116,6 +140,7 @@ public class myServer : MonoBehaviour {
         //add client to dictionary key: client value: stake
         clients.Add(new ServerClient(handler, "guest"));
 
+       
         AcceptConnections();
 
         //send a message to everyone say someone has connected
@@ -135,7 +160,7 @@ public class myServer : MonoBehaviour {
 
         //store the data received
 
-        Debug.Log("data received in the server: " + content + "bytes received: "+ bytesRead);
+        //Debug.Log("data received in the server: " + content + "bytes received: "+ bytesRead);
 
         //send data back to client
         Send(handler, "hello from server");
@@ -159,6 +184,8 @@ public class myServer : MonoBehaviour {
             int bytesSent = handler.EndSend(ar);
 
             Debug.Log("bytes sent to the client: " + bytesSent);
+
+            //Debug.Log("clients connected: " + clients[clients.Count - 1].clientName);
 
         } catch (Exception e) {  
             Console.WriteLine(e.ToString());  
@@ -202,22 +229,6 @@ public class myServer : MonoBehaviour {
     }
 
 
-    // State object for reading client data asynchronously  
-    //public class StateObject {  
-        
-    //    // Client  socket.  
-    //    public Socket workSocket = null;  
-
-    //    // Size of receive buffer.  
-    //    public const int BufferSize = 1024; 
-
-    //    // Receive buffer.  
-    //    public byte[] buffer = new byte[BufferSize];
-
-    //    // Received data string.  
-    //    public StringBuilder sb = new StringBuilder();
-
-    //}  
 }
 
 

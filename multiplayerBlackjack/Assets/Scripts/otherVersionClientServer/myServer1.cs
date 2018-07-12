@@ -6,15 +6,16 @@ using System;
 using System.Net;  
 using System.Net.Sockets;  
 using System.Text;  
-using System.Threading; 
+using System.Threading;
+using System.IO;
 
 public class myServer1 : MonoBehaviour {
     
     public int port = 8000;
     string host = "";
 
-    private List<ServerClient> clients;
-    private List<ServerClient> disconnectList;
+    private static List<ServerClient> clients;
+    private static List<ServerClient> disconnectList;
 
     //creating the socket TCP
     public Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -22,23 +23,48 @@ public class myServer1 : MonoBehaviour {
     //create the buffer size, how much info we can send and receive 
     private byte[] serverBuffer = new byte[1024];
 
-    public bool serverStarted;
+    private bool serverStarted;
+
+    public string content;
+
+    /*instead of creating the server in Start I need to created in aother function, 
+    because the server gets called when the player cliks the button "host game" 
+    and then wait for more players to join, and we need to change scenes so 
+    we don't want to destroy the server after loading the new scene
+    */
+
+    public void Init(){
+        DontDestroyOnLoad(gameObject); //don't destroy the server once the new scene is loaded
+
+        //instaciating the lists
+        clients = new List<ServerClient>();
+        disconnectList = new List<ServerClient>();
+
+        try
+        {
+            //call the function create server here
+            CreateServer();
+        }
+        catch (Exception ex)
+        {
+            Debug.Log("Error when creating the server: " + ex.Message);
+            //Show dialog error to the player
+        }
+    }
 
 	
     // Use this for initialization
 	void Start () {
 
-        try
-        {
-            //start server
-            CreateServer();
-        }
-        catch (Exception ex)
-        {
-            Debug.Log("Error when creating the server " + ex.Message);
-        }
-
-		
+        //try
+        //{
+        //    //start server
+        //    CreateServer();
+        //}
+        //catch (Exception ex)
+        //{
+        //    Debug.Log("Error when creating the server " + ex.Message);
+        //}
 	}
 	
 	// Update is called once per frame
@@ -52,23 +78,45 @@ public class myServer1 : MonoBehaviour {
         foreach (ServerClient sc in clients)
         {
             // is the client still connected?
-            if (!isConnected(sc.tcp))
+            if (!isConnected(sc.tcpSocket))
             {
-                sc.tcp.Close();
+                sc.tcpSocket.Close(); //close the socket 
                 disconnectList.Add(sc);
                 continue;
             }
-            //check for messages from the client
+            //check for messages from the client, check the stream of every client
             else // client is connected to the server
             {
+                //NetworkStream stream = new NetworkStream(sc.tcpSocket);
 
-                AcceptConnections();
+                //if (stream.DataAvailable){
 
-                Debug.Log("Client has connected from " + clients[clients.Count - 1].clientName);
+                    //StreamReader reader = new StreamReader(stream, true); //reading the data
+                    //string data = reader.ReadLine(); //store data
+
+                CheckForData(sc);
+
+                //if there is data
+               
+
+
+                //}
+
+
+                //AcceptConnections();
+
+
             }
         }
 
+        //disconnection loop
+        for (int i = 0; i < disconnectList.Count - 1; i++)
+        {
+            //tell our player somebody has disconnected
 
+            clients.Remove(disconnectList[i]);
+            disconnectList.RemoveAt(i);
+        }
     }
 
     
@@ -88,6 +136,8 @@ public class myServer1 : MonoBehaviour {
 
             //accept connections
             AcceptConnections();
+
+            serverStarted = true;
         }
         catch (Exception e)
         {
@@ -108,69 +158,119 @@ public class myServer1 : MonoBehaviour {
     {
         // Get the socket that handles the client request  
         Socket server = (Socket)ar.AsyncState;
-        Socket handler = server.EndAccept(ar);  
+        //Socket handler = server.EndAccept(ar);
+        ServerClient handler = new ServerClient(server.EndAccept(ar));
 
-        // Create the state object  
-        StateObject state = new StateObject();  
-        state.workSocket = handler;
 
-        handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0,  
-            new AsyncCallback(ReadCallback), state);  
+        //begin receiving data from the client
+        //handler.tcpSocket.BeginReceive( serverBuffer, 0, serverBuffer.Length, 0,  
+        //ReadCallback, handler);  
 
         //add client to dictionary key: client value: stake
-        clients.Add(new ServerClient(handler, "guest"));
-
+        clients.Add(handler);
+       
+        //accept incoming connections again
         AcceptConnections();
 
-        ////send a message to everyone say someone has connected
+        Debug.Log(clients[clients.Count - 1].clientName + "Someone has connected!!!!");
+
+        //send a message to everyone say someone has connected
         //BroadCastMessage(clients[clients.Count - 1].clientName + " has connected", clients);
 
     }
 
-    private void ReadCallback(IAsyncResult ar){
 
-        // Retrieve the state object and the handler socket  
-        // from the asynchronous state object.  
-        StateObject state = (StateObject) ar.AsyncState;  
-        Socket handler = state.workSocket;  
+    /////////CHECK IF THERE IS DATA TO BE RECEIVED/////////
 
-        // Read data from the client socket.   
-        int bytesRead = handler.EndReceive(ar);  
+    public void CheckForData(ServerClient socket){
 
-        //store the data received
-        state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, state.buffer.Length));  
-
-        string content = state.sb.ToString();
-
-        Debug.Log("data received in the server: " + content);
-
-        //send data back to client
-        Send(handler, "hello from server");
+        //begin receiving data from the client
+        socket.tcpSocket.BeginReceive( serverBuffer, 0, serverBuffer.Length, 0,  
+                            ReadCallback, socket);
+        
     }
 
-    private static void Send(Socket handler, String data) {  
-        // Convert the string data to byte data using ASCII encoding.  
+    private void ReadCallback(IAsyncResult ar){
+
+        //client socket
+        Socket handler = (Socket) ar.AsyncState;
+        ServerClient client = new ServerClient(handler);
+
+
+        // Read data from the client socket   
+        int bytesRead = client.tcpSocket.EndReceive(ar);
+
+        if (bytesRead == 0){
+            //no data to read 
+            return;
+        }
+
+
+        //store the data received
+        content = Encoding.ASCII.GetString(serverBuffer);
+
+        OnIncommingData(client, content);
+
+    }
+
+    /////////PROCESS DATA RECEIVED/////////
+
+    public void OnIncommingData(ServerClient client, string data){
+
+        Debug.Log(client.clientName + " has send: " + data +" to everyone");
+        
+    }
+
+    /////////SEND DATA PROCESSED BACK TO THE CLIENT/////////
+
+    public void BoradCastData(string data, List<ServerClient> clients){
+
+        foreach (var cl in clients)
+        {
+            try
+            {
+                //send data back to client
+                Send(cl.tcpSocket, "hello from server");
+            }
+            catch (Exception ex)
+            {
+                Debug.Log("error writing data: " + ex);
+            }
+        }
+
+    }
+
+    private static void Send(Socket handler, String data) { 
+        
+        // Convert the string data to byte data using ASCII encoding  
         byte[] byteData = Encoding.ASCII.GetBytes(data);  
 
-        // Begin sending the data to the remote device.  
+        // Begin sending the data to the remote device  
         handler.BeginSend(byteData, 0, byteData.Length, 0,  
             new AsyncCallback(SendCallback), handler);  
     }  
 
     private static void SendCallback(IAsyncResult ar) {  
+
         try {  
-            // Retrieve the socket from the state object.  
+            //client socket 
             Socket handler = (Socket) ar.AsyncState;  
 
-            // Complete sending the data to the remote device.  
+            // Complete sending the data to the client  
             int bytesSent = handler.EndSend(ar);
 
-            Debug.Log("bytes sent to the client: " + bytesSent);
+            Debug.Log("bytes sent to the client: " );
+
+            //Debug.Log("clients connected: " + clients[clients.Count - 1].clientName);
 
         } catch (Exception e) {  
             Console.WriteLine(e.ToString());  
         }  
     }  
+
+
+
+    /////////check if te client is connected to the server/////////
 
     private bool isConnected(Socket c)
     {
@@ -192,39 +292,24 @@ public class myServer1 : MonoBehaviour {
         }
     }
 
-    //definition of the client
+
+    /////////definition of the client/////////
+
     public class ServerClient
     {
 
-        public Socket tcp;
+        public Socket tcpSocket;
 
         public string clientName;
 
 
-        public ServerClient(Socket clientSocket, string name)
+        public ServerClient(Socket clientSocket)
         {
-            clientName = name;
-            tcp = clientSocket;
+            tcpSocket = clientSocket;
         }
     }
 
 
-    // State object for reading client data asynchronously  
-    public class StateObject {  
-        
-        // Client  socket.  
-        public Socket workSocket = null;  
-
-        // Size of receive buffer.  
-        public const int BufferSize = 1024; 
-
-        // Receive buffer.  
-        public byte[] buffer = new byte[BufferSize];
-
-        // Received data string.  
-        public StringBuilder sb = new StringBuilder();
-
-    }  
 }
 
 
