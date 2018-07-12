@@ -1,28 +1,28 @@
-﻿using System.Collections;
+﻿using System;
+using System.Net;
+using System.Text;
+using System.Net.Sockets;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
-using System;  
-using System.Net;  
-using System.Net.Sockets;  
-using System.Text;  
-using System.Threading; 
 
 public class myServer : MonoBehaviour {
-    
-    public int port = 8000;
-    string host = "";
 
-    private List<ServerClient> clients;
-    private List<ServerClient> disconnectList;
+    //useful sockets list
+    private static List<ServerClient> clients;
+    private static List<ServerClient> disconnectList;
 
-    //creating the socket TCP
-    public Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+    //connection info
+    public static int port = 8000;
+    private static string host = "";
+    private bool serverStarted;
 
     //create the buffer size, how much info we can send and receive 
-    private byte[] serverBuffer = new byte[1024];
+    private static byte[] serverBuffer = new byte[BUFFER_SIZE];
+    private const int BUFFER_SIZE = 1024;
 
-    public bool serverStarted;
+    
+    //creating the socket TCP
+    public static Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
 	
     // Use this for initialization
@@ -43,7 +43,7 @@ public class myServer : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+
         if (!serverStarted)
         {
             return;
@@ -51,6 +51,9 @@ public class myServer : MonoBehaviour {
 
         foreach (ServerClient sc in clients)
         {
+
+            Debug.Log(isConnected(serverSocket));
+            
             // is the client still connected?
             if (!isConnected(sc.tcp))
             {
@@ -61,25 +64,11 @@ public class myServer : MonoBehaviour {
             //check for messages from the client
             else // client is connected to the server
             {
-
-                AcceptConnections();
-                
                 //receive data from client
-
-                    //byte[] buffer_r = new byte[255];
-
-                    //int rec = serverSocket.Receive(buffer_r, 0, buffer_r.Length, 0);
-
-                    //Array.Resize(ref buffer_r, rec);
-
-
+                
                 //process data
 
                 //send data back to the client
-                    //byte[] buffer = Encoding.Default.GetBytes("hello from the server");
-
-                    //serverSocket.Send(buffer, 0, buffer.Length, 0);
-
 
                 Debug.Log("Client has connected from " + clients[clients.Count - 1].clientName);
             }
@@ -87,10 +76,9 @@ public class myServer : MonoBehaviour {
 
 
     }
-
     
     // Bind the socket to the local endpoint and listen for incoming connections.  
-    public void CreateServer(){
+    public static void CreateServer(){
         try
         {
             Debug.Log("Setting up the server...");
@@ -108,73 +96,76 @@ public class myServer : MonoBehaviour {
         }
         catch (Exception e)
         {
-
             Debug.Log("Error when binding to port and listening: " + e.Message);
         }
-       
     }
 
-    //start async socket to listen for connections
-    public void AcceptConnections(){
+    //async socket start listening for connections
+    public static void AcceptConnections(){
 
         serverSocket.BeginAccept(AcceptCallback, serverSocket);
     }
 
-    //async socket
-    private void AcceptCallback(IAsyncResult ar)
+    //async socket accept 
+    private static void AcceptCallback(IAsyncResult ar)
     {
         // Get the socket that handles the client request  
-        Socket server = (Socket)ar.AsyncState;
-        Socket handler = server.EndAccept(ar);  
-
-        // Create the state object  
-        StateObject state = new StateObject();  
-        state.workSocket = handler;
-
-        handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0,  
-            new AsyncCallback(ReadCallback), state);  
-
+        Socket socket;
+        socket = serverSocket.EndAccept(ar);
+        
         //add client to dictionary key: client value: stake
-        clients.Add(new ServerClient(handler, "guest"));
+        clients.Add(new ServerClient(socket, "guest"));
 
-        AcceptConnections();
+        //begin receive data from client
+        socket.BeginReceive(serverBuffer, 0, serverBuffer.Length, 0,  
+            ReceiveCallback, socket);
+
+        Debug.Log("Client: " + clients[clients.Count - 1].clientName + " has connected");
+
+        AcceptConnections(); //to be able to accept multiple connections
 
         ////send a message to everyone say someone has connected
         //BroadCastMessage(clients[clients.Count - 1].clientName + " has connected", clients);
-
     }
 
-    private void ReadCallback(IAsyncResult ar){
+    private static void ReceiveCallback(IAsyncResult ar){
 
-        // Retrieve the state object and the handler socket  
-        // from the asynchronous state object.  
-        StateObject state = (StateObject) ar.AsyncState;  
-        Socket handler = state.workSocket;  
+        //retrives the socket to handle the received data
+        Socket handler = (Socket) ar.AsyncState;  
 
         // Read data from the client socket.   
-        int bytesRead = handler.EndReceive(ar);  
+        int bytesReceived = handler.EndReceive(ar);
+        bytesReceived = handler.EndReceive(ar);
+
+        //resize the amount of bythes received
+        Array.Resize(ref serverBuffer, bytesReceived);
 
         //store the data received
-        state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, state.buffer.Length));  
-
-        string content = state.sb.ToString();
+        string content = Encoding.ASCII.GetString(serverBuffer);
 
         Debug.Log("data received in the server: " + content);
 
         //send data back to client
-        Send(handler, content);
+        SendToClient(handler, content);
+
     }
 
-    private static void Send(Socket handler, String data) {  
+    private static void SendToClient(Socket handler, String data) {  
         // Convert the string data to byte data using ASCII encoding.  
-        byte[] byteData = Encoding.ASCII.GetBytes(data);  
+        byte[] byteData = Encoding.ASCII.GetBytes(data);
 
         // Begin sending the data to the remote device.  
-        handler.BeginSend(byteData, 0, byteData.Length, 0,  
-            new AsyncCallback(SendCallback), handler);  
+        handler.Send(byteData);
+        
+        //handler.BeginSend(byteData, 0, byteData.Length, 0,  
+        //    SendCallBack, handler);
+
+        handler.BeginReceive(serverBuffer, 0, BUFFER_SIZE, 0, ReceiveCallback, handler);
+
+        Debug.Log("sent to client: " + Encoding.ASCII.GetString(byteData));
     }  
 
-    private static void SendCallback(IAsyncResult ar) {  
+    private static void SendCallBack(IAsyncResult ar) {  
         try {  
             // Retrieve the socket from the state object.  
             Socket handler = (Socket) ar.AsyncState;  
@@ -225,23 +216,6 @@ public class myServer : MonoBehaviour {
         }
     }
 
-
-    // State object for reading client data asynchronously  
-    public class StateObject {  
-        
-        // Client  socket.  
-        public Socket workSocket = null;  
-
-        // Size of receive buffer.  
-        public const int BufferSize = 1024; 
-
-        // Receive buffer.  
-        public byte[] buffer = new byte[BufferSize];
-
-        // Received data string.  
-        public StringBuilder sb = new StringBuilder();
-
-    }  
 }
 
 

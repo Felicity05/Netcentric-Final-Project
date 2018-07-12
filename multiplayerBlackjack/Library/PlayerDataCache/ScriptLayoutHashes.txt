@@ -1,6 +1,6 @@
-OSXStandalone
+WindowsStandalone
 PlayerPath?
-/Users/arelysalvarezpadilla/Desktop/blackjack multiplayer.app
+//buffalo.cs.fiu.edu/homes/Desktop/Desktop.exe
 SceneListBegin?
 Assets/Scenes/Menu.unity
 Assets/Scenes/Game.unity

@@ -1,18 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System;
 using System.Net;
-using System.Net.Sockets;
 using System.Text;
-using System;
-using System.IO;
+using System.Net.Sockets;
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+
 
 public class myClient : MonoBehaviour {
 
     private bool socketReady;
     public static string response;
 
-    //creating the socket TCP
+    //creating the TCP socket
     public Socket clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
     //declare end point
@@ -30,7 +30,6 @@ public class myClient : MonoBehaviour {
         if (socketReady)
         {
             Debug.Log("socket ready");
-
         }
 		
 	}
@@ -47,29 +46,24 @@ public class myClient : MonoBehaviour {
         int port = 8000;
         string host = "";
 
-
         //connect the socket to the server
         try
         {
             //create end point to connect
             conn = new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
             //connect to server
-            clientSocket.BeginConnect(conn, ConnectCallback, clientSocket);
+            clientSocket.BeginConnect(conn, ConnectCallBack, clientSocket);
             socketReady = true;
-            Debug.Log("Client socket ready: "+ socketReady);
+            Debug.Log("Client socket ready: " + socketReady);
 
             // Send test data to the remote device.  
             SendData(clientSocket, "This is a test");
 
-
             // Receive the response from the remote device.  
             ReceiveData(clientSocket);
 
-
             // Write the response to the console.
             Debug.Log("response from server: " + response);
-
-
 
         }
         catch (Exception ex)
@@ -80,7 +74,7 @@ public class myClient : MonoBehaviour {
 
     
     //async call to connect
-    private static void ConnectCallback(IAsyncResult ar) {  
+    private static void ConnectCallBack(IAsyncResult ar) {  
         try {  
             
             // Retrieve the socket from the state object  
@@ -114,7 +108,7 @@ public class myClient : MonoBehaviour {
             Socket client = (Socket)ar.AsyncState;
 
             //send date to the server
-            int bytesSent = client.EndSend(ar);
+            int bytesSent = client.EndSend(ar); 
 
             Debug.Log("client sent: " + bytesSent);
         }
@@ -156,8 +150,15 @@ public class myClient : MonoBehaviour {
             // Read data from the remote device.  
             int bytesRead = client.EndReceive(ar);
 
-           // Get the data.  
-           client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
+            //resize the amount of bythes received
+            Array.Resize(ref state.buffer, bytesRead);
+
+            //store the data received
+            state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, state.buffer.Length));
+
+
+            // Get the data.  
+            client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
                     new AsyncCallback(ReceiveCallback), state);
 
             response = Encoding.Default.GetString(state.buffer);
