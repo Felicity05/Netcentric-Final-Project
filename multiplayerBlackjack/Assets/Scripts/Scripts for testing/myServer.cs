@@ -19,7 +19,7 @@ public class myServer : MonoBehaviour {
     //creating the socket TCP
     public Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-    //create the buffer size, how uch info we can send and receive 
+    //create the buffer size, how much info we can send and receive 
     private byte[] serverBuffer = new byte[1024];
 
     public bool serverStarted;
@@ -30,12 +30,12 @@ public class myServer : MonoBehaviour {
 
         try
         {
-            //start socket
-            CreateSocket();
+            //start server
+            CreateServer();
         }
         catch (Exception ex)
         {
-            Debug.Log("error when creating the socket " + ex.Message);
+            Debug.Log("Error when creating the server " + ex.Message);
         }
 
 		
@@ -49,7 +49,6 @@ public class myServer : MonoBehaviour {
             return;
         }
 
-
         foreach (ServerClient sc in clients)
         {
             // is the client still connected?
@@ -62,7 +61,11 @@ public class myServer : MonoBehaviour {
             //check for messages from the client
             else // client is connected to the server
             {
+
+                AcceptConnections();
+                
                 //receive data from client
+
                     //byte[] buffer_r = new byte[255];
 
                     //int rec = serverSocket.Receive(buffer_r, 0, buffer_r.Length, 0);
@@ -85,39 +88,53 @@ public class myServer : MonoBehaviour {
 
     }
 
-    public void CreateSocket(){
+    
+    // Bind the socket to the local endpoint and listen for incoming connections.  
+    public void CreateServer(){
+        try
+        {
+            Debug.Log("Setting up the server...");
+            
+            //bind socket
+            serverSocket.Bind(new IPEndPoint(IPAddress.Any, port));
+            Debug.Log("socket bound");
 
-        //bind socket
-        serverSocket.Bind(new IPEndPoint(IPAddress.Any, port));
-        Debug.Log("socket bound");
+            //start listening
+            serverSocket.Listen(5);
+            Debug.Log("socket listening on port: " + port);
 
-        //start listening
-        serverSocket.Listen(5);
-        Debug.Log("socket listening on port: " + port);
+            //accept connections
+            AcceptConnections();
+        }
+        catch (Exception e)
+        {
 
+            Debug.Log("Error when binding to port and listening: " + e.Message);
+        }
+       
     }
 
-
+    //start async socket to listen for connections
     public void AcceptConnections(){
 
         serverSocket.BeginAccept(AcceptCallback, serverSocket);
     }
 
+    //async socket
     private void AcceptCallback(IAsyncResult ar)
     {
-
-        // Get the socket that handles the client request.  
+        // Get the socket that handles the client request  
         Socket server = (Socket)ar.AsyncState;
         Socket handler = server.EndAccept(ar);  
 
-        // Create the state object.  
+        // Create the state object  
         StateObject state = new StateObject();  
-        state.workSocket = handler;  
+        state.workSocket = handler;
+
         handler.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0,  
             new AsyncCallback(ReadCallback), state);  
 
-
-        //ad client to dictionary key: client value: stak
+        //add client to dictionary key: client value: stake
         clients.Add(new ServerClient(handler, "guest"));
 
         AcceptConnections();
@@ -164,6 +181,7 @@ public class myServer : MonoBehaviour {
 
             // Complete sending the data to the remote device.  
             int bytesSent = handler.EndSend(ar);
+
             Debug.Log("bytes sent to the client: " + bytesSent);
 
         } catch (Exception e) {  
@@ -173,7 +191,6 @@ public class myServer : MonoBehaviour {
 
     private bool isConnected(Socket c)
     {
-
         try
         {
             if (c != null && c != null && c.Connected)

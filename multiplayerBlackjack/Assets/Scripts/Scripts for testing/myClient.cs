@@ -10,15 +10,12 @@ using System.IO;
 public class myClient : MonoBehaviour {
 
     private bool socketReady;
-
-    private NetworkStream stream;
-    private StreamWriter streamWriter;
-    private StreamReader streamReader;
-    public IAsyncResult result;
+    public static string response;
 
     //creating the socket TCP
     public Socket clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
+    //declare end point
     public IPEndPoint conn;
 
 
@@ -34,14 +31,6 @@ public class myClient : MonoBehaviour {
         {
             Debug.Log("socket ready");
 
-            //if (stream.DataAvailable)
-            //{
-                //string data = streamReader.ReadLine();
-                //if (data != null)
-                //{
-                    //OnIncomingData(data);
-            //    }
-            //}
         }
 		
 	}
@@ -62,18 +51,25 @@ public class myClient : MonoBehaviour {
         //connect the socket to the server
         try
         {
+            //create end point to connect
             conn = new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
             //connect to server
             clientSocket.BeginConnect(conn, ConnectCallback, clientSocket);
-            //send data to server
             socketReady = true;
             Debug.Log("Client socket ready: "+ socketReady);
-            //Debug.Log("client " + host + " connected to port: " + port.ToString());
 
-            //send message to server
-            //SendMessage("helooooooooo I'm the client");
+            // Send test data to the remote device.  
+            SendData(clientSocket, "This is a test");
 
-            //ReceiveMessage();
+
+            // Receive the response from the remote device.  
+            ReceiveData(clientSocket);
+
+
+            // Write the response to the console.
+            Debug.Log("response from server: " + response);
+
+
 
         }
         catch (Exception ex)
@@ -82,17 +78,15 @@ public class myClient : MonoBehaviour {
         }
     }
 
-    private void OnIncomingData(string data)
-    {
-        Debug.Log("server answer: " + data);
-    }
-
+    
+    //async call to connect
     private static void ConnectCallback(IAsyncResult ar) {  
         try {  
-            // Retrieve the socket from the state object.  
+            
+            // Retrieve the socket from the state object  
             Socket client = (Socket) ar.AsyncState;  
 
-            // Complete the connection.  
+            // Complete the connection  
             client.EndConnect(ar);  
 
             Debug.Log("Socket connected to: " + client.RemoteEndPoint.ToString());
@@ -100,23 +94,103 @@ public class myClient : MonoBehaviour {
         } catch (Exception e) {  
             Debug.Log("Error connecting: "+ e);  
         }  
-    } 
+    }
 
-    public void SendMessages(string msg)
+    //send data to server
+    public static void SendData(Socket client, string data)
     {
-        byte[] msgBuffer = Encoding.Default.GetBytes(msg);
+        //convert the string data to bytes
+        byte[] byteData = Encoding.Default.GetBytes(data);
 
-        clientSocket.Send(msgBuffer, 0, msgBuffer.Length, 0);
+        // Begin sending the data to the remote device.  
+        client.BeginSend(byteData, 0, byteData.Length, 0,
+            new AsyncCallback(SendCallBack), client);
     }
 
-    public void ReceiveMessage(){
+    public static void SendCallBack(IAsyncResult ar)
+    {
+        try
+        {
+            Socket client = (Socket)ar.AsyncState;
 
-        byte[] buffer = new byte[255];
+            //send date to the server
+            int bytesSent = client.EndSend(ar);
 
-        int rec = clientSocket.Receive(buffer, 0, buffer.Length, 0);
-
-        Array.Resize(ref buffer, rec);
-
-        Debug.Log("server answer: " + Encoding.Default.GetString(buffer));
+            Debug.Log("client sent: " + bytesSent);
+        }
+        catch (Exception e)
+        {
+            Debug.Log("error sending message: " + e);
+        }
     }
+
+    //receive dta from server
+    public static void ReceiveData(Socket client){
+
+        try
+        {
+            // Create the state object.  
+            StateObject state = new StateObject();
+            state.workSocket = client;
+
+            // Begin receiving the data from the remote device.  
+            client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
+                new AsyncCallback(ReceiveCallback), state);
+        }
+        catch (Exception e)
+        {
+            Debug.Log("error receiving the data: " + e.Message);
+        }
+
+    }
+
+    private static void ReceiveCallback(IAsyncResult ar)
+    {
+        try
+        {
+            // Retrieve the state object and the client socket   
+            // from the asynchronous state object.  
+            StateObject state = (StateObject)ar.AsyncState;
+            Socket client = state.workSocket;
+
+            // Read data from the remote device.  
+            int bytesRead = client.EndReceive(ar);
+
+           // Get the data.  
+           client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
+                    new AsyncCallback(ReceiveCallback), state);
+
+            response = Encoding.Default.GetString(state.buffer);
+             
+        }
+        catch (Exception e)
+        {
+            Debug.Log("error: "+e);
+        }
+    }
+
+
+    //process the data received
+    private void OnIncomingData(string data)
+    {
+        Debug.Log("server answer: " + data);
+    }
+
+    public class StateObject
+    {
+
+        // Client  socket.  
+        public Socket workSocket = null;
+
+        // Size of receive buffer.  
+        public const int BufferSize = 1024;
+
+        // Receive buffer.  
+        public byte[] buffer = new byte[BufferSize];
+
+        // Received data string.  
+        public StringBuilder sb = new StringBuilder();
+
+    }
+
 }
