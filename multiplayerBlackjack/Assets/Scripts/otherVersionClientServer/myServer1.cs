@@ -172,7 +172,7 @@ public class myServer1 : MonoBehaviour {
         //accept incoming connections again
         AcceptConnections();
 
-        Debug.Log(clients[clients.Count - 1].clientName + "Someone has connected!!!!");
+        Debug.Log("Someone has connected!!!!");
 
         //send a message to everyone say someone has connected
         //BroadCastMessage(clients[clients.Count - 1].clientName + " has connected", clients);

@@ -9,6 +9,7 @@ using System.IO;
 
 public class myClient1 : MonoBehaviour {
 
+    public string clientName;
     private bool socketReady;
     public static string response;
     private static byte[] clientBuffer = new byte[1024];
@@ -23,7 +24,7 @@ public class myClient1 : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-
+        DontDestroyOnLoad(gameObject); //don't destroy the client when moving on to the next scene
 	}
 	
 	// Update is called once per frame
@@ -177,12 +178,12 @@ public class myClient1 : MonoBehaviour {
 
             response = Encoding.Default.GetString(clientBuffer);
 
-            Debug.Log("data from server received in the client: " + response);
+            //Debug.Log("data from server received in the client: " + response);
              
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Debug.Log("error: "+e);
+            Debug.Log("Error: "+ ex.Message);
         }
     }
 

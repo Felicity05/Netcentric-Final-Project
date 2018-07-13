@@ -13,6 +13,7 @@ public class GameController : MonoBehaviour {
     public GameObject clientPrefab;
 
     public GameObject ConnectMenu;
+    public InputField nameInput;
 
 
     private string userName;
@@ -40,11 +41,11 @@ public class GameController : MonoBehaviour {
         //TODO 
         //check if input is empty
         if (inputField.text == ""){
-            Debug.LogError("empty field");
+            Debug.Log("empty field");
             return false;
         } //check if entered only first name
         else if(!inputField.text.Contains(" ")){
-            Debug.LogError("need last name also");
+            Debug.Log("need last name also");
             return false;
         } //check if entered numbers
         //check if entered invald characters
@@ -83,6 +84,14 @@ public class GameController : MonoBehaviour {
         {
             myServer1 server1 = Instantiate(serverPrefab).GetComponent<myServer1>();
             server1.Init();
+
+            myClient1 client1 = Instantiate(clientPrefab).GetComponent<myClient1>();
+            client1.clientName = nameInput.text;
+            if (client1.clientName == null)
+                client1.clientName = "Host";
+
+            client1.ConnectToServer("127.0.0.1", 8000);
+
         }
         catch (Exception ex)
         {
@@ -108,6 +117,10 @@ public class GameController : MonoBehaviour {
         try
         {
             myClient1 client1 = Instantiate(clientPrefab).GetComponent<myClient1>();
+            client1.clientName = nameInput.text;
+            if (client1.clientName == null)
+                client1.clientName = "Client";
+
             client1.ConnectToServer(hostAdd, 8000);
             ConnectMenu.SetActive(false);
 
@@ -136,6 +149,28 @@ public class GameController : MonoBehaviour {
     }
 
 
+    //destroy server and client when clicking the back button
+    public void BackButton(){
+        
+        myServer1 s = FindObjectOfType<myServer1>();
+        if (s != null){
+            Destroy(s.gameObject);
+        }
+
+        myClient1 c = FindObjectOfType<myClient1>();
+        if (c != null)
+        {
+            Destroy(c.gameObject);
+        }
+
+        Debug.Log("Client and server shutted down!");
+    }
+
+
+    //option for single player 
+    public void Play(){
+        SceneManager.LoadScene("Game");
+    }
 
 
     //generate dictionary where key is the userName and the value is the bet
