@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blackjack tutorial", "Assembly-CSharp-firstpass.csproj", "{2CB4EBA7-05BE-617A-4A37-8F3BE129F248}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blackjack tutorial", "Assembly-CSharp.csproj", "{6A89C1EC-B29A-4E3D-EF51-12FB503536E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "blackjack tutorial", "Assembly-CSharp-Editor.csproj", "{35279794-6D64-CEBF-A669-BB6B75C042CA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2CB4EBA7-05BE-617A-4A37-8F3BE129F248}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CB4EBA7-05BE-617A-4A37-8F3BE129F248}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CB4EBA7-05BE-617A-4A37-8F3BE129F248}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CB4EBA7-05BE-617A-4A37-8F3BE129F248}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A89C1EC-B29A-4E3D-EF51-12FB503536E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A89C1EC-B29A-4E3D-EF51-12FB503536E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A89C1EC-B29A-4E3D-EF51-12FB503536E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A89C1EC-B29A-4E3D-EF51-12FB503536E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35279794-6D64-CEBF-A669-BB6B75C042CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35279794-6D64-CEBF-A669-BB6B75C042CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35279794-6D64-CEBF-A669-BB6B75C042CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35279794-6D64-CEBF-A669-BB6B75C042CA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
+	EndGlobalSection
+EndGlobal
