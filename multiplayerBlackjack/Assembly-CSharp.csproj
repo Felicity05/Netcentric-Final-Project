@@ -107,7 +107,11 @@
     <Compile Include="Assets\PostProcessing\Runtime\Utils\RenderTextureFactory.cs" />
     <Compile Include="Assets\PostProcessing\Utilities\CustomMotionTexture\ExampleWheelController.cs" />
     <Compile Include="Assets\Scripts\ActivateChat.cs" />
+    <Compile Include="Assets\Scripts\CardsScripts\CardFlipper.cs" />
+    <Compile Include="Assets\Scripts\CardsScripts\CardModel.cs" />
+    <Compile Include="Assets\Scripts\GameActionButtons.cs" />
     <Compile Include="Assets\Scripts\GameController.cs" />
+    <Compile Include="Assets\Scripts\GameEvents.cs" />
     <Compile Include="Assets\Scripts\LevelChanger.cs" />
     <Compile Include="Assets\Scripts\LoadingAnimation.cs" />
     <Compile Include="Assets\Scripts\MainMenu.cs" />
