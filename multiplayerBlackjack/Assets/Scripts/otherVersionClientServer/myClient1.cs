@@ -89,7 +89,7 @@ public class myClient1 : MonoBehaviour {
             // Complete the connection  
             client.EndConnect(ar); 
 
-            Debug.Log("Client successfully connected!!!!!");
+            //Debug.Log("Client successfully connected!!!!!");
             Debug.Log("Socket connected to: " + client.RemoteEndPoint.ToString());
             
         } catch (Exception e) {  
@@ -183,7 +183,7 @@ public class myClient1 : MonoBehaviour {
         }
         catch (Exception ex)
         {
-            Debug.Log("Error: "+ ex.Message);
+            //Debug.Log("Error: "+ ex.Message);
         }
     }
 

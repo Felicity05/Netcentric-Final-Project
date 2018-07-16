@@ -15,6 +15,8 @@ public class GameController : MonoBehaviour {
     public GameObject ConnectMenu;
     public InputField nameInput;
 
+    private int sceneIndex = 0;
+
 
     private string userName;
 
@@ -169,7 +171,7 @@ public class GameController : MonoBehaviour {
 
     //option for single player 
     public void Play(){
-        SceneManager.LoadScene("Game");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
 

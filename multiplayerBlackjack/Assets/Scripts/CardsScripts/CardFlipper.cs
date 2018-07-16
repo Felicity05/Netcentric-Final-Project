@@ -25,14 +25,45 @@ public class CardFlipper : MonoBehaviour {
      */
 
 
-
-
-
-
     public void FlipCard(Sprite startImg, Sprite endImg, int cardIndex)
     {
-
-
+        StopCoroutine(Flip(startImg, endImg, cardIndex));
+        StartCoroutine(Flip(startImg, endImg, cardIndex));
     }
+
+
+    IEnumerator Flip(Sprite startImg, Sprite endImg, int cardIndex)
+    {
+        spriteRenderer.sprite = startImg;
+
+        float time = 0;
+        while (time <=1f)
+        {
+            float scale = scaleCurve.Evaluate(time);
+            time = time + Time.deltaTime / duration;
+
+            Vector3 localScale = transform.localScale;
+            localScale.x = scale;
+            transform.localScale = localScale;
+
+            if (time > 0.5)
+            {
+                spriteRenderer.sprite = endImg;
+            }
+
+            yield return new WaitForFixedUpdate();
+        }
+
+        if (cardIndex == -1)
+        {
+            model.ToggleFace(false);
+        }
+        else
+        {
+            model.cardIndex = cardIndex;
+            model.ToggleFace(true);
+        }
+    }
+
 
 }

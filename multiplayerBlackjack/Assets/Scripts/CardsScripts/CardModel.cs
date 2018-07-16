@@ -9,6 +9,8 @@ public class CardModel : MonoBehaviour {
     public Sprite[] faces;
     public Sprite cardBack;
 
+    GameObject card;
+
     public int cardIndex; //index of card in the faces array
 
     private void Awake()

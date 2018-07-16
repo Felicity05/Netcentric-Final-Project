@@ -1,17 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public class GameActionButtons : MonoBehaviour {
 
-    CardModel cardModel;
-    int cardIndex;
+    //public Button deal; //button to start the game
 
-    public GameObject card;
+    public DistributeCardsToPlayers distributeCards;
 
 	// Use this for initialization
 	void Start () {
-        cardModel = card.GetComponent<CardModel>();
+        
 	}
 	
 	// Update is called once per frame
@@ -19,34 +20,16 @@ public class GameActionButtons : MonoBehaviour {
 		
 	}
 
-    //GENERATE RANDOM CARDS TO BE GIVEN TO PLAYERS
-    public void GenerateCard()
-    {
-        if (cardIndex >= cardModel.faces.Length)
-        {
-            //this never happens, so change this in the future
-            cardIndex = 0;
-            cardModel.ToggleFace(false);
-        }
-        else
-        {
-            cardModel.cardIndex = cardIndex;
-            cardModel.ToggleFace(true);
-            cardIndex = Random.Range(0, 51);
-            Debug.Log(cardIndex);
-        }
-    }
-
     //GET ONE CARD FROM DEALER 
     public void Hit()
     {
-        GenerateCard();
         Debug.Log("animation to get one card from dealer");
     }
 
     //DEALER DISTRIBUTE 2 CARDS TO PLAYERS TO START GAME 
-    void Deal()
+    public void Deal()
     {
+        distributeCards.TaskOnClick();
         Debug.Log("needs animation to get the card from dealer");
     }
 
