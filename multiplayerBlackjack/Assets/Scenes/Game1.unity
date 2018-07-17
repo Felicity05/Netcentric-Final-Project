@@ -270,8 +270,11 @@ MonoBehaviour:
   card: {fileID: 0}
   cardStack: {fileID: 0}
   cardPos: {x: 0, y: 0, z: 0}
-  PlayerHandValue: 0
-  DealerHandValue: 0
+  isBusted: 0
+  hit: {fileID: 0}
+  stand: {fileID: 0}
+  leave: {fileID: 0}
+  cards: {fileID: 0}
 --- !u!1 &43482548
 GameObject:
   m_ObjectHideFlags: 0
@@ -618,8 +621,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
-  - {fileID: 1303731811}
   - {fileID: 2103371621}
+  - {fileID: 1303731811}
   - {fileID: 680990946}
   - {fileID: 301241613}
   - {fileID: 1621439164}
@@ -2681,10 +2684,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 698215943}
-  - component: {fileID: 698215942}
   - component: {fileID: 698215944}
   - component: {fileID: 698215945}
-  - component: {fileID: 698215946}
   m_Layer: 0
   m_Name: BlackjackTable_HIGH 1
   m_TagString: Untagged
@@ -2692,25 +2693,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!95 &698215942
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 9500000, guid: a28de9e0a33938d40b13a0d1dc2e0909,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 698215941}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 68e7ac41f96fd274e9de03f184bee210, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 1
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!4 &698215943
 Transform:
   m_ObjectHideFlags: 0
@@ -2775,8 +2757,11 @@ MonoBehaviour:
   card: {fileID: 114574449106509166, guid: 8cd623e1798de40d2bd7fc1f56b38a94, type: 2}
   cardStack: {fileID: 387561202}
   cardPos: {x: 0, y: 0, z: 0}
-  PlayerHandValue: 0
-  DealerHandValue: 0
+  isBusted: 0
+  hit: {fileID: 1303731812}
+  stand: {fileID: 680990947}
+  leave: {fileID: 301241614}
+  cards: {fileID: 698215945}
 --- !u!114 &698215945
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2790,17 +2775,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cards: []
   flipper: {fileID: 114763109647886378, guid: 8cd623e1798de40d2bd7fc1f56b38a94, type: 2}
---- !u!114 &698215946
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 698215941}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a3d249f6ff9a4dd69a46f82c329ee7d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &714988435
 GameObject:
   m_ObjectHideFlags: 0
@@ -4256,7 +4230,7 @@ RectTransform:
   m_Children:
   - {fileID: 407652480}
   m_Father: {fileID: 167791831}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -5636,8 +5610,11 @@ MonoBehaviour:
   card: {fileID: 0}
   cardStack: {fileID: 0}
   cardPos: {x: 0, y: 0, z: 0}
-  PlayerHandValue: 0
-  DealerHandValue: 0
+  isBusted: 0
+  hit: {fileID: 0}
+  stand: {fileID: 0}
+  leave: {fileID: 0}
+  cards: {fileID: 0}
 --- !u!114 &1643159980
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6602,6 +6579,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54ed825d4e9ad4d5fb840e732d4b3d2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  deal: {fileID: 2103371622}
   cardActions: {fileID: 698215944}
 --- !u!4 &2101662951
 Transform:
@@ -6646,7 +6624,7 @@ RectTransform:
   m_Children:
   - {fileID: 1178322389}
   m_Father: {fileID: 167791831}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -6675,7 +6653,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 0}
     m_HighlightedColor: {r: 0.3584906, g: 0.005072971, b: 0.005072971, a: 0.6862745}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 0.6226415, g: 0.6020826, b: 0.6020826, a: 0.9019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -6717,7 +6695,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.35686275, g: 0.003921569, b: 0.003921569, a: 1}
+  m_Color: {r: 0.35686275, g: 0.003921569, b: 0.003921569, a: 0.6431373}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:

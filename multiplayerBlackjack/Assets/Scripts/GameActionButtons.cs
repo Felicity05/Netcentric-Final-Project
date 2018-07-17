@@ -6,8 +6,8 @@ using UnityEngine.UI;
 
 public class GameActionButtons : MonoBehaviour {
 
-    //public Button deal; //button to start the game
-
+    public Button deal; //button to start the game
+   
     public DistributeCardsToPlayers cardActions;
 
 	// Use this for initialization
@@ -24,7 +24,8 @@ public class GameActionButtons : MonoBehaviour {
     public void Hit()
     {
         StartCoroutine(cardActions.GetOneCard());
-        Debug.Log("OK!!!!");
+
+        //Debug.Log("OK!!!!");
     }
 
     //DISTRIBUTE 2 CARDS TO PLAYERS AND DEALER TO START GAME 
@@ -32,6 +33,7 @@ public class GameActionButtons : MonoBehaviour {
     {
         cardActions.DistributeCardsToStartGame();
         Debug.Log("disable button after clicking on it");
+        deal.interactable = false;
     }
 
     //DON'T RECEIVE MORE CARDS FROM DEALER. INSTEAD WAIT FOR OTHER PLAYERS AND DEALER TO FINISH THEIR TURN

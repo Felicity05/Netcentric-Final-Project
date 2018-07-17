@@ -4,32 +4,36 @@ using UnityEngine;
 
 public class PlayerLoose : MonoBehaviour {
     
-    DistributeCardsToPlayers handValue;
+    public DistributeCardsToPlayers handValue;
 
-    PickUpCards cards;
+    public PickUpCards cards;
+
+    bool playerlose;
 
 	// Use this for initialization
 	void Start () {
 
-        handValue = handValue.GetComponent<DistributeCardsToPlayers>();
+        handValue = GetComponent<DistributeCardsToPlayers>();
 
-        cards = cards.GetComponent<PickUpCards>();
+        cards = GetComponent<PickUpCards>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-        PlayerLose();
+        //PlayerLose();
+
 	}
 
-    public void PlayerLose()
-    {
-        if (handValue.PlayerHandValue > 21)
-        {
-            Debug.Log("PLAYER LOOSE!!");
+    //public void PlayerLose()
+    //{
+    //    if (handValue.PlayerHandValue > 21)
+    //    {
+    //        playerlose = true;
+    //        Debug.Log("PLAYER LOOSE!!");
 
-            cards.PickCards();
-        }
-    }
+    //        cards.TurnCards();
+    //    }
+    //}
      
 }

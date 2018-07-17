@@ -21,41 +21,40 @@ public class PickUpCards : MonoBehaviour {
 		
         cards = FindObjectsOfType<CardModel>();
 
-       
-       
     }
 
-    private void OnGUI()
-    {
-        if (GUI.Button(new Rect(10,10,100,80), "TurnCards"))
-        {
-            StartCoroutine(PickCards());
-        }
-    }
+    //private void OnGUI()
+    //{
+    //    if (GUI.Button(new Rect(10,10,100,80), "TurnCards"))
+    //    {
+    //        StartCoroutine(PickCards());
+    //    }
+    //}
 
 
-    public IEnumerator PickCards(){
-
-        TurnCards();
-        yield return new WaitForSeconds(1f);
-        StartCoroutine(PickCardsUp());
-    }
+    //public IEnumerator PickCards(){
+        
+    //    TurnCards();
+    //    //yield return new WaitForSeconds(2f);
+    //    //StartCoroutine(PickCardsUp());
+    //    yield return null;
+    //}
 
 
 
     //all the cards are facing, turn the cards to their back
-    public void TurnCards(){
+    public IEnumerator TurnCards(){
         
         for (int i = 0; i < cards.Length; i++)
         {
             flipper = cards[i].GetComponent<CardFlipper>();
             if (cards[i].cardIndex != 0){
+                Debug.Log("TURN CARDS BACK!!!!!!");
                 flipper.FlipCard(cards[i].faces[cards[i].cardIndex], cards[i].cardBack, cards[i].cardIndex);
             }
-            Debug.Log(cards[i].cardIndex);
-
+            //Debug.Log(cards[i].cardIndex);
         }
-      
+        yield return null;
     }
 
     public IEnumerator PickCardsUp()
