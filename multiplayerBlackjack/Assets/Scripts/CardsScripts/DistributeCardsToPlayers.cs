@@ -148,7 +148,7 @@ public class DistributeCardsToPlayers : MonoBehaviour
     }
 
     //hit function
-    public IEnumerator GetOneCard(Vector3 newPos)
+    public IEnumerator GetOneCard()
     {
         //do the same switch here!!!
 
@@ -157,10 +157,10 @@ public class DistributeCardsToPlayers : MonoBehaviour
         float offsetz = 0.02f;
 
         Vector3 offset = new Vector3(offsetx, offsety, offsetz);
-        newPos += offset;
+        cardPos += offset;
 
-        Debug.Log(newPos);
-        CoroutineWithData cd = new CoroutineWithData(this, DistributeCards(card, newPos));
+        Debug.Log(cardPos);
+        CoroutineWithData cd = new CoroutineWithData(this, DistributeCards(card, cardPos));
         yield return cd.coroutine;
 
         //flip the card

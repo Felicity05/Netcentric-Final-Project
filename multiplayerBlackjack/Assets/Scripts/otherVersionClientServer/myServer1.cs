@@ -131,7 +131,7 @@ public class myServer1 : MonoBehaviour {
             Debug.Log("socket bound");
 
             //start listening
-            serverSocket.Listen(5);
+            serverSocket.Listen(3); //only 3 connections at a time
             Debug.Log("socket listening on port: " + port);
 
             //accept connections

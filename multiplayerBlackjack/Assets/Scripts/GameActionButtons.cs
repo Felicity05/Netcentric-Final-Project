@@ -23,8 +23,8 @@ public class GameActionButtons : MonoBehaviour {
     //GET ONE CARD FROM DEALER 
     public void Hit()
     {
-        StartCoroutine(cardActions.GetOneCard(cardActions.cardPos));
-        Debug.Log("animation to get one card from dealer");
+        StartCoroutine(cardActions.GetOneCard());
+        Debug.Log("OK!!!!");
     }
 
     //DISTRIBUTE 2 CARDS TO PLAYERS AND DEALER TO START GAME 
@@ -37,7 +37,7 @@ public class GameActionButtons : MonoBehaviour {
     //DON'T RECEIVE MORE CARDS FROM DEALER. INSTEAD WAIT FOR OTHER PLAYERS AND DEALER TO FINISH THEIR TURN
     void Stand()
     {
-        Debug.Log("wait for dealer and other players to play");
+        Debug.Log("wait for dealer and/or other players to play");
     }
 
 }
