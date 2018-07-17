@@ -7,68 +7,33 @@ public class DistributeCardsToPlayers : MonoBehaviour
 {
     public GameObject cardPrefab; //prefab of cards
 
-    //player1 cards'
-    public CardModel card1Player1;
-    public CardModel card2Player1;
-
-    //dealer cards'
-    public CardModel card1Dealer;
-    public CardModel card2Dealer;
+    public CardModel card; //card to intantiate
 
     Vector3 deckPosition; //holds the position of the deck of cards
 
-    CardFlipper flipperCard1;
-    CardFlipper flipperCard2;
-    CardFlipper flipperDealer1;
     int cardIndex;
 
+    public CardStack cardStack;
+
+    public Vector3 cardPos;
 
     private void Start()
     {
-        //spawn 2 cards for player 1
-        card1Player1 = Instantiate(cardPrefab).GetComponent<CardModel>();
-        card2Player1 = Instantiate(cardPrefab).GetComponent<CardModel>();
-
-        //spawn 2 cards for dealer
-        card1Dealer = Instantiate(cardPrefab).GetComponent<CardModel>();
-        card2Dealer = Instantiate(cardPrefab).GetComponent<CardModel>();
-
-        //get the fliper script to flip the cards 
-        flipperCard1 = card1Player1.GetComponent<CardFlipper>();
-        flipperCard2 = card2Player1.GetComponent<CardFlipper>();
-        flipperDealer1 = card1Dealer.GetComponent<CardFlipper>();
+        //randomized stack of cards
+        cardStack = cardStack.GetComponent<CardStack>();
 
         //position of the deck of cards
         deckPosition = new Vector3(1.621f, 0.36f, 0.793f);
 
-        //placing cards in the position of the deck 
-        card1Player1.transform.position = deckPosition;
-        card2Player1.transform.position = deckPosition;
-        card1Dealer.transform.position = deckPosition;
-        card2Dealer.transform.position = deckPosition;
     }
 
 
 
     //start the function to distribute the cards to the player 
-    public void TaskOnClick()
+    public void DistributeCardsToStartGame()
     {
-
         StartCoroutine(DistributeToEveyone());
-
     }
-
-    //GENERATE RANDOM CARDS TO BE GIVEN TO PLAYERS
-    public void GenerateCard(CardModel card, CardFlipper flipper)
-    {
-        cardIndex = Random.Range(0, 51);
-
-        flipper.FlipCard(card.cardBack, card.faces[cardIndex], cardIndex);
-
-        Debug.Log(cardIndex);
-
-    }
-
 
     //distribute cards depending in the number of players
     public IEnumerator DistributeToEveyone()
@@ -84,7 +49,19 @@ public class DistributeCardsToPlayers : MonoBehaviour
         {
             case 0:
                 {
-                    //distribute to 1 player 
+                    //distribute cards to 1 player 
+                    CoroutineWithData cd = new CoroutineWithData(this, DistributeCards(card, new Vector3(-0.1025832f, 0.36f, -0.7630126f)));
+                    yield return cd.coroutine;
+
+                    CoroutineWithData cd1 = new CoroutineWithData(this, DistributeCards(card, new Vector3(0.02f, 0.43f, -0.72f)));
+                    yield return cd1.coroutine;
+
+                    //flip cards 
+                    GetCardFromDeck(cd.result);
+                    yield return new WaitForSeconds(0.5f);
+                    GetCardFromDeck(cd1.result);
+
+                    cardPos = cd1.result.transform.position;
                     break;
                 }
             case 2:
@@ -110,36 +87,47 @@ public class DistributeCardsToPlayers : MonoBehaviour
         }
 
 
-        //player 1
-        StartCoroutine(DistributeCards(card1Player1, card2Player1, new Vector3(-0.1025832f, 0.36f, -0.7630126f), new Vector3(0.02f, 0.43f, -0.72f)));
-
-        yield return new WaitForSeconds(1f);
-
-        //flip first card of player
-        GenerateCard(card1Player1, flipperCard1);
-
-        yield return new WaitForSeconds(0.5f);
-
-        //flip second card of player
-        GenerateCard(card2Player1, flipperCard2);
 
         ///////////////dealer////////////////
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
 
-        StartCoroutine(DistributeCards(card1Dealer, card2Dealer, new Vector3(-0.368f, 0.41f, 0.115f), new Vector3(-0.215f, 0.465f, 0.135f)));
+        //distribute cards to dealer
+        CoroutineWithData cdD = new CoroutineWithData(this, DistributeCards(card, new Vector3(-0.368f, 0.41f, 0.115f)));
+        yield return cdD.coroutine;
 
-        yield return new WaitForSeconds(1f);
+        CoroutineWithData cdD1 = new CoroutineWithData(this, DistributeCards(card, new Vector3(-0.215f, 0.465f, 0.135f)));
+        yield return cdD1.coroutine;
 
-        GenerateCard(card1Dealer, flipperDealer1);
-
+        //flip cards 
+        GetCardFromDeck(cdD.result);
+        yield return new WaitForSeconds(0.5f);
+        //only flip when dealer starts to play
+        //GetCardFromDeck(cdD1.result);
+       
         yield return null;
 
     }
 
+    //Get cards from randomized card stack and flip them
+    public void GetCardFromDeck(CardModel card)
+    {
+
+        cardIndex = cardStack.Pop();
+
+        CardFlipper flipper = card.GetComponent<CardFlipper>();
+
+        flipper.FlipCard(card.cardBack, card.faces[cardIndex], cardIndex);
+
+        //Debug.Log(cardIndex);
+
+    }
 
     //function to distribute cards to players
-    public IEnumerator DistributeCards(CardModel card1, CardModel card2, Vector3 card1Pos, Vector3 card2Pos)
+    public IEnumerator DistributeCards(CardModel card1, Vector3 card1Pos)
     {
+        card1 = Instantiate(cardPrefab).GetComponent<CardModel>();
+
+        card1.transform.position = deckPosition;
 
         // The step size is equal to speed times frame time.
         float speed = 3.5f;
@@ -151,21 +139,32 @@ public class DistributeCardsToPlayers : MonoBehaviour
         {
             card1.transform.position = Vector3.MoveTowards(card1.transform.position, card1Pos, step);
 
-            Debug.Log("card1= " + card1);
+           // Debug.Log("card1= " + card1);
 
             yield return null; //wait for the function to end
         }
 
+        yield return card1;
+    }
 
-        //move card2
-        while (Vector3.Distance(card2.transform.position, card2Pos) > 0.05)
-        {
-            card2.transform.position = Vector3.MoveTowards(card2.transform.position, card2Pos, step);
+    //hit function
+    public IEnumerator GetOneCard(Vector3 newPos)
+    {
+        //do the same switch here!!!
 
-            Debug.Log("card2= " + card2);
+        float offsetx = 0.082f;
+        float offsety = 0.055f;
+        float offsetz = 0.02f;
 
-            yield return null; //wait for the function to end
-        }
+        Vector3 offset = new Vector3(offsetx, offsety, offsetz);
+        newPos += offset;
+
+        Debug.Log(newPos);
+        CoroutineWithData cd = new CoroutineWithData(this, DistributeCards(card, newPos));
+        yield return cd.coroutine;
+
+        //flip the card
+        GetCardFromDeck(cd.result);
 
     }
 }

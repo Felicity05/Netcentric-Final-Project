@@ -8,7 +8,7 @@ public class GameActionButtons : MonoBehaviour {
 
     //public Button deal; //button to start the game
 
-    public DistributeCardsToPlayers distributeCards;
+    public DistributeCardsToPlayers cardActions;
 
 	// Use this for initialization
 	void Start () {
@@ -23,14 +23,15 @@ public class GameActionButtons : MonoBehaviour {
     //GET ONE CARD FROM DEALER 
     public void Hit()
     {
+        StartCoroutine(cardActions.GetOneCard(cardActions.cardPos));
         Debug.Log("animation to get one card from dealer");
     }
 
-    //DEALER DISTRIBUTE 2 CARDS TO PLAYERS TO START GAME 
+    //DISTRIBUTE 2 CARDS TO PLAYERS AND DEALER TO START GAME 
     public void Deal()
     {
-        distributeCards.TaskOnClick();
-        Debug.Log("needs animation to get the card from dealer");
+        cardActions.DistributeCardsToStartGame();
+        Debug.Log("disable button after clicking on it");
     }
 
     //DON'T RECEIVE MORE CARDS FROM DEALER. INSTEAD WAIT FOR OTHER PLAYERS AND DEALER TO FINISH THEIR TURN

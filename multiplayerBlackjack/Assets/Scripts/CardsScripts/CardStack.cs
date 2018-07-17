@@ -47,4 +47,20 @@ public class CardStack : MonoBehaviour {
         }
     }
 	
+    //removes a card from the deck
+    public int Pop()
+    {
+        int temp = cards[0];
+        cards.RemoveAt(0);
+        return temp;
+    }
+
+
+
+    //MAYBE I DON'T NEED THIS HERE
+    //add a card to the players hand
+    public void Push(List<int> hand, int card)
+    {
+        hand.Add(card);
+    }
 }

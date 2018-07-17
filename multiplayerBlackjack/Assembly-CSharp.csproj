@@ -110,6 +110,7 @@
     <Compile Include="Assets\Scripts\CardsScripts\CardFlipper.cs" />
     <Compile Include="Assets\Scripts\CardsScripts\CardModel.cs" />
     <Compile Include="Assets\Scripts\CardsScripts\CardStack.cs" />
+    <Compile Include="Assets\Scripts\CardsScripts\CoroutineWithData.cs" />
     <Compile Include="Assets\Scripts\CardsScripts\DistributeCardsToPlayers.cs" />
     <Compile Include="Assets\Scripts\GameActionButtons.cs" />
     <Compile Include="Assets\Scripts\GameController.cs" />
