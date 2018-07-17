@@ -4,12 +4,9 @@ using UnityEngine;
 
 public class CardStack : MonoBehaviour {
 
-    //TODO delete card from deck when given to players or dealer
-
-    //holds the value of the cards key is teh card, value is the value of the card ex, 2 of all hands, value 2
-    Dictionary<int, int> cardsValue = new Dictionary<int, int>();
-
     List<int> cards;
+
+    CardModel card;
 
 	// Use this for initialization
 	void Start () 
@@ -55,12 +52,52 @@ public class CardStack : MonoBehaviour {
         return temp;
     }
 
-
-
     //MAYBE I DON'T NEED THIS HERE
     //add a card to the players hand
     public void Push(List<int> hand, int card)
     {
         hand.Add(card);
+    }
+
+    public int CardValue(List<int> hand){
+
+        int total = 0;
+        int aces = 0;
+
+
+        for (int i = 0; i < hand.Count; i++)
+        {
+            int cardValue = hand[i] % 13;
+
+            if (cardValue <= 8){
+                cardValue += 2;
+                total += cardValue;
+            }
+            else if (cardValue > 8 && cardValue < 12)
+            {
+                cardValue = 10;
+                total += cardValue;
+            }
+            else
+            {
+                aces++;
+            }
+        }
+
+        for (int j = 0; j < aces; j++)
+        {
+            if (total + 11 <= 21)
+            {
+                total += 11;
+            }
+            else
+            {
+                total += 1;
+            }
+        }
+
+
+
+        return total;
     }
 }

@@ -17,13 +17,38 @@ public class DistributeCardsToPlayers : MonoBehaviour
 
     public Vector3 cardPos;
 
-    private void Start()
+    List<int> playerHand = new List<int>();
+
+    List<int> dealerHand = new List<int>();
+
+    public int PlayerHandValue;
+    public int DealerHandValue;
+
+
+    void Start()
     {
         //randomized stack of cards
         cardStack = cardStack.GetComponent<CardStack>();
 
         //position of the deck of cards
         deckPosition = new Vector3(1.621f, 0.36f, 0.793f);
+
+    }
+
+    private void Update()
+    {
+        //player hand
+        foreach (int item in playerHand)
+        {
+            Debug.Log("player hand = " + item);
+        }
+
+        PlayerHandValue = cardStack.CardValue(playerHand);
+
+        DealerHandValue = cardStack.CardValue(dealerHand);
+
+        Debug.Log("value in player hand: "+ PlayerHandValue);
+        Debug.Log("value in dealer hand: " + DealerHandValue);
 
     }
 
@@ -56,12 +81,13 @@ public class DistributeCardsToPlayers : MonoBehaviour
                     CoroutineWithData cd1 = new CoroutineWithData(this, DistributeCards(card, new Vector3(0.02f, 0.43f, -0.72f)));
                     yield return cd1.coroutine;
 
-                    //flip cards 
-                    GetCardFromDeck(cd.result);
+                    //flip cards and add it to the player hand
+                    playerHand.Add(GetCardFromDeck(cd.result));
                     yield return new WaitForSeconds(0.5f);
-                    GetCardFromDeck(cd1.result);
+                    playerHand.Add(GetCardFromDeck(cd1.result));
 
                     cardPos = cd1.result.transform.position;
+
                     break;
                 }
             case 2:
@@ -92,34 +118,32 @@ public class DistributeCardsToPlayers : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
         //distribute cards to dealer
-        CoroutineWithData cdD = new CoroutineWithData(this, DistributeCards(card, new Vector3(-0.368f, 0.41f, 0.115f)));
+        CoroutineWithData cdD = new CoroutineWithData(this, DistributeCards(card, new Vector3(-0.522f, 0.4092483f, 0.176f)));
         yield return cdD.coroutine;
 
-        CoroutineWithData cdD1 = new CoroutineWithData(this, DistributeCards(card, new Vector3(-0.215f, 0.465f, 0.135f)));
+        CoroutineWithData cdD1 = new CoroutineWithData(this, DistributeCards(card, new Vector3(-0.1845832f, 0.4642483f, 0.196f)));
         yield return cdD1.coroutine;
 
-        //flip cards 
-        GetCardFromDeck(cdD.result);
+        //flip cards and add it to the dealer hand
+        dealerHand.Add(GetCardFromDeck(cdD.result));
         yield return new WaitForSeconds(0.5f);
         //only flip when dealer starts to play
-        //GetCardFromDeck(cdD1.result);
+       // GetCardFromDeck(cdD1.result);
        
         yield return null;
 
     }
 
     //Get cards from randomized card stack and flip them
-    public void GetCardFromDeck(CardModel card)
+    public int GetCardFromDeck(CardModel card)
     {
-
         cardIndex = cardStack.Pop();
 
         CardFlipper flipper = card.GetComponent<CardFlipper>();
 
         flipper.FlipCard(card.cardBack, card.faces[cardIndex], cardIndex);
 
-        //Debug.Log(cardIndex);
-
+        return cardIndex;
     }
 
     //function to distribute cards to players
@@ -135,7 +159,7 @@ public class DistributeCardsToPlayers : MonoBehaviour
         float step = speed * Time.deltaTime;
 
         //move card1
-        while (Vector3.Distance(card1.transform.position, card1Pos) > 0.05)
+        while (Vector3.Distance(card1.transform.position, card1Pos) > 0.01)
         {
             card1.transform.position = Vector3.MoveTowards(card1.transform.position, card1Pos, step);
 
@@ -163,8 +187,8 @@ public class DistributeCardsToPlayers : MonoBehaviour
         CoroutineWithData cd = new CoroutineWithData(this, DistributeCards(card, cardPos));
         yield return cd.coroutine;
 
-        //flip the card
-        GetCardFromDeck(cd.result);
+        //flip the card and add it to the player hand
+        playerHand.Add(GetCardFromDeck(cd.result));
 
     }
 }

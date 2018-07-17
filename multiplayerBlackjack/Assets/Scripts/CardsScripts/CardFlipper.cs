@@ -54,15 +54,7 @@ public class CardFlipper : MonoBehaviour {
             yield return new WaitForFixedUpdate();
         }
 
-        if (cardIndex == -1)
-        {
-            model.ToggleFace(false);
-        }
-        else
-        {
-            model.cardIndex = cardIndex;
-            model.ToggleFace(true);
-        }
+        model.cardIndex = cardIndex;
     }
 
 
