@@ -16,6 +16,8 @@ public class GameActionButtons : MonoBehaviour {
         stand.interactable = false;
         //leave.interactable = false;
         hit.interactable = false;
+
+        //DON'T LET PLAYERS PLAY UNTIL BET IS PLACED
 	}
 	
 	// Update is called once per frame

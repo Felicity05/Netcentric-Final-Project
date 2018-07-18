@@ -163,9 +163,9 @@ public class DistributeCardsToPlayers : MonoBehaviour
             yield return new WaitForSeconds(1.5f);
             StartCoroutine(cards.PickCardsUp());
 
-
-            //re start game again
-
+            //restart to play again
+            yield return new WaitForSeconds(4f);
+            StartAgain();
 
             yield return null;
         }
@@ -175,9 +175,7 @@ public class DistributeCardsToPlayers : MonoBehaviour
         stand.interactable = true;
         leave.interactable = true;
 
-
         yield return null;
-
     }
 
     //Get cards from randomized card stack and flip them
@@ -328,10 +326,21 @@ public class DistributeCardsToPlayers : MonoBehaviour
         //check if dealer has blackjack
         if (DealerHandValue == 21 && dealerHand.Count == 2)
         {
-            winnerText.text = "Dealer has Blackjack";
+            winnerText.text = "Dealer has Blackjack!!!";
             hit.interactable = false;
             stand.interactable = false;
             leave.interactable = false;
+
+            yield return new WaitForSeconds(1f);
+            StartCoroutine(cards.TurnCards());
+            yield return new WaitForSeconds(1.5f);
+            StartCoroutine(cards.PickCardsUp());
+
+            //restart to play again
+            yield return new WaitForSeconds(4f);
+            StartAgain();
+
+            yield return null;
         }
 
         while(DealerHandValue < 17){
