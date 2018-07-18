@@ -8,12 +8,16 @@ public class GameActionButtons : MonoBehaviour {
 
     public Button deal; //button to start the game
     public Button stand;
+    public Button leave;
+    public Button hit;
    
     public DistributeCardsToPlayers cardActions;
 
 	// Use this for initialization
 	void Start () {
-        
+        stand.interactable = false;
+        leave.interactable = false;
+        hit.interactable = false;
 	}
 	
 	// Update is called once per frame
@@ -25,7 +29,10 @@ public class GameActionButtons : MonoBehaviour {
     public void Hit()
     {
         StartCoroutine(cardActions.GetOneCard());
-
+        hit.interactable = false;
+        stand.interactable = false;
+        leave.interactable = false;
+       
         //Debug.Log("OK!!!!");
     }
 
@@ -35,6 +42,9 @@ public class GameActionButtons : MonoBehaviour {
         cardActions.DistributeCardsToStartGame();
         Debug.Log("disable button after clicking on it");
         deal.interactable = false;
+        stand.interactable = false;
+        leave.interactable = false;
+        hit.interactable = false;
     }
 
     //DON'T RECEIVE MORE CARDS FROM DEALER. INSTEAD WAIT FOR OTHER PLAYERS AND DEALER TO FINISH THEIR TURN

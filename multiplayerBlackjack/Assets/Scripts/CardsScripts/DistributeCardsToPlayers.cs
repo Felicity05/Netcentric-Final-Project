@@ -140,6 +140,11 @@ public class DistributeCardsToPlayers : MonoBehaviour
 
         dealerHandVal.text = DealerHandValue.ToString();
 
+        //re enable buttons after giving the cads
+        hit.interactable = true;
+        stand.interactable = true;
+        leave.interactable = true;
+
         //check if player has blackjack
         if (PlayerHandValue == 21 && playerHand.Count == 2)
         {
@@ -216,6 +221,11 @@ public class DistributeCardsToPlayers : MonoBehaviour
        
         playerHandVal.text = PlayerHandValue.ToString();
 
+        //re enable buttons after giving the cads
+        hit.interactable = true;
+        stand.interactable = true;
+        leave.interactable = true;
+
 
         //if player is busted dealer start to play
         if (PlayerHandValue == 21) 
@@ -243,8 +253,7 @@ public class DistributeCardsToPlayers : MonoBehaviour
             yield return new WaitForSeconds(1.5f);
             StartCoroutine(cards.PickCardsUp());
 
-            playerHandVal.text = "";
-            dealerHandVal.text = "";
+            playerHandVal.text = "Busted!";
 
             //restart to play again
 
@@ -335,7 +344,7 @@ public class DistributeCardsToPlayers : MonoBehaviour
         }
         else if ((DealerHandValue > 21) || (PlayerHandValue <= 21 && PlayerHandValue > DealerHandValue))
         {
-            winnerText.text = "Player Win";
+            winnerText.text = "Player Wins!!!";
 
             yield return new WaitForSeconds(1f);
             StartCoroutine(cards.TurnCards());
