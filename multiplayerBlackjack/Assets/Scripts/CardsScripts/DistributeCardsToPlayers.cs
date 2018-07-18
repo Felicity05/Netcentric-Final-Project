@@ -26,13 +26,12 @@ public class DistributeCardsToPlayers : MonoBehaviour
     int DealerHandValue;
 
     public bool isBusted;
-    public Button hit; //button to get one new card from the stack the game
+
+    //buttons in screen
+    public Button hit; //button to get one new card from the stack's game
     public Button deal;
     public Button stand;
     public Button leave;
-
-
-    public PickUpCards cards;
 
     public CoroutineWithData dealerSecondCard;
 
@@ -42,7 +41,15 @@ public class DistributeCardsToPlayers : MonoBehaviour
 
     public bool playerWin;
 
-    public GameObject[] cardsPrefabToPickUp;
+    public PickUpCards cards; //script to play the animations and pick up the cards. 
+    public GameObject[] cardsPrefabToDestroy; //all the cards to pick up
+
+    public GiveChips handleChips; //script to have access to all the chips operations
+    public GameObject[] chipsToDestroy; //all the chips at the end of the game 
+
+    //position of dealer and player to pick up the chips when someone wins
+    Vector3 dealerPos = new Vector3(-0.07f, 0.3f, 0.953f);
+    Vector3 playerPos = new Vector3(-0.07f, 0.3f, -1.418f);
 
     void Start()
     {
@@ -56,7 +63,7 @@ public class DistributeCardsToPlayers : MonoBehaviour
 
     private void Update()
     {
-        cardsPrefabToPickUp = GameObject.FindGameObjectsWithTag("Card");
+        cardsPrefabToDestroy = GameObject.FindGameObjectsWithTag("Card");
     }
 
 
@@ -153,19 +160,18 @@ public class DistributeCardsToPlayers : MonoBehaviour
         if (PlayerHandValue == 21 && playerHand.Count == 2)
         {
             winnerText.text = "Player has Blackjack!!!";
+
             hit.interactable = false;
             stand.interactable = false;
             leave.interactable = false;
 
-            //turn cards back and pick them up
-            yield return new WaitForSeconds(1f);
-            StartCoroutine(cards.TurnCards());
-            yield return new WaitForSeconds(1.5f);
-            StartCoroutine(cards.PickCardsUp());
+            //give the chips to the player
+            handleChips.iniBalance += (2 * handleChips.inBet);
+            handleChips.balance.text = "$ " + handleChips.iniBalance.ToString();
+            StartCoroutine(handleChips.GetChips(playerPos));
 
-            //restart to play again
-            yield return new WaitForSeconds(4f);
-            StartAgain();
+            //pick cards and start again
+            StartCoroutine(StartAgain());
 
             yield return null;
         }
@@ -254,7 +260,7 @@ public class DistributeCardsToPlayers : MonoBehaviour
             leave.interactable = false;
             StartCoroutine(DealersTurn());
 
-            //restart to play again handled in the dealers turn coroutine
+            /*restart to play again handled in the dealers turn coroutine*/
 
             yield return null;
         }
@@ -267,16 +273,13 @@ public class DistributeCardsToPlayers : MonoBehaviour
 
             winnerText.text = "Dealer wins!!!";
 
-            yield return new WaitForSeconds(1f);
-            StartCoroutine(cards.TurnCards());
-            yield return new WaitForSeconds(1.5f);
-            StartCoroutine(cards.PickCardsUp());
-
             playerHandVal.text = "Busted!";
 
-            //restart to play again
-            yield return new WaitForSeconds(4f);
-            StartAgain();
+            //give the chips to the dealer
+            StartCoroutine(handleChips.GetChips(dealerPos));
+
+            //pick cards and start again
+            StartCoroutine(StartAgain());
 
             yield return null;
         }
@@ -331,14 +334,11 @@ public class DistributeCardsToPlayers : MonoBehaviour
             stand.interactable = false;
             leave.interactable = false;
 
-            yield return new WaitForSeconds(1f);
-            StartCoroutine(cards.TurnCards());
-            yield return new WaitForSeconds(1.5f);
-            StartCoroutine(cards.PickCardsUp());
+            //give the chips to the dealer
+            StartCoroutine(handleChips.GetChips(new Vector3(1.462f, 0.325f, -0.22f)));
 
-            //restart to play again
-            yield return new WaitForSeconds(4f);
-            StartAgain();
+            //pick cards and start again
+            StartCoroutine(StartAgain());
 
             yield return null;
         }
@@ -365,14 +365,11 @@ public class DistributeCardsToPlayers : MonoBehaviour
         {
             winnerText.text = "Dealer wins!!!";
 
-            yield return new WaitForSeconds(1f);
-            StartCoroutine(cards.TurnCards());
-            yield return new WaitForSeconds(1.5f);
-            StartCoroutine(cards.PickCardsUp());
+            //give the chips to the dealer
+            StartCoroutine(handleChips.GetChips(dealerPos));
 
-            //restart to play again
-            yield return new WaitForSeconds(4f);
-            StartAgain();
+            //pick cards and start again
+            StartCoroutine(StartAgain());
 
             yield return null;
         }
@@ -380,14 +377,13 @@ public class DistributeCardsToPlayers : MonoBehaviour
         {
             winnerText.text = "Player Wins!!!";
 
-            yield return new WaitForSeconds(1f);
-            StartCoroutine(cards.TurnCards());
-            yield return new WaitForSeconds(1.5f);
-            StartCoroutine(cards.PickCardsUp());
+            //give the chips to the player
+            handleChips.iniBalance += (2 * handleChips.inBet);
+            handleChips.balance.text = "$ " + handleChips.iniBalance.ToString();
+            StartCoroutine(handleChips.GetChips(playerPos));
 
-            //restart to play again
-            yield return new WaitForSeconds(4f);
-            StartAgain();
+            //pick cards and start again
+            StartCoroutine(StartAgain());
 
             yield return null;
         }
@@ -395,21 +391,18 @@ public class DistributeCardsToPlayers : MonoBehaviour
         {
             winnerText.text = "Dealer wins!!!";
 
-            yield return new WaitForSeconds(1f);
-            StartCoroutine(cards.TurnCards());
-            yield return new WaitForSeconds(1.5f);
-            StartCoroutine(cards.PickCardsUp());
-
-            //restart to play again
-            yield return new WaitForSeconds(4f);
-            StartAgain();
+            //give the chips to the dealer
+            StartCoroutine(handleChips.GetChips(dealerPos));
+            
+            //pick cards and start again
+            StartCoroutine(StartAgain());
 
             yield return null;
         }
     }
 
     //re start the game
-    public void StartAgain(){
+    public void ResetGame(){
 
         Debug.Log("Restarting the game....");
 
@@ -423,6 +416,7 @@ public class DistributeCardsToPlayers : MonoBehaviour
         winnerText.text = " ";
         playerHandVal.text = " ";
         dealerHandVal.text = " ";
+        handleChips.playerBet.text = " ";
 
         //reset the hand values 
         PlayerHandValue = 0;
@@ -432,19 +426,53 @@ public class DistributeCardsToPlayers : MonoBehaviour
         playerHand.Clear();
         dealerHand.Clear();
 
+        //reset the bet value
+        handleChips.inBet = 0;
+
+
         //clear the card stack 
         cardStack.Reset();
 
         //re start the card stack
         cardStack.Shuffle();
 
-
-        foreach (GameObject Card in cardsPrefabToPickUp)
+        //destroy all the cards game objects on the scene to start a new game
+        foreach (GameObject Card in cardsPrefabToDestroy)
         {
             Destroy(Card);
             Debug.Log("Cards have been destroyed!");
         }
+
+        //TODO do the same as before but now for the chips
     }
 
+    //turn cards back pick them up and reset values to start playing agin
+    IEnumerator StartAgain()
+    {
+        
+        //turn cards back and pick them up
+        yield return new WaitForSeconds(1f);
+        StartCoroutine(cards.TurnCards());
+        yield return new WaitForSeconds(1.5f);
+        StartCoroutine(cards.PickCardsUp());
+
+        //restart to play again
+        yield return new WaitForSeconds(3.5f);
+        ResetGame();
+
+        yield return null;
+    }
+
+    void EnableAllButtons()
+    {
+
+    }
+
+    void DisableAllButtons()
+    {
+        hit.interactable = false;
+        stand.interactable = false;
+        leave.interactable = false;
+    }
 }
 

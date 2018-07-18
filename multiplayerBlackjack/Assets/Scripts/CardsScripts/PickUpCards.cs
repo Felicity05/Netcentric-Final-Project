@@ -26,7 +26,7 @@ public class PickUpCards : MonoBehaviour {
         {
             flipper = cards[i].GetComponent<CardFlipper>();
             if (cards[i].cardIndex != 0){
-                Debug.Log("TURN CARDS BACK!!!!!!");
+              //  Debug.Log("TURN CARDS BACK!!!!!!");
                 flipper.FlipCard(cards[i].faces[cards[i].cardIndex], cards[i].cardBack, cards[i].cardIndex);
             }
             //Debug.Log(cards[i].cardIndex);
@@ -37,7 +37,7 @@ public class PickUpCards : MonoBehaviour {
     public IEnumerator PickCardsUp()
     {
         // The step size is equal to speed times frame time.
-        float speed = 4f;
+        float speed = 5f;
 
         float step = speed * Time.deltaTime;
 

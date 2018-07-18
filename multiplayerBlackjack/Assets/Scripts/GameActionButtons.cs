@@ -8,22 +8,20 @@ public class GameActionButtons : MonoBehaviour {
     public Button stand;
     public Button leave;
     public Button hit;
+
+    public Text placeBet;
    
     public DistributeCardsToPlayers cardActions;
 
 	// Use this for initialization
 	void Start () {
         stand.interactable = false;
-        //leave.interactable = false;
+        deal.interactable = false;
         hit.interactable = false;
 
         //DON'T LET PLAYERS PLAY UNTIL BET IS PLACED
 	}
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 
     //GET ONE CARD FROM DEALER 
     public void Hit()
@@ -45,13 +43,13 @@ public class GameActionButtons : MonoBehaviour {
         stand.interactable = false;
         leave.interactable = false;
         hit.interactable = false;
+        placeBet.text = " ";
     }
 
     //DON'T RECEIVE MORE CARDS FROM DEALER. INSTEAD WAIT FOR OTHER PLAYERS AND DEALER TO FINISH THEIR TURN
     public void Stand()
     {
         StartCoroutine(cardActions.DealersTurn());
-        stand.interactable = false; 
         Debug.Log("wait for dealer and/or other players to play");
     }
 

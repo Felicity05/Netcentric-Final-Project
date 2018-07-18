@@ -14,22 +14,38 @@ public class GiveChips : MonoBehaviour {
     //public GameObject chip500Prefab;
 
 
-    //public List<int> chips = new List<int>();
+    public List<int> bet = new List<int>();
 
     public Text balance;
+    public Text playerBet;
 
     int chipValue;
 
-    int iniBalance = 50;
+    public int iniBalance = 50;
+    public int inBet = 0;
 
     Vector3 chipEndPos = new Vector3(-0.446f, 0.325f, -1.061f);
+
+    Vector3 dealerPos = new Vector3(-0.07f, 0.325f, 0.953f);
+
+    Vector3 playerPos = new Vector3(-0.07f, 0.323f, 0.953f);
 
     bool changePos = true;
 
     GameObject[] chips;
 
+    int minBet = 5;
+    int maxBet = 25;
+
+    //chips buttons
+    public Button chip1;
+    public Button chip5;
+    public Button chip10;
+    public Button chip25;
+    public Button deal;
+
     // Use this for initialization
-	void Start () {
+    void Start () {
 
         balance.text = "$ " + iniBalance.ToString();
 	}
@@ -37,83 +53,103 @@ public class GiveChips : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        chips = GameObject.FindGameObjectsWithTag("Chips");
+        chips = GameObject.FindGameObjectsWithTag("Chip");
 	}
 
 
-    //chip1Pos = new Vector3(-0.401f, -0.06999999f, -0.33f);
 
-
-    // 5 chips of 1
+    //chips of 1
     public void PlaceChip1()
     {
         chipValue = 1;
 
-        if (iniBalance - chipValue >= 0)
+        if (iniBalance - chipValue >= 0 && inBet + chipValue <= 25)
         {
             StartCoroutine(Chips(chip1Prefab, new Vector3(-0.446f, 0.33f, -1.334f)));
 
             //Debug.Log(chipValue);
 
             iniBalance -= chipValue;
+
+            inBet += chipValue;
+
+           
         }
 
         balance.text = "$ " + iniBalance.ToString();
+        playerBet.text = "$ " + inBet.ToString();
 
 
         //Debug.Log(iniBalance);
     }
 
-    // 2 chip of 5
+    //chip of 5
     public void PlaceChip5()
     {
         chipValue = 5;
 
-        if (iniBalance - chipValue >= 0)
+        if (iniBalance - chipValue >= 0 && inBet + chipValue <= 25)
         {
             StartCoroutine(Chips(chip5Prefab, new Vector3(-0.155f, 0.33f, -1.363f)));
 
             iniBalance -= chipValue;
+
+            inBet += chipValue;
         }
 
         balance.text = "$ " + iniBalance.ToString();
+        playerBet.text = "$ " + inBet.ToString();
+
     }
 
-    // 1 chip of 10
+    //chip of 10
     public void PlaceChip10()
     {
         chipValue = 10;
 
-        if (iniBalance - chipValue >= 0)
+        if (iniBalance - chipValue >= 0 && inBet + chipValue <= 25)
         {
             StartCoroutine(Chips(chip10Prefab, new Vector3(-0.14f, 0.33f, -1.363f)));
 
             iniBalance -= chipValue;
+
+            inBet += chipValue;
         }
 
         balance.text = "$ " + iniBalance.ToString();
+        playerBet.text = "$ " + inBet.ToString();
+
     }
 
-    // 1 chip of 25
+    //chip of 25
     public void PlaceChip25()
     {
         chipValue = 25;
 
-        if (iniBalance - chipValue >= 0)
+        if (iniBalance - chipValue >= 0 && inBet + chipValue <= 25)
         {
             StartCoroutine(Chips(chip25Prefab, new Vector3(0.438f, 0.33f, -1.363f)));
 
             iniBalance -= chipValue;
+
+            inBet += chipValue;
         }
 
         balance.text = "$ " + iniBalance.ToString();
+        playerBet.text = "$ " + inBet.ToString();
     }
 
 
-    //place the chips in the correct position in the screen
+    //place the player's chips in the correct position in the screen
     public IEnumerator Chips(GameObject chipPrefab, Vector3 startPos){
-        
-        MeshFilter chip = Instantiate(chipPrefab).GetComponent<MeshFilter>();
+
+        //disable all the chip buttons 
+        chip1.interactable = false;
+        chip5.interactable = false;
+        chip10.interactable = false;
+        chip25.interactable = false;
+
+        Chip chip = Instantiate(chipPrefab).GetComponent<Chip>();
 
         chip.transform.position = startPos;
         chip.transform.localScale = new Vector3(400f, 400f, 400f);
@@ -146,9 +182,23 @@ public class GiveChips : MonoBehaviour {
             changePos = true;
         }
 
-        Debug.Log("change pos= " + changePos);
+        //  Debug.Log("change pos= " + changePos);
 
-        //yield return null;
+        yield return new WaitForSeconds(0.8f);
+
+        //enable all the buttons again
+
+        if (inBet >= minBet)
+        {
+            deal.interactable = true;
+        }
+        chip1.interactable = true;
+        chip5.interactable = true;
+        chip10.interactable = true;
+        chip25.interactable = true;
+
+
+        yield return null;
     }
 
 
@@ -160,22 +210,26 @@ public class GiveChips : MonoBehaviour {
         //get the chips gameobject
 
         //The step size is equal to speed times frame time
-        float speed = 1f;
+        float speed = 1.5f;
 
         float step = speed * Time.deltaTime;
 
-
         foreach (GameObject chip in chips)
         {
-            while (Vector3.Distance(chip.transform.position, endPos) > 0.01)
+            if (chip.transform.localScale == new Vector3 (400f, 400f, 400f))
             {
-                //Debug.Log("chip end pos = "+ chipEndPos);
+                while (Vector3.Distance(chip.transform.position, endPos) > 0.01)
+                {
 
-                chip.transform.position = Vector3.MoveTowards(chip.transform.position, chipEndPos, step);
+                    Debug.Log("chip pos= " + chip.transform.position);
+                    Debug.Log("chip end pos = " + chipEndPos);
 
-                //Debug.Log("chip1= " + chip.transform.position);
+                    chip.transform.position = Vector3.MoveTowards(chip.transform.position, endPos, step);
 
-                yield return null; //wait for the function to end
+                    Debug.Log("picking up the chips");
+
+                    yield return null; //wait for the function to end
+                }
             }
         }
 
