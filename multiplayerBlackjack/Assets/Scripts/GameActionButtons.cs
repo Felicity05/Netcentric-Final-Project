@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 
@@ -16,7 +14,7 @@ public class GameActionButtons : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         stand.interactable = false;
-        leave.interactable = false;
+        //leave.interactable = false;
         hit.interactable = false;
 	}
 	
@@ -55,4 +53,16 @@ public class GameActionButtons : MonoBehaviour {
         Debug.Log("wait for dealer and/or other players to play");
     }
 
+    public void Leave()
+    {
+        Debug.Log("ask player if he/she wants to leave the game");
+        deal.interactable = false;
+        stand.interactable = false;
+        leave.interactable = false;
+        hit.interactable = false;
+        //if yes
+        //Application.Quit();
+        //else
+        //go back to the game and re enable buttons
+    }
 }

@@ -27,8 +27,10 @@ public class DistributeCardsToPlayers : MonoBehaviour
 
     public bool isBusted;
     public Button hit; //button to get one new card from the stack the game
+    public Button deal;
     public Button stand;
     public Button leave;
+
 
     public PickUpCards cards;
 
@@ -40,6 +42,8 @@ public class DistributeCardsToPlayers : MonoBehaviour
 
     public bool playerWin;
 
+    public GameObject[] cardsPrefabToPickUp;
+
     void Start()
     {
         //randomized stack of cards
@@ -48,6 +52,11 @@ public class DistributeCardsToPlayers : MonoBehaviour
         //position of the deck of cards
         deckPosition = new Vector3(1.621f, 0.36f, 0.793f);
 
+    }
+
+    private void Update()
+    {
+        cardsPrefabToPickUp = GameObject.FindGameObjectsWithTag("Card");
     }
 
 
@@ -140,19 +149,31 @@ public class DistributeCardsToPlayers : MonoBehaviour
 
         dealerHandVal.text = DealerHandValue.ToString();
 
+        //check if player has blackjack
+        if (PlayerHandValue == 21 && playerHand.Count == 2)
+        {
+            winnerText.text = "Player has Blackjack!!!";
+            hit.interactable = false;
+            stand.interactable = false;
+            leave.interactable = false;
+
+            //turn cards back and pick them up
+            yield return new WaitForSeconds(1f);
+            StartCoroutine(cards.TurnCards());
+            yield return new WaitForSeconds(1.5f);
+            StartCoroutine(cards.PickCardsUp());
+
+
+            //re start game again
+
+
+            yield return null;
+        }
+
         //re enable buttons after giving the cads
         hit.interactable = true;
         stand.interactable = true;
         leave.interactable = true;
-
-        //check if player has blackjack
-        if (PlayerHandValue == 21 && playerHand.Count == 2)
-        {
-            winnerText.text = "Player has Blackjack";
-            hit.interactable = false;
-            stand.interactable = false;
-            leave.interactable = false;
-        }
 
 
         yield return null;
@@ -235,7 +256,7 @@ public class DistributeCardsToPlayers : MonoBehaviour
             leave.interactable = false;
             StartCoroutine(DealersTurn());
 
-            //restart to play again
+            //restart to play again handled in the dealers turn coroutine
 
             yield return null;
         }
@@ -256,6 +277,8 @@ public class DistributeCardsToPlayers : MonoBehaviour
             playerHandVal.text = "Busted!";
 
             //restart to play again
+            yield return new WaitForSeconds(4f);
+            StartAgain();
 
             yield return null;
         }
@@ -339,6 +362,8 @@ public class DistributeCardsToPlayers : MonoBehaviour
             StartCoroutine(cards.PickCardsUp());
 
             //restart to play again
+            yield return new WaitForSeconds(4f);
+            StartAgain();
 
             yield return null;
         }
@@ -352,6 +377,8 @@ public class DistributeCardsToPlayers : MonoBehaviour
             StartCoroutine(cards.PickCardsUp());
 
             //restart to play again
+            yield return new WaitForSeconds(4f);
+            StartAgain();
 
             yield return null;
         }
@@ -365,25 +392,49 @@ public class DistributeCardsToPlayers : MonoBehaviour
             StartCoroutine(cards.PickCardsUp());
 
             //restart to play again
+            yield return new WaitForSeconds(4f);
+            StartAgain();
 
             yield return null;
         }
     }
 
+    //re start the game
     public void StartAgain(){
 
-        //enable the game buttons 
-        hit.interactable = true;
-        stand.interactable = true;
-        leave.interactable = true;
+        Debug.Log("Restarting the game....");
 
-        //rest text to empty
+        //enable the game buttons
+        deal.interactable = true;
+        hit.interactable = false;
+        stand.interactable = false;
+        leave.interactable = false;
+
+        //clearing the text field
         winnerText.text = " ";
-
         playerHandVal.text = " ";
         dealerHandVal.text = " ";
 
+        //reset the hand values 
+        PlayerHandValue = 0;
+        DealerHandValue = 0;
+
+        //clearing the player and dealer hands
+        playerHand.Clear();
+        dealerHand.Clear();
+
+        //clear the card stack 
         cardStack.Reset();
+
+        //re start the card stack
+        cardStack.Shuffle();
+
+
+        foreach (GameObject Card in cardsPrefabToPickUp)
+        {
+            Destroy(Card);
+            Debug.Log("Cards have been destroyed!");
+        }
     }
 
 }

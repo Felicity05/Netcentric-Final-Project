@@ -1,7 +1,5 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class PickUpCards : MonoBehaviour {
 
@@ -10,37 +8,16 @@ public class PickUpCards : MonoBehaviour {
     public CardFlipper flipper;
 
 	// Use this for initialization
-	void Start () {
+	void Start () 
+    {
         
-
-       
     }
 
     // Update is called once per frame
-	void Update () {
-		
+	void Update () 
+    {
         cards = FindObjectsOfType<CardModel>();
-
     }
-
-    //private void OnGUI()
-    //{
-    //    if (GUI.Button(new Rect(10,10,100,80), "TurnCards"))
-    //    {
-    //        StartCoroutine(PickCards());
-    //    }
-    //}
-
-
-    //public IEnumerator PickCards(){
-        
-    //    TurnCards();
-    //    //yield return new WaitForSeconds(2f);
-    //    //StartCoroutine(PickCardsUp());
-    //    yield return null;
-    //}
-
-
 
     //all the cards are facing, turn the cards to their back
     public IEnumerator TurnCards(){
@@ -77,6 +54,19 @@ public class PickUpCards : MonoBehaviour {
 
                 yield return null; //wait for the function to end
             }
+        }
+    }
+
+    public IEnumerator DestroyCards()
+    {
+        foreach (CardModel card in cards)
+        {
+            if (card != null)
+            {
+                Destroy(card);
+            }
+
+            yield return null; //wait for the function to end
         }
     }
 
