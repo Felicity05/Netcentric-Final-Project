@@ -269,7 +269,8 @@ MonoBehaviour:
   cardPrefab: {fileID: 1490489812983388, guid: 8cd623e1798de40d2bd7fc1f56b38a94, type: 2}
   card: {fileID: 0}
   cardStack: {fileID: 0}
-  cardPos: {x: 0, y: 0, z: 0}
+  player1CardPos: {x: 0, y: 0, z: 0}
+  dealerCardPos: {x: 0, y: 0, z: 0}
   isBusted: 0
   hit: {fileID: 0}
   stand: {fileID: 0}
@@ -2640,7 +2641,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 680990948}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2101662950}
+        m_MethodName: Stand
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &680990948
@@ -2756,7 +2768,8 @@ MonoBehaviour:
   cardPrefab: {fileID: 1490489812983388, guid: 8cd623e1798de40d2bd7fc1f56b38a94, type: 2}
   card: {fileID: 114574449106509166, guid: 8cd623e1798de40d2bd7fc1f56b38a94, type: 2}
   cardStack: {fileID: 387561202}
-  cardPos: {x: 0, y: 0, z: 0}
+  player1CardPos: {x: 0, y: 0, z: 0}
+  dealerCardPos: {x: 0, y: 0, z: 0}
   isBusted: 0
   hit: {fileID: 1303731812}
   stand: {fileID: 680990947}
@@ -5609,7 +5622,8 @@ MonoBehaviour:
   cardPrefab: {fileID: 0}
   card: {fileID: 0}
   cardStack: {fileID: 0}
-  cardPos: {x: 0, y: 0, z: 0}
+  player1CardPos: {x: 0, y: 0, z: 0}
+  dealerCardPos: {x: 0, y: 0, z: 0}
   isBusted: 0
   hit: {fileID: 0}
   stand: {fileID: 0}
@@ -6580,6 +6594,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deal: {fileID: 2103371622}
+  stand: {fileID: 680990947}
   cardActions: {fileID: 698215944}
 --- !u!4 &2101662951
 Transform:

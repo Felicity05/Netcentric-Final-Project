@@ -15,7 +15,8 @@ public class DistributeCardsToPlayers : MonoBehaviour
 
     public CardStack cardStack;
 
-    public Vector3 cardPos;
+    public Vector3 player1CardPos;
+    public Vector3 dealerCardPos;
 
     List<int> playerHand = new List<int>();
 
@@ -31,6 +32,14 @@ public class DistributeCardsToPlayers : MonoBehaviour
 
     public PickUpCards cards;
 
+    public CoroutineWithData dealerSecondCard;
+
+    public Text winnerText;
+    public Text playerHandVal;
+    public Text dealerHandVal;
+
+    public bool playerWin;
+
     void Start()
     {
         //randomized stack of cards
@@ -39,64 +48,7 @@ public class DistributeCardsToPlayers : MonoBehaviour
         //position of the deck of cards
         deckPosition = new Vector3(1.621f, 0.36f, 0.793f);
 
-
     }
-
-    private void Update()
-    {
-        ////player hand
-        //foreach (int item in playerHand)
-        //{
-        //    Debug.Log("index card = " + item);
-        //}
-
-        //PlayerHandValue = cardStack.CardValue(playerHand);
-
-        //DealerHandValue = cardStack.CardValue(dealerHand);
-
-        //if (PlayerHandValue > 21){
-        //    isBusted = true;
-        //    hit.interactable = false;
-        //    stand.interactable = false;
-        //    leave.interactable = false;
-
-        //    StartCoroutine(cards.TurnCards());
-        //    Debug.Log("PLAYER IS BUSTED!!!");
-        //}
-
-        //Debug.Log("value in player hand: "+ PlayerHandValue);
-        //Debug.Log("value in dealer hand: " + DealerHandValue);
-        //Debug.Log("isBusted: " + isBusted);
-    }
-
-
-    public IEnumerator HandValue(){
-
-        PlayerHandValue = cardStack.CardValue(playerHand);
-
-        DealerHandValue = cardStack.CardValue(dealerHand);
-
-        if (PlayerHandValue > 21){
-            isBusted = true;
-
-            hit.interactable = false;
-            stand.interactable = false;
-            leave.interactable = false;
-
-            yield return new WaitForSeconds(1f);
-            StartCoroutine(cards.TurnCards());
-            yield return new WaitForSeconds(1.5f);
-            StartCoroutine(cards.PickCardsUp());
-            Debug.Log("PLAYER IS BUSTED!!!");
-        }
-
-        Debug.Log("value in player hand: "+ PlayerHandValue);
-        Debug.Log("value in dealer hand: " + DealerHandValue);
-        Debug.Log("isBusted: " + isBusted);
-
-        yield return null;
-    } 
-
 
 
     //start the function to distribute the cards to the player 
@@ -131,7 +83,13 @@ public class DistributeCardsToPlayers : MonoBehaviour
                     yield return new WaitForSeconds(0.5f);
                     playerHand.Add(GetCardFromDeck(cd1.result));
 
-                    cardPos = cd1.result.transform.position;
+                    player1CardPos = cd1.result.transform.position;
+
+                    PlayerHandValue = cardStack.CardValue(playerHand);
+
+                    yield return new WaitForSeconds(0.8f);
+
+                    playerHandVal.text = PlayerHandValue.ToString();
 
                     break;
                 }
@@ -163,20 +121,34 @@ public class DistributeCardsToPlayers : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
         //distribute cards to dealer
-        CoroutineWithData cdD = new CoroutineWithData(this, DistributeCards(card, new Vector3(-0.522f, 0.4092483f, 0.176f)));
+        CoroutineWithData cdD = new CoroutineWithData(this, DistributeCards(card, new Vector3(-0.49f, 0.449f, 0.26f)));
         yield return cdD.coroutine;
 
-        CoroutineWithData cdD1 = new CoroutineWithData(this, DistributeCards(card, new Vector3(-0.1845832f, 0.4642483f, 0.196f)));
-        yield return cdD1.coroutine;
+        dealerSecondCard = new CoroutineWithData(this, DistributeCards(card, new Vector3(-0.1845832f, 0.449f, 0.26f)));
+        yield return dealerSecondCard.coroutine;
 
         //flip cards and add it to the dealer hand
         dealerHand.Add(GetCardFromDeck(cdD.result));
         yield return new WaitForSeconds(0.5f);
+
         //only flip when dealer starts to play
-        // GetCardFromDeck(cdD1.result);
+        dealerCardPos = dealerSecondCard.result.transform.position;
 
+        DealerHandValue = cardStack.CardValue(dealerHand);
 
-        StartCoroutine(HandValue());
+        yield return new WaitForSeconds(0.8f);
+
+        dealerHandVal.text = DealerHandValue.ToString();
+
+        //check if player has blackjack
+        if (PlayerHandValue == 21 && playerHand.Count == 2)
+        {
+            winnerText.text = "Player has Blackjack";
+            hit.interactable = false;
+            stand.interactable = false;
+            leave.interactable = false;
+        }
+
 
         yield return null;
 
@@ -229,17 +201,181 @@ public class DistributeCardsToPlayers : MonoBehaviour
         float offsetz = 0.02f;
 
         Vector3 offset = new Vector3(offsetx, offsety, offsetz);
-        cardPos += offset; //position of previous card
+        player1CardPos += offset; //position of previous card
 
-        Debug.Log(cardPos);
-        CoroutineWithData cd = new CoroutineWithData(this, DistributeCards(card, cardPos));
+        //Debug.Log(player1CardPos);
+        CoroutineWithData cd = new CoroutineWithData(this, DistributeCards(card, player1CardPos));
         yield return cd.coroutine;
 
         //flip the card and add it to the player hand
         playerHand.Add(GetCardFromDeck(cd.result));
 
-        StartCoroutine(HandValue());
+        PlayerHandValue = cardStack.CardValue(playerHand);
+
+        yield return new WaitForSeconds(0.8f);
+       
+        playerHandVal.text = PlayerHandValue.ToString();
+
+
+        //if player is busted dealer start to play
+        if (PlayerHandValue == 21) 
+        {
+            hit.interactable = false;
+            stand.interactable = false;
+            leave.interactable = false;
+            StartCoroutine(DealersTurn());
+
+            //restart to play again
+
+            yield return null;
+        }
+        else if(PlayerHandValue > 21)
+        {
+            //player is busted game ends!!!!
+            hit.interactable = false;
+            stand.interactable = false;
+            leave.interactable = false;
+
+            winnerText.text = "Dealer wins!!!";
+
+            yield return new WaitForSeconds(1f);
+            StartCoroutine(cards.TurnCards());
+            yield return new WaitForSeconds(1.5f);
+            StartCoroutine(cards.PickCardsUp());
+
+            playerHandVal.text = "";
+            dealerHandVal.text = "";
+
+            //restart to play again
+
+            yield return null;
+        }
 
     }
+
+    //hit for dealer
+    public IEnumerator GetDealerCards(){
+
+        float offsetx = 0.3054168f;
+
+        Vector3 offset = new Vector3(offsetx, 0f, 0f);
+        dealerCardPos += offset; //position of previous card
+
+        //Debug.Log(player1CardPos);
+        CoroutineWithData cd = new CoroutineWithData(this, DistributeCards(card, dealerCardPos));
+        yield return cd.coroutine;
+
+        //flip the card and add it to the player hand
+        dealerHand.Add(GetCardFromDeck(cd.result));
+
+        DealerHandValue = cardStack.CardValue(dealerHand);
+
+        yield return new WaitForSeconds(0.8f);
+
+        dealerHandVal.text = DealerHandValue.ToString();
+
+    }
+
+
+    //dealers turn 
+    public IEnumerator DealersTurn()
+    {
+
+        hit.interactable = false;
+        leave.interactable = false;
+        stand.interactable = false;
+
+        dealerHand.Add(GetCardFromDeck(dealerSecondCard.result));
+
+        DealerHandValue = cardStack.CardValue(dealerHand);
+
+        yield return new WaitForSeconds(0.8f);
+
+        dealerHandVal.text = DealerHandValue.ToString();
+
+        //check if dealer has blackjack
+        if (DealerHandValue == 21 && dealerHand.Count == 2)
+        {
+            winnerText.text = "Dealer has Blackjack";
+            hit.interactable = false;
+            stand.interactable = false;
+            leave.interactable = false;
+        }
+
+        while(DealerHandValue < 17){
+
+            yield return new WaitForSeconds(0.5f);
+
+            StartCoroutine(GetDealerCards());
+
+            DealerHandValue = cardStack.CardValue(dealerHand);
+
+            yield return new WaitForSeconds(0.8f);
+
+            dealerHandVal.text = DealerHandValue.ToString();
+
+            yield return new WaitForSeconds(1f);
+        }
+
+        yield return null;
+
+        //check for who wins dealer or player
+        if (DealerHandValue == PlayerHandValue)
+        {
+            winnerText.text = "Dealer wins!!!";
+
+            yield return new WaitForSeconds(1f);
+            StartCoroutine(cards.TurnCards());
+            yield return new WaitForSeconds(1.5f);
+            StartCoroutine(cards.PickCardsUp());
+
+            //restart to play again
+
+            yield return null;
+        }
+        else if ((DealerHandValue > 21) || (PlayerHandValue <= 21 && PlayerHandValue > DealerHandValue))
+        {
+            winnerText.text = "Player Win";
+
+            yield return new WaitForSeconds(1f);
+            StartCoroutine(cards.TurnCards());
+            yield return new WaitForSeconds(1.5f);
+            StartCoroutine(cards.PickCardsUp());
+
+            //restart to play again
+
+            yield return null;
+        }
+        else
+        {
+            winnerText.text = "Dealer wins!!!";
+
+            yield return new WaitForSeconds(1f);
+            StartCoroutine(cards.TurnCards());
+            yield return new WaitForSeconds(1.5f);
+            StartCoroutine(cards.PickCardsUp());
+
+            //restart to play again
+
+            yield return null;
+        }
+    }
+
+    public void StartAgain(){
+
+        //enable the game buttons 
+        hit.interactable = true;
+        stand.interactable = true;
+        leave.interactable = true;
+
+        //rest text to empty
+        winnerText.text = " ";
+
+        playerHandVal.text = " ";
+        dealerHandVal.text = " ";
+
+        cardStack.Reset();
+    }
+
 }
 

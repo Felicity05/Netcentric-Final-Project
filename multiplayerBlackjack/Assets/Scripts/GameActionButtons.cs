@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class GameActionButtons : MonoBehaviour {
 
     public Button deal; //button to start the game
+    public Button stand;
    
     public DistributeCardsToPlayers cardActions;
 
@@ -37,8 +38,10 @@ public class GameActionButtons : MonoBehaviour {
     }
 
     //DON'T RECEIVE MORE CARDS FROM DEALER. INSTEAD WAIT FOR OTHER PLAYERS AND DEALER TO FINISH THEIR TURN
-    void Stand()
+    public void Stand()
     {
+        StartCoroutine(cardActions.DealersTurn());
+        stand.interactable = false; 
         Debug.Log("wait for dealer and/or other players to play");
     }
 

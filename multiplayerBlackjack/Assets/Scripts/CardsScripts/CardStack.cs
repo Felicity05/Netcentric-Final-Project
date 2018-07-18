@@ -96,8 +96,11 @@ public class CardStack : MonoBehaviour {
             }
         }
 
-
-
         return total;
+    }
+
+    public void Reset()
+    {
+        cards.Clear();
     }
 }
