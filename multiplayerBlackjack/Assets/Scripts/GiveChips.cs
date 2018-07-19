@@ -221,12 +221,12 @@ public class GiveChips : MonoBehaviour {
                 while (Vector3.Distance(chip.transform.position, endPos) > 0.01)
                 {
 
-                    Debug.Log("chip pos= " + chip.transform.position);
-                    Debug.Log("chip end pos = " + chipEndPos);
+                    //Debug.Log("chip pos= " + chip.transform.position);
+                   // Debug.Log("chip end pos = " + chipEndPos);
 
                     chip.transform.position = Vector3.MoveTowards(chip.transform.position, endPos, step);
 
-                    Debug.Log("picking up the chips");
+                  //  Debug.Log("picking up the chips");
 
                     yield return null; //wait for the function to end
                 }

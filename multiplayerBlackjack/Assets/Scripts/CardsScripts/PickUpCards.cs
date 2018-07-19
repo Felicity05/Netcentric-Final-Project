@@ -21,11 +21,18 @@ public class PickUpCards : MonoBehaviour {
 
     //all the cards are facing, turn the cards to their back
     public IEnumerator TurnCards(){
-        
+        bool isFaced = false;
+
         for (int i = 0; i < cards.Length; i++)
         {
             flipper = cards[i].GetComponent<CardFlipper>();
-            if (cards[i].cardIndex != 0){
+
+            if(cards[i].cardIndex == 0)
+            {
+                isFaced = true;
+            }
+
+            if (isFaced || cards[i].cardIndex != 0){
               //  Debug.Log("TURN CARDS BACK!!!!!!");
                 flipper.FlipCard(cards[i].faces[cards[i].cardIndex], cards[i].cardBack, cards[i].cardIndex);
             }

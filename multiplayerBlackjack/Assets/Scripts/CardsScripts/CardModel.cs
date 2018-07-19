@@ -9,6 +9,8 @@ public class CardModel : MonoBehaviour {
     public Sprite[] faces;
     public Sprite cardBack;
 
+    public bool isFaced;
+
     GameObject card;
 
     public int cardIndex; //index of card in the faces array
@@ -24,10 +26,12 @@ public class CardModel : MonoBehaviour {
         if (showFace)
         {
             spriteRenderer.sprite = faces[cardIndex];
+            isFaced = true;
         }
         else
         {
             spriteRenderer.sprite = cardBack;
+            isFaced = false;
         }
     }
 }

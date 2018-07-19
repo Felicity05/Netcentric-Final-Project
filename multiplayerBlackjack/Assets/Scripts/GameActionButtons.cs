@@ -43,7 +43,7 @@ public class GameActionButtons : MonoBehaviour {
         stand.interactable = false;
         leave.interactable = false;
         hit.interactable = false;
-        placeBet.text = " ";
+        placeBet.gameObject.SetActive(false);
     }
 
     //DON'T RECEIVE MORE CARDS FROM DEALER. INSTEAD WAIT FOR OTHER PLAYERS AND DEALER TO FINISH THEIR TURN

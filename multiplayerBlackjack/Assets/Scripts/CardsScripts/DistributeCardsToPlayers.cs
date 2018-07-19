@@ -7,21 +7,23 @@ public class DistributeCardsToPlayers : MonoBehaviour
 {
     public GameObject cardPrefab; //prefab of cards
 
-    public CardModel card; //card to intantiate
+    public CardModel card; //card to instantiate
 
     Vector3 deckPosition; //holds the position of the deck of cards
 
-    int cardIndex;
+    int cardIndex; //position of card in the deck
 
-    public CardStack cardStack;
+    public CardStack cardStack; //script to access the stack of cards
 
+    //position in screen of player's and dealer's hand 
     public Vector3 player1CardPos;
     public Vector3 dealerCardPos;
 
+    //saves the player's and dealer's hand
     List<int> playerHand = new List<int>();
-
     List<int> dealerHand = new List<int>();
 
+    //saves the value of the player's and dealer's hand 
     int PlayerHandValue;
     int DealerHandValue;
 
@@ -29,17 +31,29 @@ public class DistributeCardsToPlayers : MonoBehaviour
 
     //buttons in screen
     public Button hit; //button to get one new card from the stack's game
-    public Button deal;
-    public Button stand;
-    public Button leave;
+    public Button deal; //start the game 
+    public Button stand; //wait for dealer to play
+    public Button leave; //leave the room
 
+    //chips buttons
+    public Button chip1;
+    public Button chip5;
+    public Button chip10;
+    public Button chip25;
+
+    //text to tell the user to place bet
+    public Text placeBet;
+
+    //save the second card of the dealer to flip it in the right time
     public CoroutineWithData dealerSecondCard;
 
+    //useful text to tell the players the value of their hand and the dealer's hand
     public Text winnerText;
     public Text playerHandVal;
     public Text dealerHandVal;
 
-    public bool playerWin;
+    //panel for no more balance
+    public CanvasRenderer panelNoMoreMoney;
 
     public PickUpCards cards; //script to play the animations and pick up the cards. 
     public GameObject[] cardsPrefabToDestroy; //all the cards to pick up
@@ -64,12 +78,17 @@ public class DistributeCardsToPlayers : MonoBehaviour
     private void Update()
     {
         cardsPrefabToDestroy = GameObject.FindGameObjectsWithTag("Card");
+
+        chipsToDestroy = GameObject.FindGameObjectsWithTag("Chip");
     }
 
 
     //start the function to distribute the cards to the player 
     public void DistributeCardsToStartGame()
     {
+        //disable chips after deal is done
+        DisableChips();
+
         StartCoroutine(DistributeToEveyone());
     }
 
@@ -119,16 +138,7 @@ public class DistributeCardsToPlayers : MonoBehaviour
                     //distribute to 3 players 
                     break;
                 }
-            case 4:
-                {
-                    //distribute to 4 players 
-                    break;
-                }
-            case 5:
-                {
-                    //distribute to 5 players 
-                    break;
-                }
+            
         }
 
 
@@ -161,9 +171,14 @@ public class DistributeCardsToPlayers : MonoBehaviour
         {
             winnerText.text = "Player has Blackjack!!!";
 
+            /*
             hit.interactable = false;
             stand.interactable = false;
             leave.interactable = false;
+            */
+
+            //disable buttons 
+            DisableAllButtons();
 
             //give the chips to the player
             handleChips.iniBalance += (2 * handleChips.inBet);
@@ -177,9 +192,14 @@ public class DistributeCardsToPlayers : MonoBehaviour
         }
 
         //re enable buttons after giving the cads
-        hit.interactable = true;
+        /*hit.interactable = true;
         stand.interactable = true;
         leave.interactable = true;
+        */
+
+        yield return new WaitForSeconds(0.5f);
+
+        EnableAllButtons();
 
         yield return null;
     }
@@ -247,17 +267,22 @@ public class DistributeCardsToPlayers : MonoBehaviour
         playerHandVal.text = PlayerHandValue.ToString();
 
         //re enable buttons after giving the cads
-        hit.interactable = true;
+        /*hit.interactable = true;
         stand.interactable = true;
-        leave.interactable = true;
+        leave.interactable = true;*/
+
+        EnableAllButtons();
 
 
         //if player is busted dealer start to play
         if (PlayerHandValue == 21) 
         {
-            hit.interactable = false;
+            /*hit.interactable = false;
             stand.interactable = false;
-            leave.interactable = false;
+            leave.interactable = false;*/
+
+            //disable buttons 
+            DisableAllButtons();
             StartCoroutine(DealersTurn());
 
             /*restart to play again handled in the dealers turn coroutine*/
@@ -267,9 +292,12 @@ public class DistributeCardsToPlayers : MonoBehaviour
         else if(PlayerHandValue > 21)
         {
             //player is busted game ends!!!!
-            hit.interactable = false;
+            /*hit.interactable = false;
             stand.interactable = false;
-            leave.interactable = false;
+            leave.interactable = false;*/
+
+            //disable buttons 
+            DisableAllButtons();
 
             winnerText.text = "Dealer wins!!!";
 
@@ -314,9 +342,12 @@ public class DistributeCardsToPlayers : MonoBehaviour
     public IEnumerator DealersTurn()
     {
 
-        hit.interactable = false;
+        /*hit.interactable = false;
         leave.interactable = false;
-        stand.interactable = false;
+        stand.interactable = false;*/
+
+        //disable buttons 
+        DisableAllButtons();
 
         dealerHand.Add(GetCardFromDeck(dealerSecondCard.result));
 
@@ -330,9 +361,13 @@ public class DistributeCardsToPlayers : MonoBehaviour
         if (DealerHandValue == 21 && dealerHand.Count == 2)
         {
             winnerText.text = "Dealer has Blackjack!!!";
-            hit.interactable = false;
+
+            /*hit.interactable = false;
             stand.interactable = false;
-            leave.interactable = false;
+            leave.interactable = false;*/
+
+            //disable buttons 
+            DisableAllButtons();
 
             //give the chips to the dealer
             StartCoroutine(handleChips.GetChips(new Vector3(1.462f, 0.325f, -0.22f)));
@@ -364,6 +399,9 @@ public class DistributeCardsToPlayers : MonoBehaviour
         if (DealerHandValue == PlayerHandValue)
         {
             winnerText.text = "Dealer wins!!!";
+
+            //disable buttons 
+           // DisableAllButtons();
 
             //give the chips to the dealer
             StartCoroutine(handleChips.GetChips(dealerPos));
@@ -404,46 +442,72 @@ public class DistributeCardsToPlayers : MonoBehaviour
     //re start the game
     public void ResetGame(){
 
-        Debug.Log("Restarting the game....");
-
-        //enable the game buttons
-        deal.interactable = true;
-        hit.interactable = false;
-        stand.interactable = false;
-        leave.interactable = false;
-
-        //clearing the text field
-        winnerText.text = " ";
-        playerHandVal.text = " ";
-        dealerHandVal.text = " ";
-        handleChips.playerBet.text = " ";
-
-        //reset the hand values 
-        PlayerHandValue = 0;
-        DealerHandValue = 0;
-
-        //clearing the player and dealer hands
-        playerHand.Clear();
-        dealerHand.Clear();
-
-        //reset the bet value
-        handleChips.inBet = 0;
-
-
-        //clear the card stack 
-        cardStack.Reset();
-
-        //re start the card stack
-        cardStack.Shuffle();
-
-        //destroy all the cards game objects on the scene to start a new game
-        foreach (GameObject Card in cardsPrefabToDestroy)
+        if (handleChips.iniBalance == 0)
         {
-            Destroy(Card);
-            Debug.Log("Cards have been destroyed!");
-        }
+            panelNoMoreMoney.gameObject.SetActive(true);
 
-        //TODO do the same as before but now for the chips
+            //enable text to tell user to place bet
+            placeBet.gameObject.SetActive(false);
+        }
+        else
+        {
+            //enable text to tell user to place bet
+            placeBet.gameObject.SetActive(true);
+        }
+       
+            Debug.Log("Restarting the game....");
+
+            //enable the game buttons
+            //deal.interactable = false;
+            /*hit.interactable = false;
+            stand.interactable = false;
+            leave.interactable = false;*/
+
+            //disable buttons 
+            DisableAllButtons();
+
+            //enable chips
+            EnableChips();
+
+            //clearing the text field
+            winnerText.text = " ";
+            playerHandVal.text = " ";
+            dealerHandVal.text = " ";
+            handleChips.playerBet.text = " ";
+
+            //reset the hand values 
+            PlayerHandValue = 0;
+            DealerHandValue = 0;
+
+            //clearing the player and dealer hands
+            playerHand.Clear();
+            dealerHand.Clear();
+
+            //reset the bet value
+            handleChips.inBet = 0;
+
+            //clear the card stack 
+            cardStack.Reset();
+
+            //re start the card stack
+            cardStack.Shuffle();
+
+            //destroy all the cards game objects on the scene to start a new game
+            foreach (GameObject Card in cardsPrefabToDestroy)
+            {
+                Destroy(Card);
+                Debug.Log("Cards have been destroyed!");
+            }
+
+            //TODO do the same as before but now for the chips
+            foreach (GameObject Chip in chipsToDestroy)
+            {
+                if (Chip.transform.localScale == new Vector3(400f, 400f, 400f))
+                {
+                    Destroy(Chip);
+                    Debug.Log("Chips have been destroyed!");
+                }
+            }
     }
 
     //turn cards back pick them up and reset values to start playing agin
@@ -465,14 +529,39 @@ public class DistributeCardsToPlayers : MonoBehaviour
 
     void EnableAllButtons()
     {
+        //enable the game buttons
+        hit.interactable = true;
+        stand.interactable = true;
+        leave.interactable = true;
 
+        
     }
 
     void DisableAllButtons()
     {
+        //disable the game buttons
+        deal.interactable = false;
         hit.interactable = false;
         stand.interactable = false;
         leave.interactable = false;
+    }
+
+    void DisableChips()
+    {
+        //disable chips
+        chip1.interactable = false;
+        chip5.interactable = false;
+        chip10.interactable = false;
+        chip25.interactable = false;
+    }
+
+    void EnableChips()
+    {
+        //enable chips
+        chip1.interactable = true;
+        chip5.interactable = true;
+        chip10.interactable = true;
+        chip25.interactable = true;
     }
 }
 
