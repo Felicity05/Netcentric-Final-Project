@@ -11,7 +11,7 @@ public class GameActionButtons : MonoBehaviour {
 
     public Text placeBet;
    
-    public DistributeCardsToPlayers cardActions;
+    public HandleCardsOperations cardActions;
 
 	// Use this for initialization
 	void Start () {

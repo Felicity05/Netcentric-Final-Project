@@ -14,16 +14,16 @@ public class myServer1 : MonoBehaviour {
     public int port = 8000;
     string host = "";
 
-    private static List<ServerClient> clients;
-    private static List<ServerClient> disconnectList;
+    static List<ServerClient> clients;
+    static List<ServerClient> disconnectList;
 
     //creating the socket TCP
     public Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
     //create the buffer size, how much info we can send and receive 
-    private byte[] serverBuffer = new byte[1024];
+    byte[] serverBuffer = new byte[1024];
 
-    private bool serverStarted;
+    bool serverStarted;
 
     public string content;
 
