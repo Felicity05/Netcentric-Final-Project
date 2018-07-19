@@ -24,7 +24,7 @@ public class GiveChips : MonoBehaviour {
     public int iniBalance = 50;
     public int inBet = 0;
 
-    Vector3 chipEndPos = new Vector3(-0.446f, 0.325f, -1.061f);
+    public Vector3 chipEndPos = new Vector3(-0.446f, 0.325f, -1.061f);
 
     Vector3 dealerPos = new Vector3(-0.07f, 0.325f, 0.953f);
 

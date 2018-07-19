@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class DistributeCardsToPlayers : MonoBehaviour
@@ -83,7 +84,7 @@ public class DistributeCardsToPlayers : MonoBehaviour
     }
 
 
-    //start the function to distribute the cards to the player 
+    //////start the function to distribute the cards to the player///// 
     public void DistributeCardsToStartGame()
     {
         //disable chips after deal is done
@@ -92,7 +93,7 @@ public class DistributeCardsToPlayers : MonoBehaviour
         StartCoroutine(DistributeToEveyone());
     }
 
-    //distribute cards depending in the number of players
+    /////distribute cards depending in the number of players/////
     public IEnumerator DistributeToEveyone()
     {
 
@@ -171,12 +172,6 @@ public class DistributeCardsToPlayers : MonoBehaviour
         {
             winnerText.text = "Player has Blackjack!!!";
 
-            /*
-            hit.interactable = false;
-            stand.interactable = false;
-            leave.interactable = false;
-            */
-
             //disable buttons 
             DisableAllButtons();
 
@@ -191,20 +186,15 @@ public class DistributeCardsToPlayers : MonoBehaviour
             yield return null;
         }
 
-        //re enable buttons after giving the cads
-        /*hit.interactable = true;
-        stand.interactable = true;
-        leave.interactable = true;
-        */
-
         yield return new WaitForSeconds(0.5f);
 
+        //re enable buttons after giving the cards
         EnableAllButtons();
 
         yield return null;
     }
 
-    //Get cards from randomized card stack and flip them
+    ///////////Get cards from randomized card stack and flip them/////////
     public int GetCardFromDeck(CardModel card)
     {
         cardIndex = cardStack.Pop();
@@ -216,7 +206,7 @@ public class DistributeCardsToPlayers : MonoBehaviour
         return cardIndex;
     }
 
-    //function to distribute cards to players
+    ///////////function to distribute cards to players///////////
     public IEnumerator DistributeCards(CardModel card1, Vector3 card1Pos)
     {
         card1 = Instantiate(cardPrefab).GetComponent<CardModel>();
@@ -241,7 +231,7 @@ public class DistributeCardsToPlayers : MonoBehaviour
         yield return card1;
     }
 
-    //hit function
+    ////////hit function for players/////////
     public IEnumerator GetOneCard()
     {
         //do the same switch here!!!
@@ -266,21 +256,13 @@ public class DistributeCardsToPlayers : MonoBehaviour
        
         playerHandVal.text = PlayerHandValue.ToString();
 
-        //re enable buttons after giving the cads
-        /*hit.interactable = true;
-        stand.interactable = true;
-        leave.interactable = true;*/
-
+        //re enable buttons after giving the cards
         EnableAllButtons();
 
 
         //if player is busted dealer start to play
         if (PlayerHandValue == 21) 
         {
-            /*hit.interactable = false;
-            stand.interactable = false;
-            leave.interactable = false;*/
-
             //disable buttons 
             DisableAllButtons();
             StartCoroutine(DealersTurn());
@@ -292,9 +274,6 @@ public class DistributeCardsToPlayers : MonoBehaviour
         else if(PlayerHandValue > 21)
         {
             //player is busted game ends!!!!
-            /*hit.interactable = false;
-            stand.interactable = false;
-            leave.interactable = false;*/
 
             //disable buttons 
             DisableAllButtons();
@@ -314,7 +293,7 @@ public class DistributeCardsToPlayers : MonoBehaviour
 
     }
 
-    //hit for dealer
+    /////////hit for dealer//////////
     public IEnumerator GetDealerCards(){
 
         float offsetx = 0.3054168f;
@@ -338,14 +317,9 @@ public class DistributeCardsToPlayers : MonoBehaviour
     }
 
 
-    //dealers turn 
+    //////////dealer's turn/////////// 
     public IEnumerator DealersTurn()
     {
-
-        /*hit.interactable = false;
-        leave.interactable = false;
-        stand.interactable = false;*/
-
         //disable buttons 
         DisableAllButtons();
 
@@ -361,13 +335,6 @@ public class DistributeCardsToPlayers : MonoBehaviour
         if (DealerHandValue == 21 && dealerHand.Count == 2)
         {
             winnerText.text = "Dealer has Blackjack!!!";
-
-            /*hit.interactable = false;
-            stand.interactable = false;
-            leave.interactable = false;*/
-
-            //disable buttons 
-            DisableAllButtons();
 
             //give the chips to the dealer
             StartCoroutine(handleChips.GetChips(new Vector3(1.462f, 0.325f, -0.22f)));
@@ -401,7 +368,7 @@ public class DistributeCardsToPlayers : MonoBehaviour
             winnerText.text = "Dealer wins!!!";
 
             //disable buttons 
-           // DisableAllButtons();
+            //DisableAllButtons();
 
             //give the chips to the dealer
             StartCoroutine(handleChips.GetChips(dealerPos));
@@ -439,14 +406,14 @@ public class DistributeCardsToPlayers : MonoBehaviour
         }
     }
 
-    //re start the game
+    /////////Re Start the game/////////
     public void ResetGame(){
 
         if (handleChips.iniBalance == 0)
         {
             panelNoMoreMoney.gameObject.SetActive(true);
 
-            //enable text to tell user to place bet
+            //disable text to tell user to place bet
             placeBet.gameObject.SetActive(false);
         }
         else
@@ -456,12 +423,6 @@ public class DistributeCardsToPlayers : MonoBehaviour
         }
        
             Debug.Log("Restarting the game....");
-
-            //enable the game buttons
-            //deal.interactable = false;
-            /*hit.interactable = false;
-            stand.interactable = false;
-            leave.interactable = false;*/
 
             //disable buttons 
             DisableAllButtons();
@@ -499,7 +460,7 @@ public class DistributeCardsToPlayers : MonoBehaviour
                 Debug.Log("Cards have been destroyed!");
             }
 
-            //TODO do the same as before but now for the chips
+            //destroy all the chips in the scene to start a new game 
             foreach (GameObject Chip in chipsToDestroy)
             {
                 if (Chip.transform.localScale == new Vector3(400f, 400f, 400f))
@@ -510,7 +471,8 @@ public class DistributeCardsToPlayers : MonoBehaviour
             }
     }
 
-    //turn cards back pick them up and reset values to start playing agin
+    ///////////turn cards back and pick them up /////////
+    ////////// reset values to start playing again /////////
     IEnumerator StartAgain()
     {
         
@@ -527,41 +489,64 @@ public class DistributeCardsToPlayers : MonoBehaviour
         yield return null;
     }
 
+    //enable the game buttons
     void EnableAllButtons()
     {
-        //enable the game buttons
         hit.interactable = true;
         stand.interactable = true;
         leave.interactable = true;
-
-        
     }
 
+    //disable all the game buttons
     void DisableAllButtons()
     {
-        //disable the game buttons
         deal.interactable = false;
         hit.interactable = false;
         stand.interactable = false;
         leave.interactable = false;
     }
 
+    //disable chips
     void DisableChips()
     {
-        //disable chips
         chip1.interactable = false;
         chip5.interactable = false;
         chip10.interactable = false;
         chip25.interactable = false;
     }
 
+    //enable chips
     void EnableChips()
     {
-        //enable chips
         chip1.interactable = true;
         chip5.interactable = true;
         chip10.interactable = true;
         chip25.interactable = true;
+    }
+
+    //option yes in menu no more money
+    public void PlayAgainAfterNoMoney()
+    {
+        Debug.Log("Start with 50 chips again!");
+
+        handleChips.iniBalance = 50;
+
+        handleChips.balance.text = "$ " + handleChips.iniBalance; 
+
+        handleChips.chipEndPos = new Vector3(-0.446f, 0.325f, -1.061f);
+
+        panelNoMoreMoney.gameObject.SetActive(false);
+
+        // enable text to tell user to place bet
+        placeBet.gameObject.SetActive(true);
+    }
+
+    //option no in no more money menu
+    //in multiplayer disconnect client of server
+    public void DonotPlayAgain(){
+
+        Debug.Log("change scene");
+        SceneManager.LoadScene("Menu");
     }
 }
 
