@@ -102,6 +102,7 @@ public class GameController : MonoBehaviour {
             myServer1 server1 = Instantiate(serverPrefab).GetComponent<myServer1>();
             server1.Init();
 
+           
             //create a client
             myClient1 client1 = Instantiate(clientPrefab).GetComponent<myClient1>();
 
@@ -112,6 +113,7 @@ public class GameController : MonoBehaviour {
 
             //connect to localhost because you are connecting to yourself
             client1.ConnectToServer("127.0.0.1", 8000); 
+
 
         }
         catch (Exception ex)

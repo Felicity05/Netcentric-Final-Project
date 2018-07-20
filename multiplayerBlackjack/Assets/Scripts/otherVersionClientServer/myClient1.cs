@@ -15,7 +15,7 @@ public class myClient1 : MonoBehaviour {
     private static byte[] clientBuffer = new byte[1024];
 
     //creating the socket TCP
-    public Socket clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+    public static Socket clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
     //declare end point
     public IPEndPoint conn;
@@ -32,11 +32,7 @@ public class myClient1 : MonoBehaviour {
 
         if (socketReady)
         {
-            //check for new messages
-            CheckForData(clientSocket);
-
-            //Debug.Log("socket ready");
-
+            //Debug.Log("C.socket ready");
         }
 		
 	}
@@ -54,27 +50,26 @@ public class myClient1 : MonoBehaviour {
         {
             //create end point to connect
             conn = new IPEndPoint(IPAddress.Parse(hostAdd), port);
+
             //connect to server
             clientSocket.BeginConnect(conn, ConnectCallback, clientSocket);
-            socketReady = true;
-            Debug.Log("Client socket ready: "+ socketReady);
 
-            // Send test data to the remote device.  
-            SendData(clientSocket, "This is a test");
-            Debug.Log("message sent to the server");
-
-
-            // Receive the response from the remote device.  
+            //// Receive data from the remote device  
             //ReceiveData(clientSocket);
+            //Debug.Log("C.receiving data from server...");
 
-            CheckForData(clientSocket);
 
-            // Write the response to the console
+            //// Send test data to the remote device.  
+            //SendData(clientSocket, "This is a test");
+            //Debug.Log("C.message sent to server");
+
+            socketReady = true;
+           // Debug.Log("Client socket ready: " + socketReady);
 
         }
         catch (Exception ex)
         {
-            Debug.Log("socket error: " + ex.Message);
+            Debug.Log("Client Socket error: " + ex.Message);
         }
 
         return socketReady;
@@ -86,7 +81,6 @@ public class myClient1 : MonoBehaviour {
     {
         try
         {
-
             // Retrieve the socket 
             Socket client = (Socket)ar.AsyncState;
 
@@ -99,7 +93,7 @@ public class myClient1 : MonoBehaviour {
         }
         catch (Exception e)
         {
-            Debug.Log("Error connecting: " + e);
+            Debug.Log("Client Error connecting: " + e);
         }
     }
 
@@ -111,87 +105,44 @@ public class myClient1 : MonoBehaviour {
         //convert the string data to bytes
         byte[] byteData = Encoding.ASCII.GetBytes(data);
 
-        // Begin sending the data to the remote device.  
-        client.BeginSend(byteData, 0, byteData.Length, 0,
-            new AsyncCallback(SendCallBack), client);
+        //send the data
     }
 
-    static void SendCallBack(IAsyncResult ar)
-    {
-        try
-        {
-            Socket client = (Socket)ar.AsyncState;
 
-            //send date to the server
-            int bytesSent = client.EndSend(ar);
 
-            Debug.Log("client sent: " + bytesSent);
-        }
-        catch (Exception e)
-        {
-            Debug.Log("error sending message: " + e);
-        }
-    }
-    //enclose this in one function 
+
+    //process the data received
+    //void OnIncomingData(string data)
+    //{
+    //    Debug.Log("server answer: " + data);
+    //}
+
 
 
     /////////RECEIVE DATA FROM THE SERVER/////////
-
-    //process the data received
-    void OnIncomingData(string data)
-    {
-        Debug.Log("server answer: " + data);
-
-
-
-    }
-
-    public static void CheckForData(Socket client){
+    //receive data from server
+    public static void ReceiveData(Socket client){
         
         try
         {
             // Begin receiving the data from the remote device.  
-            client.BeginReceive(clientBuffer, 0, clientBuffer.Length, 0,
-                                new AsyncCallback(ReceiveCallback), client);
-        }
-        catch (Exception e)
-        {
-            Debug.Log("error receiving the data: " + e.Message);
-        }
-
-    }
-
-    static void ReceiveCallback(IAsyncResult ar)
-    {
-        try
-        {
-            // Read data from the remote device.  
-            Socket client = (Socket)ar.AsyncState;
-            int bytesRead = client.EndReceive(ar);
+            int bytesRead = 0;
 
             //don't know why after receiving my info this gets called. 
-            if (bytesRead == 0)
+            if (bytesRead <= 0)
             {
-                Debug.Log("no more data to receive");
+                Debug.Log("C.no more data to receive");
                 return;
             }
 
             var data = new byte[bytesRead];
             Array.Copy(clientBuffer, data, bytesRead);
-
-            // Get the data  
-            client.BeginReceive(clientBuffer, 0, clientBuffer.Length, 0,
-                                new AsyncCallback(ReceiveCallback), client);
-
-            response = Encoding.Default.GetString(clientBuffer);
-
-            Debug.Log("data from server received in the client: " + response);
-
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            Debug.Log("Error: " + ex.Message);
+            Debug.Log("Client Error receiving the data: " + e.Message);
         }
+
     }
 
 
