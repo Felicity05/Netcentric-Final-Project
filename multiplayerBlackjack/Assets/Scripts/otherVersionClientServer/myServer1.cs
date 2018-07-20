@@ -68,34 +68,35 @@ public class myServer1 : MonoBehaviour {
 
         foreach (ServerClient sc in clients)
         {
-            // is the client still connected?
+            // client not connected
             if (!isConnected(sc.tcpSocket))
             {
                 sc.tcpSocket.Close(); //close the socket 
                 disconnectList.Add(sc);
                 continue;
             }
+
+            /// client is connected to the server
             //check for messages from the client, check the stream of every client
-            else // client is connected to the server
+            if (sc.stream.DataAvailable)
             {
-                //NetworkStream stream = new NetworkStream(sc.tcpSocket);
 
-                //if (stream.DataAvailable){
+                StreamReader reader = new StreamReader(sc.stream, true); //reading the data
+                string data = reader.ReadLine(); //store data
+                //Debug.Log(sc.stream);
 
-                    //StreamReader reader = new StreamReader(stream, true); //reading the data
-                    //string data = reader.ReadLine(); //store data
-
-                //if there is data
-               
-
-
-                //}
-
-
-                AcceptConnections();
-
-
+                if (data != null)
+                {
+                    OnIncomingData(sc, data); //process the messages the server gets from the client, from the specific client sc
+                }
             }
+            else
+            {
+                Debug.Log("no stream");
+            }
+
+
+            AcceptConnections();
         }
 
         //disconnection loop
@@ -109,8 +110,10 @@ public class myServer1 : MonoBehaviour {
     }
 
     
-    // Bind the socket to the local endpoint and listen for incoming connections.  
-    public void CreateServer(){
+      
+    //* Bind the socket to the local endpoint and listen for incoming connections *//
+    public void CreateServer()
+    {
         try
         {
             Debug.Log("Setting up the server...");
@@ -136,96 +139,117 @@ public class myServer1 : MonoBehaviour {
        
     }
 
-    //start async socket to listen for connections
+
+    //************ start async socket to listen for connections ******************//
     public void AcceptConnections(){
 
         serverSocket.BeginAccept(AcceptCallback, serverSocket);
     }
 
-    //async socket/********************************************************
+
+    //************ async call to finish the connection ******************//
     void AcceptCallback(IAsyncResult ar)
     {
         // Get the socket that handles the client request  
         Socket server = (Socket)ar.AsyncState;
+
+
+        string allUsers = "";
+
+        foreach(ServerClient c in clients)
+        {
+            allUsers += c.clientName + "|";
+        }
+
+
+        //finish acceptng the connection
         Socket handler = server.EndAccept(ar);
 
-        //add client to dictionary key: client value: stake
+        //add client to the list of clients. |dictionary key: client value: stake|
         clients.Add(new ServerClient(handler));
+
+        //Debug.Log("S. Someone has connected!!!!");
+
+        //if (clients.Count > 0){
+        //    Debug.Log("S. client successfully added to the list of clients");
+        //}
 
         //accept incoming connections again
         AcceptConnections();
 
-        Debug.Log("S. Someone has connected!!!!");
+        //first message to send to a single client
+        BroadcastData("SWHO|", clients[clients.Count -1]);  
 
-        if (clients.Count > 0){
-            Debug.Log("S. client successfully added to the list of clients");
-        }
-
-        //send a message to everyone say someone has connected
-        //BroadCastData("hello from server", clients);  
     }
 
 
-    /////////CHECK IF THERE IS DATA TO BE RECEIVED/////////
+    ///***************** Start sending and receiving data *****************///
 
-    public void receiveData(ServerClient socket){
 
-        //begin receiving data from the client
+    //************ send data to the client ******************//
+    public void BroadcastData(string data, List<ServerClient> clients){
 
-        
-    }
+        //data = "hello from server";
 
-    /////////PROCESS DATA RECEIVED/////////
-
-    //public void OnIncommingData(ServerClient client, string data){
-
-    //    Debug.Log("client has send: " + data);
-        
-    //}
-
-    /////////SEND DATA PROCESSED BACK TO THE CLIENT/////////
-
-    public void BroadCastData(List<ServerClient> clients){
-
-        string data = "hello from server";
-
-        foreach (var cl in clients)
+        foreach (ServerClient cl in clients)
         {
             try
             {
-                //send data back to client
-                Send(cl.tcpSocket, data); //"hello from server"
-                Debug.Log("S. sent a message to the client");
+                //send data to the client (writing data to the client socket stream)
+                StreamWriter writer = new StreamWriter(cl.stream);
+                writer.WriteLine(data); //write data
+                writer.Flush(); //clear the buffer
+                //Debug.Log("S. sent a message to the client");
             }
             catch (Exception ex)
             {
                 Debug.Log("Server Error writing data: " + ex.Message);
             }
         }
-
     }
 
-    static void Send(Socket handler, String data)
+
+    //**** overload of the broadcast function that accepts a server client ****//
+    //************ and save it into a list of server clients ******************//
+    public void BroadcastData(string data, ServerClient c)
+    {
+        List<ServerClient> client = new List<ServerClient> { c };
+        BroadcastData(data, client);
+    }
+
+
+    //************ process the data received from the client ******************//
+    public void OnIncomingData(ServerClient client, string data)
     {
 
-        // Convert the string data to byte data using ASCII encoding  
-        byte[] byteData = Encoding.ASCII.GetBytes(data);
+        Debug.Log("Server: " + data);
 
-        // Begin sending the data to the remote device  
+        string[] _data = data.Split('|'); //split by the  '|'
 
+        string cmd = _data[0]; //command to excecute action  
+
+        switch (cmd)
+        {
+            case "CWHO|":
+                client.clientName = _data[1];
+                BroadcastData("SCON|" + client.clientName, clients);
+                break;
+
+            //default:
+                //Debug.Log("S. nothing received");
+                //break;
+        }
     }
 
-
-
-    /////////check if te client is connected to the server/////////
-
+   
+    //************ check if te client is connected to the server *************//
     bool isConnected(Socket c)
     {
         try
         {
-            if (c != null && c != null && c.Connected)
+            if (c != null && c.Connected)
             {
-                if (c.Poll(0, SelectMode.SelectRead))
+                if (c.Poll(0, SelectMode.SelectRead)) 
                 {
                     return !(c.Receive(new byte[1], SocketFlags.Peek) == 0);
                 }
@@ -239,20 +263,22 @@ public class myServer1 : MonoBehaviour {
         }
     }
 
-
-    /////////definition of the client/////////
-
+    //************ definition of the client *************//
     public class ServerClient
     {
 
-        public Socket tcpSocket;
+        public Socket tcpSocket; //socket
 
-        public string clientName;
+        public string clientName; //name
+
+        public NetworkStream stream; //stream of the socket
 
 
         public ServerClient(Socket clientSocket)
         {
             tcpSocket = clientSocket;
+
+            stream = new NetworkStream(clientSocket); //get the stream of the socket
         }
     }
 

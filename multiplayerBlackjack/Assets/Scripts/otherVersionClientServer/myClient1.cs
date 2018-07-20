@@ -10,9 +10,16 @@ using System.IO;
 public class myClient1 : MonoBehaviour {
 
     public string clientName;
-    private bool socketReady;
-    public static string response;
-    private static byte[] clientBuffer = new byte[1024];
+    bool socketReady;
+
+    //list of all the game clients connected
+    List<GameClient> players = new List<GameClient>();
+
+
+    //to have access to the stream of the socket
+    static NetworkStream stream;
+    static StreamWriter streamWriter;
+    static StreamReader streamReader;
 
     //creating the socket TCP
     public static Socket clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -30,13 +37,24 @@ public class myClient1 : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if (socketReady)
+        if (socketReady) //if the socket is connected
         {
             //Debug.Log("C.socket ready");
+            if (stream.DataAvailable) //check if there is a message 
+            {
+                string data = streamReader.ReadLine(); //if so read it
+
+                //if there is data
+                if (data != null) 
+                {
+                    OnIncomingData(data); //receive the data and prepare it to process it
+                }
+            }
         }
-		
 	}
 
+
+    //************ function to connect to the server ******************//
     public bool ConnectToServer(string hostAdd, int port)
     {
         //if already connected ignore this fucntion 
@@ -54,15 +72,6 @@ public class myClient1 : MonoBehaviour {
             //connect to server
             clientSocket.BeginConnect(conn, ConnectCallback, clientSocket);
 
-            //// Receive data from the remote device  
-            //ReceiveData(clientSocket);
-            //Debug.Log("C.receiving data from server...");
-
-
-            //// Send test data to the remote device.  
-            //SendData(clientSocket, "This is a test");
-            //Debug.Log("C.message sent to server");
-
             socketReady = true;
            // Debug.Log("Client socket ready: " + socketReady);
 
@@ -76,7 +85,7 @@ public class myClient1 : MonoBehaviour {
     }
 
 
-    //async call to connect
+    //************ async call to finish the connection ******************//
     static void ConnectCallback(IAsyncResult ar)
     {
         try
@@ -86,6 +95,13 @@ public class myClient1 : MonoBehaviour {
 
             // Complete the connection  
             client.EndConnect(ar);
+
+
+            //get the stream of the client socket
+            stream = new NetworkStream(clientSocket);
+            streamWriter = new StreamWriter(stream);
+            streamReader = new StreamReader(stream);
+
 
             //Debug.Log("Client successfully connected!!!!!");
             Debug.Log("Client Socket connected to: " + client.RemoteEndPoint);
@@ -98,56 +114,71 @@ public class myClient1 : MonoBehaviour {
     }
 
 
-    /////////SEND DATA TO THE SERVER/////////
-    //send data to server
-    public static void SendData(Socket client, string data)
+    ///***************** Start sending and receiving data *****************///
+
+
+    //************ send data from the client to the server ******************//
+    public void SendData(string data)
     {
-        //convert the string data to bytes
-        byte[] byteData = Encoding.ASCII.GetBytes(data);
+        if (!socketReady)
+            return;
 
-        //send the data
+        //grab the stream and write on it
+        streamWriter.WriteLine(data); //the streamWriter is on the stream
+        streamWriter.Flush(); //clear the buffer
+    }
+    
+
+
+    //************ read the data received from the server ******************//
+    void OnIncomingData(string data)
+    {
+
+        Debug.Log("Client: " + data);
+
+        string[] _data = data.Split('|'); //split by the  '|'
+
+        string cmd = _data[0]; //command to excecute action  
+
+        switch (cmd)
+        {
+            case "SWHO":
+                for (int i = 1; i < _data.Length - 1; i++)
+                {
+                    UserConnected(_data[i], false); //since we are receiving from S(server)
+                }
+                SendData("CWHO|" + clientName);
+                break;
+
+            case "SCON":
+                UserConnected(_data[1], false); //for now TODO find a way of idetifiying the host
+                break;
+
+
+            default:
+                Debug.Log("C. nothing has been received");
+                break;
+        }
+
     }
 
 
 
+    //************ process data received from the server ******************//
+    void UserConnected(string Name, bool host)
+    {
+        GameClient gameClient = new GameClient();
 
-    //process the data received
-    //void OnIncomingData(string data)
-    //{
-    //    Debug.Log("server answer: " + data);
-    //}
+        gameClient.name = Name;
 
-
-
-    /////////RECEIVE DATA FROM THE SERVER/////////
-    //receive data from server
-    public static void ReceiveData(Socket client){
-        
-        try
-        {
-            // Begin receiving the data from the remote device.  
-            int bytesRead = 0;
-
-            //don't know why after receiving my info this gets called. 
-            if (bytesRead <= 0)
-            {
-                Debug.Log("C.no more data to receive");
-                return;
-            }
-
-            var data = new byte[bytesRead];
-            Array.Copy(clientBuffer, data, bytesRead);
-        }
-        catch (Exception e)
-        {
-            Debug.Log("Client Error receiving the data: " + e.Message);
-        }
-
+        players.Add(gameClient);
     }
 
+   
 
 
-    /////////CLOSES THE SOCKET/////////
+
+    //************ closes the socket ******************//
     void OnApplicationQuit()
     {
         CloseSocket();
@@ -172,7 +203,7 @@ public class myClient1 : MonoBehaviour {
     }
 
 
-
+    //************ definition of game client ******************//
     public class GameClient
     {
         public string name;
