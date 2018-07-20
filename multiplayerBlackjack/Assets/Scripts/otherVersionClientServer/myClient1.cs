@@ -60,12 +60,14 @@ public class myClient1 : MonoBehaviour {
             Debug.Log("Client socket ready: "+ socketReady);
 
             // Send test data to the remote device.  
-            //SendData(clientSocket, "This is a test");
+            SendData(clientSocket, "This is a test");
+            Debug.Log("message sent to the server");
 
 
             // Receive the response from the remote device.  
             //ReceiveData(clientSocket);
 
+            CheckForData(clientSocket);
 
             // Write the response to the console
 
@@ -78,23 +80,27 @@ public class myClient1 : MonoBehaviour {
         return socketReady;
     }
 
-    
+
     //async call to connect
-    private static void ConnectCallback(IAsyncResult ar) {  
-        try {  
-            
+    static void ConnectCallback(IAsyncResult ar)
+    {
+        try
+        {
+
             // Retrieve the socket 
-            Socket client = (Socket) ar.AsyncState;  
+            Socket client = (Socket)ar.AsyncState;
 
             // Complete the connection  
-            client.EndConnect(ar); 
+            client.EndConnect(ar);
 
             //Debug.Log("Client successfully connected!!!!!");
-            Debug.Log("Socket connected to: " + client.RemoteEndPoint.ToString());
-            
-        } catch (Exception e) {  
-            Debug.Log("Error connecting: "+ e);  
-        }  
+            Debug.Log("Client Socket connected to: " + client.RemoteEndPoint);
+
+        }
+        catch (Exception e)
+        {
+            Debug.Log("Error connecting: " + e);
+        }
     }
 
 
@@ -110,7 +116,7 @@ public class myClient1 : MonoBehaviour {
             new AsyncCallback(SendCallBack), client);
     }
 
-    private static void SendCallBack(IAsyncResult ar)
+    static void SendCallBack(IAsyncResult ar)
     {
         try
         {
@@ -132,11 +138,11 @@ public class myClient1 : MonoBehaviour {
     /////////RECEIVE DATA FROM THE SERVER/////////
 
     //process the data received
-    private void OnIncomingData(string data)
+    void OnIncomingData(string data)
     {
         Debug.Log("server answer: " + data);
 
-       
+
 
     }
 
@@ -155,53 +161,55 @@ public class myClient1 : MonoBehaviour {
 
     }
 
-    private static void ReceiveCallback(IAsyncResult ar)
+    static void ReceiveCallback(IAsyncResult ar)
     {
         try
         {
             // Read data from the remote device.  
-            Socket client = (Socket) ar.AsyncState;
+            Socket client = (Socket)ar.AsyncState;
             int bytesRead = client.EndReceive(ar);
 
             //don't know why after receiving my info this gets called. 
-            //if (bytesRead == 0){
-            //    Debug.Log("no data received");
-            //    return;
-            //}
+            if (bytesRead == 0)
+            {
+                Debug.Log("no more data to receive");
+                return;
+            }
 
             var data = new byte[bytesRead];
             Array.Copy(clientBuffer, data, bytesRead);
 
-           // Get the data  
+            // Get the data  
             client.BeginReceive(clientBuffer, 0, clientBuffer.Length, 0,
                                 new AsyncCallback(ReceiveCallback), client);
 
             response = Encoding.Default.GetString(clientBuffer);
 
-            //Debug.Log("data from server received in the client: " + response);
-             
+            Debug.Log("data from server received in the client: " + response);
+
         }
         catch (Exception ex)
         {
-            //Debug.Log("Error: "+ ex.Message);
+            Debug.Log("Error: " + ex.Message);
         }
     }
 
 
 
     /////////CLOSES THE SOCKET/////////
-    private void OnApplicationQuit()
+    void OnApplicationQuit()
     {
         CloseSocket();
     }
 
-    private void OnDisable()
+    void OnDisable()
     {
         CloseSocket();
     }
 
 
-    private void CloseSocket(){
+    void CloseSocket()
+    {
 
         if (!socketReady)
         {

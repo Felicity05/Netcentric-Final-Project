@@ -103,7 +103,7 @@ public class myServer1 : MonoBehaviour {
                 //}
 
 
-                //AcceptConnections();
+                AcceptConnections();
 
 
             }
@@ -154,7 +154,7 @@ public class myServer1 : MonoBehaviour {
     }
 
     //async socket
-    private void AcceptCallback(IAsyncResult ar)
+    void AcceptCallback(IAsyncResult ar)
     {
         // Get the socket that handles the client request  
         Socket server = (Socket)ar.AsyncState;
@@ -162,21 +162,27 @@ public class myServer1 : MonoBehaviour {
         ServerClient handler = new ServerClient(server.EndAccept(ar));
 
 
-        //begin receiving data from the client
-        //handler.tcpSocket.BeginReceive( serverBuffer, 0, serverBuffer.Length, 0,  
-        //ReadCallback, handler);  
+        //begin receiving data from the client//////////////////////////////////////
+        handler.tcpSocket.BeginReceive( serverBuffer, 0, serverBuffer.Length, 0,  
+        ReadCallback, handler);  
+
+        //CheckForData(handler);
+
 
         //add client to dictionary key: client value: stake
         clients.Add(handler);
-       
+
         //accept incoming connections again
         AcceptConnections();
 
         Debug.Log("Someone has connected!!!!");
 
-        //send a message to everyone say someone has connected
-        //BroadCastMessage(clients[clients.Count - 1].clientName + " has connected", clients);
+        if (clients.Count > 0){
+            Debug.Log("client successfully added to the list of clients");
+        }
 
+        //send a message to everyone say someone has connected
+        BroadCastData("some client has connected", clients);  
     }
 
 
@@ -185,31 +191,54 @@ public class myServer1 : MonoBehaviour {
     public void CheckForData(ServerClient socket){
 
         //begin receiving data from the client
-        socket.tcpSocket.BeginReceive( serverBuffer, 0, serverBuffer.Length, 0,  
+        socket.tcpSocket.BeginReceive(serverBuffer, 0, serverBuffer.Length, 0,  
                             ReadCallback, socket);
         
     }
 
-    private void ReadCallback(IAsyncResult ar){
+    void ReadCallback(IAsyncResult ar)
+    {
 
         //client socket
-        Socket handler = (Socket) ar.AsyncState;
+        Socket handler = (Socket)ar.AsyncState;
         ServerClient client = new ServerClient(handler);
+
+        Debug.Log("function to read data from client");
 
 
         // Read data from the client socket   
         int bytesRead = client.tcpSocket.EndReceive(ar);
 
-        if (bytesRead == 0){
+        Debug.Log("receiving from client....");
+
+
+        if (bytesRead == 0)
+        {
             //no data to read 
+            Debug.Log("no data to receive");
             return;
         }
 
 
+        //////////////not sure here
+        var data = new byte[bytesRead];
+        Array.Copy(serverBuffer, data, bytesRead);
+
+        // Get the data  
+        client.tcpSocket.BeginReceive(serverBuffer, 0, serverBuffer.Length, 0,
+                                      new AsyncCallback(ReadCallback), client.tcpSocket);
+        /////////////////
+
         //store the data received
         content = Encoding.ASCII.GetString(serverBuffer);
 
-        OnIncommingData(client, content);
+
+        //send data to teh client
+        //Send(client.tcpSocket, "hello from the server");
+
+        //OnIncommingData(client, content);
+
+        Debug.Log("client sent: " );
 
     }
 
@@ -217,13 +246,13 @@ public class myServer1 : MonoBehaviour {
 
     public void OnIncommingData(ServerClient client, string data){
 
-        Debug.Log(client.clientName + " has send: " + data +" to everyone");
+        Debug.Log("client has send: " + data);
         
     }
 
     /////////SEND DATA PROCESSED BACK TO THE CLIENT/////////
 
-    public void BoradCastData(string data, List<ServerClient> clients){
+    public void BroadCastData(string data, List<ServerClient> clients){
 
         foreach (var cl in clients)
         {
@@ -231,48 +260,54 @@ public class myServer1 : MonoBehaviour {
             {
                 //send data back to client
                 Send(cl.tcpSocket, "hello from server");
+                Debug.Log("sent a message to the client");
             }
             catch (Exception ex)
             {
-                Debug.Log("error writing data: " + ex);
+                Debug.Log("error writing data: " + ex.Message);
             }
         }
 
     }
 
-    private static void Send(Socket handler, String data) { 
-        
+    static void Send(Socket handler, String data)
+    {
+
         // Convert the string data to byte data using ASCII encoding  
-        byte[] byteData = Encoding.ASCII.GetBytes(data);  
+        byte[] byteData = Encoding.ASCII.GetBytes(data);
 
         // Begin sending the data to the remote device  
-        handler.BeginSend(byteData, 0, byteData.Length, 0,  
-            new AsyncCallback(SendCallback), handler);  
-    }  
+        handler.BeginSend(byteData, 0, byteData.Length, 0,
+            new AsyncCallback(SendCallback), handler);
+    }
 
-    private static void SendCallback(IAsyncResult ar) {  
+    static void SendCallback(IAsyncResult ar)
+    {
 
-        try {  
+        try
+        {
             //client socket 
-            Socket handler = (Socket) ar.AsyncState;  
+            Socket handler = (Socket)ar.AsyncState;
 
             // Complete sending the data to the client  
             int bytesSent = handler.EndSend(ar);
 
-            Debug.Log("bytes sent to the client: " );
+            Debug.Log("bytes sent to the client: " + bytesSent);
 
             //Debug.Log("clients connected: " + clients[clients.Count - 1].clientName);
 
-        } catch (Exception e) {  
-            Console.WriteLine(e.ToString());  
-        }  
-    }  
+        }
+        catch (Exception e)
+        {
+            Debug.Log("error: " + e.Message);
+        }
+    }
 
 
 
     /////////check if te client is connected to the server/////////
 
-    private bool isConnected(Socket c)
+    bool isConnected(Socket c)
     {
         try
         {

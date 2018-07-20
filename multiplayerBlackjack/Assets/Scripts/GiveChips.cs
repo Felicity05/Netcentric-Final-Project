@@ -63,7 +63,7 @@ public class GiveChips : MonoBehaviour {
     {
         chipValue = 1;
 
-        if (iniBalance - chipValue >= 0 && inBet + chipValue <= 25)
+        if (iniBalance - chipValue >= 0 && inBet + chipValue <= maxBet)
         {
             StartCoroutine(Chips(chip1Prefab, new Vector3(-0.446f, 0.33f, -1.334f)));
 
@@ -88,7 +88,7 @@ public class GiveChips : MonoBehaviour {
     {
         chipValue = 5;
 
-        if (iniBalance - chipValue >= 0 && inBet + chipValue <= 25)
+        if (iniBalance - chipValue >= 0 && inBet + chipValue <= maxBet)
         {
             StartCoroutine(Chips(chip5Prefab, new Vector3(-0.155f, 0.33f, -1.363f)));
 
@@ -107,7 +107,7 @@ public class GiveChips : MonoBehaviour {
     {
         chipValue = 10;
 
-        if (iniBalance - chipValue >= 0 && inBet + chipValue <= 25)
+        if (iniBalance - chipValue >= 0 && inBet + chipValue <= maxBet)
         {
             StartCoroutine(Chips(chip10Prefab, new Vector3(-0.14f, 0.33f, -1.363f)));
 
@@ -126,7 +126,7 @@ public class GiveChips : MonoBehaviour {
     {
         chipValue = 25;
 
-        if (iniBalance - chipValue >= 0 && inBet + chipValue <= 25)
+        if (iniBalance - chipValue >= 0 && inBet + chipValue <= maxBet)
         {
             StartCoroutine(Chips(chip25Prefab, new Vector3(0.438f, 0.33f, -1.363f)));
 
@@ -210,7 +210,7 @@ public class GiveChips : MonoBehaviour {
         //get the chips gameobject
 
         //The step size is equal to speed times frame time
-        float speed = 1.5f;
+        float speed = 1.8f;
 
         float step = speed * Time.deltaTime;
 

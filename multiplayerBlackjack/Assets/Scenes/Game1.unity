@@ -267,29 +267,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2aa258e0c6394c678d24f4002a956a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardPrefab: {fileID: 1490489812983388, guid: 8cd623e1798de40d2bd7fc1f56b38a94, type: 2}
-  card: {fileID: 0}
-  cardStack: {fileID: 0}
-  player1CardPos: {x: 0, y: 0, z: 0}
-  dealerCardPos: {x: 0, y: 0, z: 0}
-  isBusted: 0
-  hit: {fileID: 0}
-  deal: {fileID: 0}
-  stand: {fileID: 0}
-  leave: {fileID: 0}
-  chip1: {fileID: 0}
-  chip5: {fileID: 0}
-  chip10: {fileID: 0}
-  chip25: {fileID: 0}
-  placeBet: {fileID: 0}
-  winnerText: {fileID: 0}
-  playerHandVal: {fileID: 0}
-  dealerHandVal: {fileID: 0}
-  panelNoMoreMoney: {fileID: 0}
-  cards: {fileID: 0}
-  cardsPrefabToDestroy: []
-  handleChips: {fileID: 0}
-  chipsToDestroy: []
 --- !u!1 &43482548
 GameObject:
   m_ObjectHideFlags: 0
@@ -4483,7 +4460,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -180.49998, y: 123.22}
+  m_AnchoredPosition: {x: -174, y: 126}
   m_SizeDelta: {x: 95.5, y: 43.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &950454687
@@ -7502,29 +7479,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2aa258e0c6394c678d24f4002a956a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardPrefab: {fileID: 0}
-  card: {fileID: 0}
-  cardStack: {fileID: 0}
-  player1CardPos: {x: 0, y: 0, z: 0}
-  dealerCardPos: {x: 0, y: 0, z: 0}
-  isBusted: 0
-  hit: {fileID: 0}
-  deal: {fileID: 0}
-  stand: {fileID: 0}
-  leave: {fileID: 0}
-  chip1: {fileID: 0}
-  chip5: {fileID: 0}
-  chip10: {fileID: 0}
-  chip25: {fileID: 0}
-  placeBet: {fileID: 0}
-  winnerText: {fileID: 0}
-  playerHandVal: {fileID: 0}
-  dealerHandVal: {fileID: 0}
-  panelNoMoreMoney: {fileID: 0}
-  cards: {fileID: 0}
-  cardsPrefabToDestroy: []
-  handleChips: {fileID: 0}
-  chipsToDestroy: []
 --- !u!114 &1643159980
 MonoBehaviour:
   m_ObjectHideFlags: 0
