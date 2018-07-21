@@ -182,7 +182,7 @@ public class Server : MonoBehaviour
             return false;
         }
     }
-}
+
 
     //definition of who is connected to the server 
     public class ServerClient
@@ -198,3 +198,4 @@ public class Server : MonoBehaviour
             tcp = clientSocket;
         }
     }
+}

@@ -4,7 +4,8 @@ using System.IO;
 using System;
 using System.Collections.Generic;
 
-public class Client : MonoBehaviour {
+public class Client : MonoBehaviour
+{
 
     public string clientName;
 
@@ -20,7 +21,8 @@ public class Client : MonoBehaviour {
     public bool ConnectToServer(string host, int port)
     {
         //if already connected ignore this fucntion 
-        if(socketReady){
+        if (socketReady)
+        {
             return false;
         }
 
@@ -45,8 +47,8 @@ public class Client : MonoBehaviour {
         return socketReady;
     }
 
-	// Update is called once per frame
-	void Update () 
+    // Update is called once per frame
+    void Update()
     {
         if (socketReady)
         {
@@ -58,7 +60,7 @@ public class Client : MonoBehaviour {
                     OnIncomingData(data);
             }
         }
-	}
+    }
 
     //read messages from the server
     private void OnIncomingData(string data)
@@ -119,7 +121,8 @@ public class Client : MonoBehaviour {
     }
 
 
-    void CloseSocket(){
+    void CloseSocket()
+    {
 
         if (!socketReady)
             return;
@@ -132,10 +135,11 @@ public class Client : MonoBehaviour {
 
 
 
-}
 
-public class GameClient
-{
-    public string name;
-    public bool isHost;
+
+    public class GameClient
+    {
+        public string name;
+        public bool isHost;
+    }
 }

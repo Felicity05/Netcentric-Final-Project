@@ -19,7 +19,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4201091254692642}
-  - component: {fileID: 114245162362728350}
+  - component: {fileID: 114215369041575128}
   m_Layer: 0
   m_Name: otherServer
   m_TagString: Untagged
@@ -40,7 +40,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114245162362728350
+--- !u!114 &114215369041575128
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -52,4 +52,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   port: 8000
-  content: 
