@@ -22,7 +22,7 @@ public class GameController : MonoBehaviour {
 
     //allows to erase after writing into the textfield
     [SerializeField]
-    InputField nameInput;
+    public InputField nameInput;
 
     bool ok = false;
 
@@ -144,7 +144,7 @@ public class GameController : MonoBehaviour {
             //if no name is entered assigned a unique client name
             client1.clientName = nameInput.text;
             if (client1.clientName == "")
-                client1.clientName = "Guest" + GenerateUniqueCode().ToString();
+                client1.clientName = "Guest" ;//+ GenerateUniqueCode().ToString();
 
             client1.ConnectToServer(hostAdd, 8000);
             ConnectMenu.SetActive(false);

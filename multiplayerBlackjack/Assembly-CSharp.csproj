@@ -127,8 +127,6 @@
     <Compile Include="Assets\Scripts\Scripts for testing\blackjackServer.cs" />
     <Compile Include="Assets\Scripts\Scripts for testing\myClient.cs" />
     <Compile Include="Assets\Scripts\Scripts for testing\myServer.cs" />
-    <Compile Include="Assets\Scripts\TCPListener&amp;TCPClient\Client.cs" />
-    <Compile Include="Assets\Scripts\TCPListener&amp;TCPClient\Server.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01_UGUI.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
