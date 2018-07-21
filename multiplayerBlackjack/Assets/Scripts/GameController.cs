@@ -93,18 +93,18 @@ public class GameController : MonoBehaviour {
 
     //run the server
     public void HostGame(){
-
+        
         //Debug.Log("host game");
 
         try
         {
             //create a server 
-            myServer1 server1 = Instantiate(serverPrefab).GetComponent<myServer1>();
+            Server server1 = Instantiate(serverPrefab).GetComponent<Server>();
             server1.Init();
 
            
             //create a client
-            myClient1 client1 = Instantiate(clientPrefab).GetComponent<myClient1>();
+            Client client1 = Instantiate(clientPrefab).GetComponent<Client>();
 
             //if no name is entered 
             client1.clientName = nameInput.text;
@@ -112,7 +112,7 @@ public class GameController : MonoBehaviour {
                 client1.clientName = "Host";
 
             //connect to localhost because you are connecting to yourself
-            client1.ConnectToServer("127.0.0.1", 8000); 
+            client1.ConnectToServer("127.0.0.1", 8080); 
 
 
         }
@@ -139,14 +139,14 @@ public class GameController : MonoBehaviour {
         //create the client
         try
         {
-            myClient1 client1 = Instantiate(clientPrefab).GetComponent<myClient1>();
+            Client client1 = Instantiate(clientPrefab).GetComponent<Client>();
 
             //if no name is entered assigned a unique client name
             client1.clientName = nameInput.text;
             if (client1.clientName == "")
                 client1.clientName = "Guest" + GenerateUniqueCode().ToString();
 
-            client1.ConnectToServer(hostAdd, 8000);
+            client1.ConnectToServer(hostAdd, 8080);
             ConnectMenu.SetActive(false);
 
 
@@ -175,21 +175,21 @@ public class GameController : MonoBehaviour {
 
 
     //destroy server and client when clicking the back button
-    public void DestroyServerNClient(){
+    //public void DestroyServerNClient(){
         
-        myServer1 s = FindObjectOfType<myServer1>();
-        if (s != null){
-            Destroy(s.gameObject);
-        }
+    //    myServer1 s = FindObjectOfType<myServer1>();
+    //    if (s != null){
+    //        Destroy(s.gameObject);
+    //    }
 
-        myClient1 c = FindObjectOfType<myClient1>();
-        if (c != null)
-        {
-            Destroy(c.gameObject);
-        }
+    //    myClient1 c = FindObjectOfType<myClient1>();
+    //    if (c != null)
+    //    {
+    //        Destroy(c.gameObject);
+    //    }
 
-        Debug.Log("Client and server shutted down!");
-    }
+    //    Debug.Log("Client and server shutted down!");
+    //}
 
 
     //option for single player 

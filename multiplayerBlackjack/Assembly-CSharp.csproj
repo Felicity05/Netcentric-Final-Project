@@ -122,8 +122,6 @@
     <Compile Include="Assets\Scripts\LoadingAnimation.cs" />
     <Compile Include="Assets\Scripts\MainMenu.cs" />
     <Compile Include="Assets\Scripts\OptionsMenu.cs" />
-    <Compile Include="Assets\Scripts\otherVersionClientServer\myClient1.cs" />
-    <Compile Include="Assets\Scripts\otherVersionClientServer\myServer1.cs" />
     <Compile Include="Assets\Scripts\Scripts for testing\blackjackServer.cs" />
     <Compile Include="Assets\Scripts\Scripts for testing\myClient.cs" />
     <Compile Include="Assets\Scripts\Scripts for testing\myServer.cs" />

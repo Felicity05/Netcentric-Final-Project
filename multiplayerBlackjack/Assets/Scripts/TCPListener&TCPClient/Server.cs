@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using System.Net.Sockets;
 using System;
@@ -17,8 +16,10 @@ public class Server : MonoBehaviour
     private TcpListener server;
     public bool serverStarted;
 
-    private void Start()
+    public void Init()
     {
+        DontDestroyOnLoad(gameObject);
+
         clients = new List<ServerClient>();
         disconnectList = new List<ServerClient>();
 
@@ -73,29 +74,15 @@ public class Server : MonoBehaviour
                 }
             }
         }
-    }
 
-    private bool isConnected(TcpClient c)
-    {
+        for (int i = 0; i < disconnectList.Count; i++)
+        {
+            //tell our player somebody has disconnected
 
-        try
-        {
-            if (c != null && c.Client != null && c.Client.Connected)
-            {
-                if (c.Client.Poll(0, SelectMode.SelectRead))
-                {
-                    return !(c.Client.Receive(new byte[1], SocketFlags.Peek) == 0);
-                }
-                return true;
-            }
-            return false;
-        }
-        catch
-        {
-            return false;
+            clients.Remove(disconnectList[i]);
+            disconnectList.RemoveAt(i);
         }
     }
-
 
     private void StartListening()
     {
@@ -108,17 +95,27 @@ public class Server : MonoBehaviour
 
         TcpListener listener = (TcpListener)ar.AsyncState;
 
-        clients.Add(new ServerClient(listener.EndAcceptTcpClient(ar), "guest"));
+        string allUsers = "";
+        foreach (ServerClient s in clients)
+        {
+            allUsers += s.clientName + "|";
+        }
+
+        ServerClient sc = new ServerClient(listener.EndAcceptTcpClient(ar));
+
+        clients.Add(sc);
 
         StartListening();
 
+        Debug.Log("Somebody has connected!!!");
+
         //send a message to everyone say someone has connected
-        BroadCastMessage(clients[clients.Count - 1].clientName + " has connected", clients);
+        Broadcast("SWHO|" + allUsers, clients[clients.Count - 1]);
 
     }
 
     //send a message to all the connected clients
-    private void BroadCastMessage(string data, List<ServerClient> cl)
+    private void Broadcast(string data, List<ServerClient> cl)
     {
         foreach (ServerClient c in cl)
         {
@@ -135,13 +132,57 @@ public class Server : MonoBehaviour
         }
     }
 
-
-    //receive the data from the client and process it
-    private void OnIncomingData(ServerClient sc, string data)
+    private void Broadcast(string data, ServerClient cl)
     {
-        Debug.Log(sc.clientName + "has sent the following message: " + data);
+        List<ServerClient> c = new List<ServerClient> { cl };
+        Broadcast(data, c);
     }
 
+
+
+    //receive the data from the client and process it
+    private void OnIncomingData(ServerClient c, string data)
+    {
+        Debug.Log("Server: " + data);
+
+        string[] data_received = data.Split('|');
+
+        string command = data_received[0];
+
+        switch (command)
+        {
+            case "CWHO":
+                c.clientName = data_received[1];
+                Broadcast("SCNN|" + c.clientName, clients);
+                break;
+
+
+            default:
+                break;
+        }
+    }
+
+    private bool isConnected(TcpClient c)
+    {
+        try
+        {
+            //checking if the tcpclient exist, if the socket of the tcpclient exits, and if the socket is connected
+            if (c != null && c.Client != null && c.Client.Connected)
+            {
+                if (c.Client.Poll(0, SelectMode.SelectRead))
+                    return !(c.Client.Receive(new byte[1], SocketFlags.Peek) == 0);
+
+                return true;
+            }
+
+            return false;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+}
 
     //definition of who is connected to the server 
     public class ServerClient
@@ -152,11 +193,8 @@ public class Server : MonoBehaviour
         public string clientName;
 
 
-        public ServerClient(TcpClient clientSocket, string name)
+        public ServerClient(TcpClient clientSocket)
         {
-
-            clientName = name;
             tcp = clientSocket;
         }
     }
-}
