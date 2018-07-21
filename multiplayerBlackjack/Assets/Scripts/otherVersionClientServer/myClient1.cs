@@ -121,6 +121,16 @@ public class myClient1 : MonoBehaviour
             case "SCNN":
                 UserConnected(data_received[1], false);
                 break;
+            case "SBET":
+                GiveChips.Instance.PlaceChips(int.Parse(data_received[1]),    //chip value
+                                              float.Parse(data_received[2]),  //start pos x
+                                              float.Parse(data_received[3]),  //start pos y
+                                              float.Parse(data_received[4]),  //start pos z
+                                              float.Parse(data_received[5]),  //end pos x
+                                              float.Parse(data_received[6]),  //end pos y
+                                              float.Parse(data_received[7])); //end pos z
+                break;
+
 
 
             default:

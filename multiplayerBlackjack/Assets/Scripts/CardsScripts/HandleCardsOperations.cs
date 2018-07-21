@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class HandleCardsOperations : MonoBehaviour
 {
+    public static HandleCardsOperations Instance { set; get; }
+
     public GameObject cardPrefab; //prefab of cards
 
     public CardModel card; //card to instantiate
@@ -66,8 +68,12 @@ public class HandleCardsOperations : MonoBehaviour
     Vector3 dealerPos = new Vector3(-0.07f, 0.3f, 0.953f);
     Vector3 playerPos = new Vector3(-0.07f, 0.3f, -1.418f);
 
+    //get the list of clients from the server
+
     void Start()
     {
+        Instance = this;
+
         //randomized stack of cards
         cardStack = cardStack.GetComponent<CardStack>();
 
@@ -101,7 +107,38 @@ public class HandleCardsOperations : MonoBehaviour
         //depending on the amount of clients in the clientlist
 
         int clients = 0;
-        //Always distribute to dealer
+
+        /* After each player has selected their bet 
+         * 
+         * 
+         * 
+         * 
+         * 
+         * distribute cards in the following order
+         * case 2 players:
+         *      card1 player1
+         *      card1 player2
+         *      card1 dealer
+         *      card2 player1
+         *      card2 player2
+         *      card2 dealer
+         * 
+         * case 3 players:
+         *      card1 player1
+         *      card1 player2
+         *      card1 player3
+         *      card1 dealer
+         *      card2 player1
+         *      card2 player2
+         *      card2 player3
+         *      card2 dealer
+         *      
+         *
+         */
+
+
+
+
 
         switch (clients)
         {

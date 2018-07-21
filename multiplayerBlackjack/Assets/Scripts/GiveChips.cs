@@ -5,14 +5,14 @@ using UnityEngine.UI;
 
 public class GiveChips : MonoBehaviour {
 
+    public static GiveChips Instance { set; get; }
+
     public GameObject chip1Prefab;
     public GameObject chip5Prefab;
     public GameObject chip10Prefab;
     public GameObject chip25Prefab;
-    //public GameObject chip50Prefab;
-    //public GameObject chip100Prefab;
-    //public GameObject chip500Prefab;
 
+    public bool betSelected; //to let know the server the bet is been selected
 
     public List<int> bet = new List<int>();
 
@@ -44,28 +44,140 @@ public class GiveChips : MonoBehaviour {
     public Button chip25;
     public Button deal;
 
+
+    bool isServer; //if the player is the actual server then it is the first one in playing
+
+
+    //get the list of clients from the server
+    public myServer1 server1;
+
+    public myClient1 client1;
+
+    string msg = "CBET|";
+
+    public int chipVal;
+
+
+    //HERE IS WHERE THE PLAYER STARTS TO PLAY BY PLACING THE MIN BET AND ENABLING THE DEAL BUTTON TO BEGING RECEIVING CARDS
+
     // Use this for initialization
     void Start () {
 
+        Instance = this;
+
         balance.text = "$ " + iniBalance.ToString();
+
+        myClient1 client1 = FindObjectOfType<myClient1>();
+
+        isServer = client1.isHost;
+
+        if(isServer) {
+            chip1.interactable = true;
+            chip5.interactable = true;
+            chip10.interactable = true;
+            chip25.interactable = true;
+        }
+        else {
+            chip1.interactable = false;
+            chip5.interactable = false;
+            chip10.interactable = false;
+            chip25.interactable = false;
+        }
 	}
 	
 	// Update is called once per frame
 	void Update () {
-
+        
         chips = GameObject.FindGameObjectsWithTag("Chip");
 	}
+
+    public void IdentifyChip1()
+    {
+        chipVal = 1;
+
+        Vector3 startPos = new Vector3(-0.446f, 0.33f, -1.334f);
+
+        //send the position to the server
+        msg += chipVal + "|";
+
+        //start position
+        msg += startPos.x.ToString() + "|";
+        msg += startPos.y.ToString() + "|";
+        msg += startPos.x.ToString() + "|";
+
+        //end position
+        msg += chipEndPos.x.ToString() + "|";
+        msg += chipEndPos.y.ToString() + "|";
+        msg += chipEndPos.x.ToString() + "|";
+
+        Debug.Log("button chip 1 cliked");
+
+        client1.SendData(msg);
+
+    }
+
+    //ALL THE PLACE CHIP FUNCTIONS ARE CALLED WHEN THE BUTTON OF THAT CHIP IS CLICKED ON THE GAME
+
+    public void PlaceChips(int chip, float sposX, float sposY, float sposZ, float eposX, float eposY, float eposZ)
+    {
+        Vector3 spos = new Vector3(sposX, sposY, sposZ);
+
+        Vector3 epos = new Vector3(eposX, eposY, eposZ);
+
+        chip = chipVal;
+
+        switch (chip)
+        {
+            case 1:
+                PlaceChip1(spos, epos);    
+                break;
+            
+            default:
+                break;
+        }
+
+    }
+
+
+
+
+    public IEnumerator PlaceChipsByPlayers()
+    {
+        
+        yield return null;
+    }
+
+
+
+    //public int IdentifyChip5()
+    //{
+    //    int chip 5;
+    //}
+
+    //public int IdentifyChip10()
+    //{
+    //    int chip 10;
+    //}
+
+    //public int IdentifyChip25()
+    //{
+    //    int chip 25;
+    //}
+
+
+
+
 
 
 
     //chips of 1
-    public void PlaceChip1()
+    public void PlaceChip1(Vector3 chip1Pos, Vector3 chip1endPos)
     {
         chipValue = 1;
 
         if (iniBalance - chipValue >= 0 && inBet + chipValue <= maxBet)
         {
-            StartCoroutine(Chips(chip1Prefab, new Vector3(-0.446f, 0.33f, -1.334f)));
+            StartCoroutine(Chips(chip1Prefab, chip1Pos, chip1endPos));
 
             //Debug.Log(chipValue);
 
@@ -73,7 +185,6 @@ public class GiveChips : MonoBehaviour {
 
             inBet += chipValue;
 
-           
         }
 
         balance.text = "$ " + iniBalance.ToString();
@@ -83,6 +194,7 @@ public class GiveChips : MonoBehaviour {
         //Debug.Log(iniBalance);
     }
 
+    /*
     //chip of 5
     public void PlaceChip5()
     {
@@ -137,11 +249,13 @@ public class GiveChips : MonoBehaviour {
 
         balance.text = "$ " + iniBalance.ToString();
         playerBet.text = "$ " + inBet.ToString();
-    }
+    }*/
+
+
 
 
     //place the player's chips in the correct position in the screen
-    public IEnumerator Chips(GameObject chipPrefab, Vector3 startPos){
+    public IEnumerator Chips(GameObject chipPrefab, Vector3 startPos, Vector3 chipEndPos){
 
         //disable all the chip buttons 
         chip1.interactable = false;
@@ -171,9 +285,9 @@ public class GiveChips : MonoBehaviour {
             yield return null; //wait for the function to end
         }
 
-        //offset
+        //offset to change the position of the chips every time they get placed in the table
         if (changePos){
-            chipEndPos += new Vector3(0.089f, 0.004f, 0.032f);
+            chipEndPos += new Vector3(0.089f, 0.004f, 0.032f);   // for player 1
             changePos = false;
         }
         else
@@ -190,13 +304,13 @@ public class GiveChips : MonoBehaviour {
 
         if (inBet >= minBet)
         {
-            deal.interactable = true;
+            betSelected = true;
+            deal.interactable = true; //------> maybe i have to activate this button in other place 
         }
         chip1.interactable = true;
         chip5.interactable = true;
         chip10.interactable = true;
         chip25.interactable = true;
-
 
         yield return null;
     }

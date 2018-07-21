@@ -215,6 +215,11 @@ public class myServer1 : MonoBehaviour
                 c.isHost = (data_received[2] != "0");  //is host is true (data_received[2] == "0") ? false : true
                 BroadcastData("SCNN|" + c.clientName, clients);
                 break;
+            case "CBET":
+                BroadcastData("SBET|" + data_received[1] + "|" + data_received[2] + "|" + data_received[3] 
+                                      + data_received[4] + "|" + data_received[5] + "|" + data_received[6] 
+                                      + data_received[7] + "|", clients);
+                break;
 
 
             default:
