@@ -64,7 +64,7 @@ public class GameController : MonoBehaviour {
         return userName;
     }
 
-    int userCode; //to generate unique codes for users
+    int userCode; //to generate unique codes for users ASK TITI ABOUT THIS
     //TODO REVIEW THIS FUNCTION I MAY BE DOING SOMETHING WRONG HERE 
     int GenerateUniqueCode(){
         
@@ -76,6 +76,10 @@ public class GameController : MonoBehaviour {
         return userCode;
     }
 
+    public void StartGame()
+    {
+        SceneManager.LoadScene("Game1");
+    }
 
     //run the server
     public void HostGame(){
@@ -167,8 +171,6 @@ public class GameController : MonoBehaviour {
         //    int val = usersMoney[key];
         //    Debug.Log(key + " joined with an initial stake of: " + val);
         //}
-
-
     }
 
 
@@ -191,12 +193,10 @@ public class GameController : MonoBehaviour {
 
 
     //option for single player 
-    public void Play(){
+    public void Play() 
+    {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
-
-
-    //generate dictionary where key is the userName and the value is the bet
 
 
 } //end of class

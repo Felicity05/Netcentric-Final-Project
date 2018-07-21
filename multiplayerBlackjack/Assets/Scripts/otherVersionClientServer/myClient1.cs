@@ -135,6 +135,15 @@ public class myClient1 : MonoBehaviour
         gameClient.name = name;
 
         players.Add(gameClient);
+
+        Debug.Log(players.Count);
+
+        //if there are 2 or 3 players connected
+        if (players.Count == 3 || players.Count == 4)
+        {
+            GameController.Instance.StartGame(); //go to the game scene
+        }
+
     }
 
 
