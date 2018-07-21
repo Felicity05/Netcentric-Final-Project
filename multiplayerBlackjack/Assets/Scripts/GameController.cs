@@ -82,19 +82,19 @@ public class GameController : MonoBehaviour {
     }
 
     //run the server
-    public void HostGame(){
-        
-        //Debug.Log("host game");
-
+    public void HostGame()
+    {
         try
         {
             //create a server 
             myServer1 server1 = Instantiate(serverPrefab).GetComponent<myServer1>();
             server1.Init();
 
-           
             //create a client
             myClient1 client1 = Instantiate(clientPrefab).GetComponent<myClient1>();
+
+            //is hosting the game?
+            client1.isHost = true;
 
             //if no name is entered
             client1.clientName = nameInput.text;
@@ -121,9 +121,6 @@ public class GameController : MonoBehaviour {
     public void JoinGame()
     {
         //add that when hitting enter also pases to the game
-        Debug.Log("connect");
-
-        ////TODO add input field for port as well
 
         //gets the addres that's in the input field which is localhost
         string hostAdd = GameObject.Find("InputHost").GetComponent<InputField>().text;

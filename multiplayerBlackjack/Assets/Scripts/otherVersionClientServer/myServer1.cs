@@ -212,6 +212,7 @@ public class myServer1 : MonoBehaviour
         {
             case "CWHO":
                 c.clientName = data_received[1];
+                c.isHost = (data_received[2] != "0");  //is host is true (data_received[2] == "0") ? false : true
                 BroadcastData("SCNN|" + c.clientName, clients);
                 break;
 
@@ -253,6 +254,8 @@ public class ServerClient
     public Socket tcpSocket; //socket
 
     public string clientName; //name
+
+    public bool isHost; //host the game?
 
     public ServerClient(Socket clientSocket)
     {

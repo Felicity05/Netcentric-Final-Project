@@ -9,6 +9,8 @@ public class myClient1 : MonoBehaviour
 {
 
     public string clientName;
+    public bool isHost; //host the game?
+
     bool socketReady;
 
     //to have access to the stream of the socket
@@ -114,7 +116,7 @@ public class myClient1 : MonoBehaviour
                 {
                     UserConnected(data_received[i], false); //not a host received from server
                 }
-                SendData("CWHO|" + clientName);
+                SendData("CWHO|" + clientName + "|" + ((isHost)?1:0).ToString()); //1 is host, 0 is not host
                 break;
             case "SCNN":
                 UserConnected(data_received[1], false);
@@ -136,7 +138,7 @@ public class myClient1 : MonoBehaviour
 
         players.Add(gameClient);
 
-        Debug.Log(players.Count);
+        //Debug.Log(players.Count);
 
         //if there are 2 or 3 players connected
         if (players.Count == 3 || players.Count == 4)
@@ -145,8 +147,6 @@ public class myClient1 : MonoBehaviour
         }
 
     }
-
-
 
 
 
