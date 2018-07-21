@@ -21,7 +21,7 @@ public class Server : MonoBehaviour
     {
         clients = new List<ServerClient>();
         disconnectList = new List<ServerClient>();
-       
+
 
         try
         {
@@ -32,8 +32,8 @@ public class Server : MonoBehaviour
             serverStarted = true;
 
             Debug.Log("Server has been started on port: " + port.ToString());
-        } 
-        catch(Exception e)
+        }
+        catch (Exception e)
         {
             Debug.Log("socket error: " + e.Message);
         }
@@ -42,7 +42,8 @@ public class Server : MonoBehaviour
 
     private void Update()
     {
-        if (!serverStarted){
+        if (!serverStarted)
+        {
             return;
         }
 
@@ -65,7 +66,8 @@ public class Server : MonoBehaviour
                     StreamReader reader = new StreamReader(stream, true);
                     string data = reader.ReadLine();
 
-                    if (data != null){
+                    if (data != null)
+                    {
                         OnIncomingData(sc, data); //process the messages the server gets from the client, from the specific client sc
                     }
                 }
@@ -73,7 +75,8 @@ public class Server : MonoBehaviour
         }
     }
 
-    private bool isConnected(TcpClient c){
+    private bool isConnected(TcpClient c)
+    {
 
         try
         {
@@ -94,12 +97,14 @@ public class Server : MonoBehaviour
     }
 
 
-    private void StartListening(){
+    private void StartListening()
+    {
 
         server.BeginAcceptTcpClient(AcceptTCPClient, server);
     }
 
-    private void AcceptTCPClient(IAsyncResult ar){
+    private void AcceptTCPClient(IAsyncResult ar)
+    {
 
         TcpListener listener = (TcpListener)ar.AsyncState;
 
@@ -136,19 +141,22 @@ public class Server : MonoBehaviour
     {
         Debug.Log(sc.clientName + "has sent the following message: " + data);
     }
-}
-
-//definition of who is connected to the server 
-public class ServerClient {
-
-    public TcpClient tcp;
-
-    public string clientName;
 
 
-    public ServerClient(TcpClient clientSocket, string name){
+    //definition of who is connected to the server 
+    public class ServerClient
+    {
 
-        clientName = name;
-        tcp = clientSocket;
+        public TcpClient tcp;
+
+        public string clientName;
+
+
+        public ServerClient(TcpClient clientSocket, string name)
+        {
+
+            clientName = name;
+            tcp = clientSocket;
+        }
     }
 }

@@ -108,7 +108,7 @@ public class GameController : MonoBehaviour {
 
             //if no name is entered 
             client1.clientName = nameInput.text;
-            if (client1.clientName == null)
+            if (client1.clientName == "")
                 client1.clientName = "Host";
 
             //connect to localhost because you are connecting to yourself
@@ -143,7 +143,7 @@ public class GameController : MonoBehaviour {
 
             //if no name is entered assigned a unique client name
             client1.clientName = nameInput.text;
-            if (client1.clientName == null)
+            if (client1.clientName == "")
                 client1.clientName = "Guest" + GenerateUniqueCode().ToString();
 
             client1.ConnectToServer(hostAdd, 8000);

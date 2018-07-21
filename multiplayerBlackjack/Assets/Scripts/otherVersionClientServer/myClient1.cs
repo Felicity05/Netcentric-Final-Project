@@ -7,7 +7,8 @@ using System.Text;
 using System;
 using System.IO;
 
-public class myClient1 : MonoBehaviour {
+public class myClient1 : MonoBehaviour
+{
 
     public string clientName;
     bool socketReady;
@@ -28,14 +29,16 @@ public class myClient1 : MonoBehaviour {
     public IPEndPoint conn;
 
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
 
         DontDestroyOnLoad(gameObject); //don't destroy the client when moving on to the next scene
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
 
         if (socketReady) //if the socket is connected
         {
@@ -45,13 +48,13 @@ public class myClient1 : MonoBehaviour {
                 string data = streamReader.ReadLine(); //if so read it
 
                 //if there is data
-                if (data != null) 
+                if (data != null)
                 {
                     OnIncomingData(data); //receive the data and prepare it to process it
                 }
             }
         }
-	}
+    }
 
 
     //************ function to connect to the server ******************//
@@ -67,13 +70,30 @@ public class myClient1 : MonoBehaviour {
         try
         {
             //create end point to connect
-            conn = new IPEndPoint(IPAddress.Parse(hostAdd), port);
+            //conn = new IPEndPoint(hostAdd), port);
 
             //connect to server
-            clientSocket.BeginConnect(conn, ConnectCallback, clientSocket);
+            //clientSocket.BeginConnect(conn, ConnectCallback, clientSocket);
+
+            clientSocket.Connect(hostAdd, port);
+
+            ServerClient client = new ServerClient(clientSocket);
+
+            stream = client.stream;
+
+            //get the stream of the client socket
+            //stream = new NetworkStream(clientSocket);
+            streamWriter = new StreamWriter(stream);
+            streamReader = new StreamReader(stream);
+
+
+            //Debug.Log("Client successfully connected!!!!!");
+            Debug.Log("Client Socket connected to: " + clientSocket.RemoteEndPoint);
+
+
 
             socketReady = true;
-           // Debug.Log("Client socket ready: " + socketReady);
+            // Debug.Log("Client socket ready: " + socketReady);
 
         }
         catch (Exception ex)
@@ -96,16 +116,6 @@ public class myClient1 : MonoBehaviour {
             // Complete the connection  
             client.EndConnect(ar);
 
-
-            //get the stream of the client socket
-            stream = new NetworkStream(clientSocket);
-            streamWriter = new StreamWriter(stream);
-            streamReader = new StreamReader(stream);
-
-
-            //Debug.Log("Client successfully connected!!!!!");
-            Debug.Log("Client Socket connected to: " + client.RemoteEndPoint);
-
         }
         catch (Exception e)
         {
@@ -127,7 +137,7 @@ public class myClient1 : MonoBehaviour {
         streamWriter.WriteLine(data); //the streamWriter is on the stream
         streamWriter.Flush(); //clear the buffer
     }
-    
+
 
 
     //************ read the data received from the server ******************//
@@ -174,7 +184,7 @@ public class myClient1 : MonoBehaviour {
         players.Add(gameClient);
     }
 
-   
+
 
 
 
@@ -201,13 +211,14 @@ public class myClient1 : MonoBehaviour {
         clientSocket.Close();
         socketReady = false;
     }
-
-
-    //************ definition of game client ******************//
-    public class GameClient
-    {
-        public string name;
-        public bool isHost;
-    }
-        
 }
+
+
+//************ definition of game client ******************//
+public class GameClient
+{
+    public string name;
+    public bool isHost;
+}
+    
+

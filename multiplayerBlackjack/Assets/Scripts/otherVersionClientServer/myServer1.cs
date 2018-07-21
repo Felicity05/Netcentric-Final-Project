@@ -9,8 +9,9 @@ using System.Text;
 using System.Threading;
 using System.IO;
 
-public class myServer1 : MonoBehaviour {
-    
+public class myServer1 : MonoBehaviour
+{
+
     public int port = 8000;
     string host = "";
 
@@ -33,7 +34,8 @@ public class myServer1 : MonoBehaviour {
     we don't want to destroy the server after loading the new scene
     */
 
-    public void Init(){
+    public void Init()
+    {
         DontDestroyOnLoad(gameObject); //don't destroy the server once the new scene is loaded
 
         //instaciating the lists
@@ -52,15 +54,17 @@ public class myServer1 : MonoBehaviour {
         }
     }
 
-	
+
     // Use this for initialization
-	void Start () {
-            
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+    void Start()
+    {
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
         if (!serverStarted)
         {
             return;
@@ -92,7 +96,7 @@ public class myServer1 : MonoBehaviour {
             }
             else
             {
-                Debug.Log("no stream");
+                //Debug.Log("no stream");
             }
 
 
@@ -109,15 +113,15 @@ public class myServer1 : MonoBehaviour {
         }
     }
 
-    
-      
+
+
     //* Bind the socket to the local endpoint and listen for incoming connections *//
     public void CreateServer()
     {
         try
         {
             Debug.Log("Setting up the server...");
-            
+
             //bind socket
             serverSocket.Bind(new IPEndPoint(IPAddress.Any, port));
             Debug.Log("Server socket bound");
@@ -136,12 +140,13 @@ public class myServer1 : MonoBehaviour {
 
             Debug.Log("Server Error when binding to port and listening: " + e.Message);
         }
-       
+
     }
 
 
     //************ start async socket to listen for connections ******************//
-    public void AcceptConnections(){
+    public void AcceptConnections()
+    {
 
         serverSocket.BeginAccept(AcceptCallback, serverSocket);
     }
@@ -156,7 +161,7 @@ public class myServer1 : MonoBehaviour {
 
         string allUsers = "";
 
-        foreach(ServerClient c in clients)
+        foreach (ServerClient c in clients)
         {
             allUsers += c.clientName + "|";
         }
@@ -178,7 +183,7 @@ public class myServer1 : MonoBehaviour {
         AcceptConnections();
 
         //first message to send to a single client
-        BroadcastData("SWHO|", clients[clients.Count -1]);  
+        BroadcastData("SWHO|", clients[clients.Count - 1]);
 
     }
 
@@ -187,7 +192,8 @@ public class myServer1 : MonoBehaviour {
 
 
     //************ send data to the client ******************//
-    public void BroadcastData(string data, List<ServerClient> clients){
+    public void BroadcastData(string data, List<ServerClient> clients)
+    {
 
         //data = "hello from server";
 
@@ -235,13 +241,13 @@ public class myServer1 : MonoBehaviour {
                 BroadcastData("SCON|" + client.clientName, clients);
                 break;
 
-            //default:
+                //default:
                 //Debug.Log("S. nothing received");
                 //break;
         }
     }
 
-   
+
     //************ check if te client is connected to the server *************//
     bool isConnected(Socket c)
     {
@@ -249,7 +255,7 @@ public class myServer1 : MonoBehaviour {
         {
             if (c != null && c.Connected)
             {
-                if (c.Poll(0, SelectMode.SelectRead)) 
+                if (c.Poll(0, SelectMode.SelectRead))
                 {
                     return !(c.Receive(new byte[1], SocketFlags.Peek) == 0);
                 }
@@ -263,26 +269,29 @@ public class myServer1 : MonoBehaviour {
         }
     }
 
-    //************ definition of the client *************//
-    public class ServerClient
-    {
-
-        public Socket tcpSocket; //socket
-
-        public string clientName; //name
-
-        public NetworkStream stream; //stream of the socket
-
-
-        public ServerClient(Socket clientSocket)
-        {
-            tcpSocket = clientSocket;
-
-            stream = new NetworkStream(clientSocket); //get the stream of the socket
-        }
-    }
-
-
 }
+
+
+//************ definition of the client *************//
+public class ServerClient
+{
+
+    public Socket tcpSocket; //socket
+
+    public string clientName; //name
+
+    public NetworkStream stream; //stream of the socket
+
+
+    public ServerClient(Socket clientSocket)
+    {
+        tcpSocket = clientSocket;
+
+        stream = new NetworkStream(clientSocket); //get the stream of the socket
+    }
+}
+
+
+
 
 
