@@ -17,8 +17,8 @@ public class GameController : MonoBehaviour {
     //public InputField userMessages;
 
 
-    string userName;
-    int userCode; //to generate unique codes for users
+    string playerName;
+
 
     //allows to erase after writing into the textfield
     [SerializeField]
@@ -30,7 +30,6 @@ public class GameController : MonoBehaviour {
     //dictionary where key is the userName and the value is the stake
     public Dictionary<string, int> usersMoney = new Dictionary<string, int>();
 
-   
 
     public void Start()
     {
@@ -38,48 +37,35 @@ public class GameController : MonoBehaviour {
         DontDestroyOnLoad(gameObject); //to don't destroy the game controller object
     }
 
-    //validate user input
-    public bool isInputValid()
+    //Generates usernames for the players
+    public string GenerateUserName(string text)
     {
-        //TODO 
-        //check if input is empty
-        if (nameInput.text == "")
+        int code = UnityEngine.Random.Range(100, 500);
+        string userName;
+
+        //if the user enter a name and a lastname
+        if (text.Contains(" "))
         {
-            Debug.Log("empty field");
-            return false;
-        } //check if entered only first name
-        if (!nameInput.text.Contains(" "))
-        {
-            Debug.Log("need last name also");
-            return false;
-        } //check if entered numbers
-        //check if entered invald characters
+            string[] input = text.Split(); //split the text by the space
 
-        return true;
-    }
-
-    public void GenerateUserName(string text){
-
-        if (isInputValid())
-        {
-
-            int code = UnityEngine.Random.Range(100, 500);
-
-            string[] input = text.Split(); //split the input by space
-
-            string uname = input[0].Substring(0, 1); //get the first letter of the name
+            string uname = input[0].Substring(0, 3); //get the first letter of the name
 
             string lastName = input[1].Substring(0, 4); //get the first 4 letters of the last name
 
             userName = uname + lastName + code; //generate the user name 
-
-            nameInput.text = "";
-
-            ok = true;
+        }
+        else //if user only enters name (no space)
+        {
+            userName = text + code;
         }
 
-    } //end of function
+        nameInput.text = ""; //to clear the text dialog after hitting enter TODO pass to the next scene when clicking enter
 
+        return userName;
+    }
+
+    int userCode; //to generate unique codes for users
+    //TODO REVIEW THIS FUNCTION I MAY BE DOING SOMETHING WRONG HERE 
     int GenerateUniqueCode(){
         
         while (userCode != UnityEngine.Random.Range(100, 500)) {
@@ -87,7 +73,7 @@ public class GameController : MonoBehaviour {
             userCode = UnityEngine.Random.Range(100, 500);
         }
            
-           return userCode;
+        return userCode;
     }
 
 
@@ -106,10 +92,15 @@ public class GameController : MonoBehaviour {
             //create a client
             myClient1 client1 = Instantiate(clientPrefab).GetComponent<myClient1>();
 
-            //if no name is entered 
+            //if no name is entered
             client1.clientName = nameInput.text;
             if (client1.clientName == "")
                 client1.clientName = "Host";
+            else //if name entered
+            {
+                playerName = GenerateUserName(nameInput.text);
+                client1.clientName = playerName;
+            }
 
             //connect to localhost because you are connecting to yourself
             client1.ConnectToServer("127.0.0.1", 8000); 
@@ -144,8 +135,15 @@ public class GameController : MonoBehaviour {
             //if no name is entered assigned a unique client name
             client1.clientName = nameInput.text;
             if (client1.clientName == "")
-                client1.clientName = "Guest" ;//+ GenerateUniqueCode().ToString();
+                client1.clientName = "Guest" + GenerateUniqueCode().ToString();
+            else  //if name entered
+            {
+                playerName = GenerateUserName(nameInput.text);
+                client1.clientName = playerName;
+            }
 
+
+            //connect client to server
             client1.ConnectToServer(hostAdd, 8000);
             ConnectMenu.SetActive(false);
 

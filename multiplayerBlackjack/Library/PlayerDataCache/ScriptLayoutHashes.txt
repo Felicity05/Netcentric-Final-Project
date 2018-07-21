@@ -20,7 +20,6 @@ ff05dcdf90651c3d98a9cad3df5e471e UnityEngine.Timeline.dll:UnityEngine.Timeline.C
 30afa8783a8bbee2e465ec9ce1efaee2 UnityEngine.Timeline.dll:UnityEngine.Timeline.PlayableTrack
 607d64d2c4bc76ac9876e6f7b9cc7edf UnityEngine.Timeline.dll:UnityEngine.Timeline.TimelineAsset
 e1ff970319fa33ba4daa3ef83c5282a8 Assembly-CSharp.dll:.LevelChanger
-05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.Client
 a35dc9cca2faebc5f5f1aeb9e8e47bbe UnityEngine.UI.dll:UnityEngine.UI.AspectRatioFitter
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.UI.dll:UnityEngine.EventSystems.BaseInput
 49cd62a578efc0a599b810a2b66cd49c UnityEngine.UI.dll:UnityEngine.UI.Button
@@ -197,7 +196,6 @@ b2eb8cbb5793881e65dba317544e50c2 Assembly-CSharp.dll:TMPro.Examples.ShaderPropAn
 d1c6d2e092549a4f81fb8c87f94dcf4f Assembly-CSharp.dll:.GameController
 76015de5fcb247eeb8df66c001d5a22d Assembly-CSharp.dll:TMPro.Examples.TMP_FrameRateCounter
 b8f04bdad423045528c67dfa4c3dca0d Assembly-CSharp.dll:TMPro.Examples.VertexShakeA
-c97b0dbf49fe16a113635a0b92437bd6 Assembly-CSharp.dll:.Server
 fc1e0f4d8439d9928083474691511a13 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkAnimator
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.Networking.dll:UnityEngine.Networking.NetworkBehaviour
 60b2bb652410a5867a5ab9a01cd38461 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkDiscovery
@@ -247,7 +245,7 @@ b88c3888e08ba6340e776e5e3d242b95 Assembly-CSharp.dll:.GameActionButtons
 020550babdb991365f61c5bffe1f4f52 Assembly-CSharp.dll:TMPro.Examples.TextMeshSpawner
 53c9976d70cb7e740d19e4a5673eb350 Assembly-CSharp.dll:.CardModel
 a69b3ee0402770d02d1c122324e4b00e Assembly-CSharp.dll:TMPro.Examples.SkewTextExample
-0e6fa4cc00c070caaa9f3928ceaca306 Assembly-CSharp.dll:.myServer1
+4f14d5a522183779eb6c980414ac3758 Assembly-CSharp.dll:.myServer1
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.Chip
 34e025057ef78b1bf238460cdf6583a3 Assembly-CSharp.dll:TMPro.Examples.ObjectSpin
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:TMPro.Examples.SimpleScript
