@@ -167,7 +167,7 @@ e763036081c708b34f78f5a56f72c23d TextMeshPro-2017.3-Runtime.dll:TMPro.TMP_StyleS
 5833a86cc374f497ae8d9fb9d8c3e5f4 TextMeshPro-2017.3-Runtime.dll:TMPro.TMP_SubMeshUI
 22bb40270d2bfc0d0884e2aefd3d1c60 TextMeshPro-2017.3-Runtime.dll:TMPro.TMP_Text
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:TMPro.Examples.TMP_TextSelector_A
-44b66e5752b9318bb54910a300c18e4a Assembly-CSharp.dll:.GiveChips
+2608fcc91b6c38af2fd915291dd79641 Assembly-CSharp.dll:.GiveChips
 b900ead596b2fb1093b31cb63a678767 Assembly-CSharp.dll:TMPro.Examples.TextMeshProFloatingText
 f99082b9ef98f4f222686e96debb01e9 Assembly-CSharp.dll:.PickUpCards
 dad1c1272dfe1898bb613dcb2631bcce Assembly-CSharp.dll:TMPro.Examples.Benchmark02

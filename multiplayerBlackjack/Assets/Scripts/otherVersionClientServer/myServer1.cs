@@ -57,7 +57,7 @@ public class myServer1 : MonoBehaviour
         foreach (ServerClient sc in clients)
         {
             // client not connected
-            if (!isConnected(sc))
+            if (!isConnected(sc.tcpSocket))
             {
                 sc.tcpSocket.Close(); //close the socket 
                 disconnectList.Add(sc);
@@ -99,15 +99,15 @@ public class myServer1 : MonoBehaviour
     {
         try
         {
-            Debug.Log("Setting up the server...");
+            //Debug.Log("Setting up the server...");
 
             //bind socket
             serverSocket.Bind(new IPEndPoint(IPAddress.Any, port));
-            Debug.Log("Server socket bound");
+            //Debug.Log("Server socket bound");
 
             //start listening
             serverSocket.Listen(3); //only 3 connections at a time
-            Debug.Log("Server socket listening on port: " + port);
+            //Debug.Log("Server socket listening on port: " + port);
 
             //accept connections
             StartListeing(); //start listening for connections
@@ -134,6 +134,7 @@ public class myServer1 : MonoBehaviour
     //************ async call to finish the connection ******************//
     void AcceptCallback(IAsyncResult ar)
     {
+        
         // Get the socket that handles the client request  
         Socket server = (Socket)ar.AsyncState;
 
@@ -151,7 +152,7 @@ public class myServer1 : MonoBehaviour
         //accept incoming connections again
         StartListeing();
 
-        Debug.Log("S. Someone has connected!!!!");
+        //Debug.Log("S. Someone has connected!!!!");
 
         //first message to send to a single client
         BroadcastData("SWHO|" + allUsers, clients[clients.Count - 1]);
@@ -216,8 +217,8 @@ public class myServer1 : MonoBehaviour
                 BroadcastData("SCNN|" + c.clientName, clients);
                 break;
             case "CBET":
-                BroadcastData("SBET|" + data_received[1] + "|" + data_received[2] + "|" + data_received[3] 
-                                      + data_received[4] + "|" + data_received[5] + "|" + data_received[6] 
+                BroadcastData("SBET|" + data_received[1] + "|" + data_received[2] + "|" + data_received[3] + "|"
+                                      + data_received[4] + "|" + data_received[5] + "|" + data_received[6] + "|"
                                       + data_received[7] + "|", clients);
                 break;
 
@@ -229,15 +230,15 @@ public class myServer1 : MonoBehaviour
 
 
     //************ check if te client is connected to the server *************//
-    bool isConnected(ServerClient c) // in any case review this and chnage it to socket
+    bool isConnected(Socket c) // in any case review this and change it to socket
     {
         try
         {
-            if (c != null && c.tcpSocket != null && c.tcpSocket.Connected)
+            if (c != null && c.Connected)
             {
-                if (c.tcpSocket.Poll(0, SelectMode.SelectRead))
+                if (c.Poll(0, SelectMode.SelectRead))
                 {
-                    return !(c.tcpSocket.Receive(new byte[1], SocketFlags.Peek) == 0);
+                    return !(c.Receive(new byte[1], SocketFlags.Peek) == 0);
                 }
                 return true;
             }

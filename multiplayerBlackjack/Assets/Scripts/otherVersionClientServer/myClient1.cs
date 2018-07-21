@@ -72,7 +72,7 @@ public class myClient1 : MonoBehaviour
 
             socketReady = true;
 
-            Debug.Log("Client Socket connected to: " + clientSocket.RemoteEndPoint);
+            //Debug.Log("Client Socket connected to: " + clientSocket.RemoteEndPoint);
 
         }
         catch (Exception ex)
@@ -95,6 +95,7 @@ public class myClient1 : MonoBehaviour
 
         //grab the stream and write on it
         streamWriter.WriteLine(data); //the streamWriter is on the stream
+        //Debug.Log(data);
         streamWriter.Flush(); //clear the buffer
     }
 
@@ -148,7 +149,7 @@ public class myClient1 : MonoBehaviour
 
         players.Add(gameClient);
 
-        //Debug.Log(players.Count);
+        Debug.Log(players.Count);
 
         //if there are 2 or 3 players connected
         if (players.Count == 3 || players.Count == 4)

@@ -570,7 +570,7 @@ public class HandleCardsOperations : MonoBehaviour
 
         handleChips.balance.text = "$ " + handleChips.iniBalance; 
 
-        handleChips.chipEndPos = new Vector3(-0.446f, 0.325f, -1.061f);
+        //handleChips.chipEndPos = new Vector3(-0.446f, 0.325f, -1.061f);
 
         panelNoMoreMoney.gameObject.SetActive(false);
 

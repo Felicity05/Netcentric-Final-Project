@@ -24,13 +24,11 @@ public class GiveChips : MonoBehaviour {
     public int iniBalance = 50;
     public int inBet = 0;
 
-    public Vector3 chipEndPos = new Vector3(-0.446f, 0.325f, -1.061f);
-
     Vector3 dealerPos = new Vector3(-0.07f, 0.325f, 0.953f);
 
     Vector3 playerPos = new Vector3(-0.07f, 0.323f, 0.953f);
 
-    bool changePos = true;
+    bool changePos;
 
     GameObject[] chips;
 
@@ -51,7 +49,7 @@ public class GiveChips : MonoBehaviour {
     //get the list of clients from the server
     public myServer1 server1;
 
-    public myClient1 client1;
+    myClient1 client1;
 
     string msg = "CBET|";
 
@@ -67,7 +65,7 @@ public class GiveChips : MonoBehaviour {
 
         balance.text = "$ " + iniBalance.ToString();
 
-        myClient1 client1 = FindObjectOfType<myClient1>();
+        client1 = FindObjectOfType<myClient1>();
 
         isServer = client1.isHost;
 
@@ -95,7 +93,11 @@ public class GiveChips : MonoBehaviour {
     {
         chipVal = 1;
 
+        changePos = true;
+
         Vector3 startPos = new Vector3(-0.446f, 0.33f, -1.334f);
+
+        Vector3 chipEndPos = new Vector3(-0.446f, 0.325f, -1.061f);
 
         //send the position to the server
         msg += chipVal + "|";
@@ -103,16 +105,20 @@ public class GiveChips : MonoBehaviour {
         //start position
         msg += startPos.x.ToString() + "|";
         msg += startPos.y.ToString() + "|";
-        msg += startPos.x.ToString() + "|";
+        msg += startPos.z.ToString() + "|";
 
         //end position
         msg += chipEndPos.x.ToString() + "|";
         msg += chipEndPos.y.ToString() + "|";
-        msg += chipEndPos.x.ToString() + "|";
+        msg += chipEndPos.z.ToString() + "|";
 
         Debug.Log("button chip 1 cliked");
 
+        //Debug.Log("data to send: " + msg);
+
         client1.SendData(msg);
+
+        msg = "CBET|"; //reset the message
 
     }
 
@@ -285,16 +291,16 @@ public class GiveChips : MonoBehaviour {
             yield return null; //wait for the function to end
         }
 
-        //offset to change the position of the chips every time they get placed in the table
-        if (changePos){
-            chipEndPos += new Vector3(0.089f, 0.004f, 0.032f);   // for player 1
-            changePos = false;
-        }
-        else
-        {
-            chipEndPos += new Vector3(-0.0817381f, 0.02f, 0.02f);
-            changePos = true;
-        }
+        ////offset to change the position of the chips every time they get placed in the table
+        //if (changePos){
+        //    chipEndPos += new Vector3(0.089f, 0.004f, 0.032f);   // for player 1
+        //    changePos = false;
+        //}
+        //else
+        //{
+        //    chipEndPos += new Vector3(-0.0817381f, 0.02f, 0.02f);
+        //    changePos = true;
+        //}
 
         //  Debug.Log("change pos= " + changePos);
 
