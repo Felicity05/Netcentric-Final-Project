@@ -10,6 +10,7 @@ public class myClient1 : MonoBehaviour
 
     public string clientName;
     public bool isHost; //host the game?
+    public string id;
 
     bool socketReady;
 
@@ -22,7 +23,7 @@ public class myClient1 : MonoBehaviour
     public static Socket clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
     //list of all the game clients connected
-    List<GameClient> players = new List<GameClient>();
+    public List<GameClient> players = new List<GameClient>();
 
 
     // Use this for initialization
@@ -110,6 +111,8 @@ public class myClient1 : MonoBehaviour
 
         string command = data_received[0];
 
+        int ID = 0;
+
         switch (command)
         {
             case "SWHO":
@@ -117,7 +120,7 @@ public class myClient1 : MonoBehaviour
                 {
                     UserConnected(data_received[i], false); //not a host received from server
                 }
-                SendData("CWHO|" + clientName + "|" + ((isHost)?1:0).ToString()); //1 is host, 0 is not host
+                SendData("CWHO|" + clientName + "|" + ((isHost)?0:ID+=1).ToString()); //1 is host, 0 is not host
                 break;
             case "SCNN":
                 UserConnected(data_received[1], false);
@@ -131,8 +134,10 @@ public class myClient1 : MonoBehaviour
                                               float.Parse(data_received[6]),  //end pos y
                                               float.Parse(data_received[7])); //end pos z
                 break;
-
-
+            case "SEC":
+                GiveChips.Instance.EnableChips();
+                break;
+           
 
             default:
                 break;

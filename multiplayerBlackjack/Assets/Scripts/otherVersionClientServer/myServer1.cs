@@ -213,7 +213,8 @@ public class myServer1 : MonoBehaviour
         {
             case "CWHO":
                 c.clientName = data_received[1];
-                c.isHost = (data_received[2] != "0");  //is host is true (data_received[2] == "0") ? false : true
+                c.isHost = (data_received[2] == "0");  //is host is true (data_received[2] == "0") ? true : false
+                c.id = (data_received[2] != "0") ? data_received[2] : "0";
                 BroadcastData("SCNN|" + c.clientName, clients);
                 break;
             case "CBET":
@@ -221,6 +222,10 @@ public class myServer1 : MonoBehaviour
                                       + data_received[4] + "|" + data_received[5] + "|" + data_received[6] + "|"
                                       + data_received[7] + "|", clients);
                 break;
+            case "CEC":
+                BroadcastData("SEC|", clients);
+                break;
+            
 
 
             default:
@@ -262,6 +267,8 @@ public class ServerClient
     public string clientName; //name
 
     public bool isHost; //host the game?
+
+    public string id;
 
     public ServerClient(Socket clientSocket)
     {

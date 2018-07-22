@@ -125,6 +125,7 @@
     <Compile Include="Assets\Scripts\otherVersionClientServer\myClient1.cs" />
     <Compile Include="Assets\Scripts\otherVersionClientServer\myServer1.cs" />
     <Compile Include="Assets\Scripts\Scripts for testing\blackjackServer.cs" />
+    <Compile Include="Assets\Scripts\Scripts for testing\MoveCube.cs" />
     <Compile Include="Assets\Scripts\Scripts for testing\myClient.cs" />
     <Compile Include="Assets\Scripts\Scripts for testing\myServer.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />

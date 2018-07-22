@@ -24,11 +24,11 @@ public class GameController : MonoBehaviour {
     [SerializeField]
     public InputField nameInput;
 
-    bool ok = false;
-
 
     //dictionary where key is the userName and the value is the stake
     public Dictionary<string, int> usersMoney = new Dictionary<string, int>();
+
+    int ID = 0;
 
 
     public void Start()

@@ -12,8 +12,6 @@ public class GiveChips : MonoBehaviour {
     public GameObject chip10Prefab;
     public GameObject chip25Prefab;
 
-    public bool betSelected; //to let know the server the bet is been selected
-
     public List<int> bet = new List<int>();
 
     public Text balance;
@@ -45,6 +43,8 @@ public class GiveChips : MonoBehaviour {
 
     bool isServer; //if the player is the actual server then it is the first one in playing
 
+    public bool betSelected; //to let know the server the bet is been selected
+
 
     //get the list of clients from the server
     public myServer1 server1;
@@ -55,8 +55,17 @@ public class GiveChips : MonoBehaviour {
 
     public int chipVal;
 
+    int numPlayers;
+
+    int player1;
+    int player2;
+
 
     //HERE IS WHERE THE PLAYER STARTS TO PLAY BY PLACING THE MIN BET AND ENABLING THE DEAL BUTTON TO BEGING RECEIVING CARDS
+
+    /* players turns 
+     */
+
 
     // Use this for initialization
     void Start () {
@@ -67,20 +76,10 @@ public class GiveChips : MonoBehaviour {
 
         client1 = FindObjectOfType<myClient1>();
 
-        isServer = client1.isHost;
+        //PlayersTurn();
 
-        if(isServer) {
-            chip1.interactable = true;
-            chip5.interactable = true;
-            chip10.interactable = true;
-            chip25.interactable = true;
-        }
-        else {
-            chip1.interactable = false;
-            chip5.interactable = false;
-            chip10.interactable = false;
-            chip25.interactable = false;
-        }
+        Debug.Log("player1: "+ client1.players[1].name + "player2: " + client1.players[2].name);
+
 	}
 	
 	// Update is called once per frame
@@ -89,16 +88,50 @@ public class GiveChips : MonoBehaviour {
         chips = GameObject.FindGameObjectsWithTag("Chip");
 	}
 
+    void PlayersTurn(){
+
+        if (client1.isHost) {
+            EnableChips();
+            player1 = 1;
+        }
+        else {
+            DisableChips();
+            player2 = 2;
+        }
+    }
+
     public void IdentifyChip1()
     {
         chipVal = 1;
 
         changePos = true;
 
-        Vector3 startPos = new Vector3(-0.446f, 0.33f, -1.334f);
+        Vector3 startPos;
 
-        Vector3 chipEndPos = new Vector3(-0.446f, 0.325f, -1.061f);
+        Vector3 chipEndPos;
 
+        if (client1.isHost) //first player
+        {
+            startPos = new Vector3(-0.446f, 0.33f, -1.334f);
+
+            chipEndPos = new Vector3(-0.446f, 0.325f, -1.061f);
+        } 
+        else //second player
+        {
+            startPos = new Vector3(-0.446f, 0.33f, -1.334f);
+
+            chipEndPos = new Vector3(-1.218f, 0.325f, -0.774f);
+        }
+
+
+        Debug.Log("button chip 1 cliked");
+
+        SendPositionToServer(startPos, chipEndPos);
+
+    }
+
+    void SendPositionToServer(Vector3 startPos, Vector3 endPos)
+    {
         //send the position to the server
         msg += chipVal + "|";
 
@@ -108,19 +141,18 @@ public class GiveChips : MonoBehaviour {
         msg += startPos.z.ToString() + "|";
 
         //end position
-        msg += chipEndPos.x.ToString() + "|";
-        msg += chipEndPos.y.ToString() + "|";
-        msg += chipEndPos.z.ToString() + "|";
+        msg += endPos.x.ToString() + "|";
+        msg += endPos.y.ToString() + "|";
+        msg += endPos.z.ToString() + "|";
 
-        Debug.Log("button chip 1 cliked");
-
+      
         //Debug.Log("data to send: " + msg);
 
         client1.SendData(msg);
 
         msg = "CBET|"; //reset the message
-
     }
+
 
     //ALL THE PLACE CHIP FUNCTIONS ARE CALLED WHEN THE BUTTON OF THAT CHIP IS CLICKED ON THE GAME
 
@@ -144,14 +176,14 @@ public class GiveChips : MonoBehaviour {
 
     }
 
-
-
-
-    public IEnumerator PlaceChipsByPlayers()
+    void PlaceChipsByPlayer()
     {
+
+
         
-        yield return null;
     }
+
+
 
 
 
@@ -264,10 +296,7 @@ public class GiveChips : MonoBehaviour {
     public IEnumerator Chips(GameObject chipPrefab, Vector3 startPos, Vector3 chipEndPos){
 
         //disable all the chip buttons 
-        chip1.interactable = false;
-        chip5.interactable = false;
-        chip10.interactable = false;
-        chip25.interactable = false;
+        DisableChips();
 
         Chip chip = Instantiate(chipPrefab).GetComponent<Chip>();
 
@@ -312,15 +341,27 @@ public class GiveChips : MonoBehaviour {
         {
             betSelected = true;
             deal.interactable = true; //------> maybe i have to activate this button in other place 
+            client1.SendData("CEC|"); //send to the server
         }
-        chip1.interactable = true;
-        chip5.interactable = true;
-        chip10.interactable = true;
-        chip25.interactable = true;
+        EnableChips();
 
         yield return null;
     }
 
+
+    public void EnableChips(){
+        chip1.interactable = true;
+        chip5.interactable = true;
+        chip10.interactable = true;
+        chip25.interactable = true;
+    }
+
+    public void DisableChips(){
+        chip1.interactable = false;
+        chip5.interactable = false;
+        chip10.interactable = false;
+        chip25.interactable = false;
+    }
 
     //FINISH THIS FUNCTION AND CALL IT WHERE PLAYER OR DEALER WINS 
     // if dealer wins endPos Dealer 
