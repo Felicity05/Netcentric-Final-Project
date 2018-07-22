@@ -52,8 +52,9 @@ public class HandleCardsOperations : MonoBehaviour
 
     //useful text to tell the players the value of their hand and the dealer's hand
     public Text winnerText;
-    public Text playerHandVal;
     public Text dealerHandVal;
+    public Text playerHandVal;
+    public Text player1HandVal;
 
     //panel for no more balance
     public CanvasRenderer panelNoMoreMoney;
@@ -70,6 +71,10 @@ public class HandleCardsOperations : MonoBehaviour
 
     //get the list of clients from the server
 
+    myClient1 client1; //access the client
+
+    string cardID = "";
+
     void Start()
     {
         Instance = this;
@@ -79,6 +84,8 @@ public class HandleCardsOperations : MonoBehaviour
 
         //position of the deck of cards
         deckPosition = new Vector3(1.621f, 0.36f, 0.793f);
+
+        client1 = FindObjectOfType<myClient1>();
 
     }
 
@@ -145,10 +152,10 @@ public class HandleCardsOperations : MonoBehaviour
             case 0:
                 {
                     //distribute cards to 1 player 
-                    CoroutineWithData cd = new CoroutineWithData(this, DistributeCards(card, new Vector3(-0.1025832f, 0.36f, -0.7630126f)));
+                    CoroutineWithData cd = new CoroutineWithData(this, DistributeCards("p1c",card, new Vector3(0.871f, 0.331f, -0.711f)));
                     yield return cd.coroutine;
 
-                    CoroutineWithData cd1 = new CoroutineWithData(this, DistributeCards(card, new Vector3(0.02f, 0.43f, -0.72f)));
+                    CoroutineWithData cd1 = new CoroutineWithData(this, DistributeCards("p1c",card, new Vector3(0.94f, 0.41f, -0.68f)));
                     yield return cd1.coroutine;
 
                     //flip cards and add it to the player hand
@@ -162,7 +169,14 @@ public class HandleCardsOperations : MonoBehaviour
 
                     yield return new WaitForSeconds(0.8f);
 
-                    playerHandVal.text = PlayerHandValue.ToString();
+                    if (client1.isHost){
+                        playerHandVal.text = PlayerHandValue.ToString();
+                    }
+                    else{
+                        player1HandVal.text = PlayerHandValue.ToString(); 
+                    }
+
+
 
                     break;
                 }
@@ -185,10 +199,10 @@ public class HandleCardsOperations : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
         //distribute cards to dealer
-        CoroutineWithData cdD = new CoroutineWithData(this, DistributeCards(card, new Vector3(-0.49f, 0.449f, 0.26f)));
+        CoroutineWithData cdD = new CoroutineWithData(this, DistributeCards("", card, new Vector3(-0.49f, 0.449f, 0.26f)));
         yield return cdD.coroutine;
 
-        dealerSecondCard = new CoroutineWithData(this, DistributeCards(card, new Vector3(-0.1845832f, 0.449f, 0.26f)));
+        dealerSecondCard = new CoroutineWithData(this, DistributeCards("", card, new Vector3(-0.1845832f, 0.449f, 0.26f)));
         yield return dealerSecondCard.coroutine;
 
         //flip cards and add it to the dealer hand
@@ -244,11 +258,17 @@ public class HandleCardsOperations : MonoBehaviour
     }
 
     ///////////function to distribute cards to players///////////
-    public IEnumerator DistributeCards(CardModel card1, Vector3 card1Pos)
+    public IEnumerator DistributeCards(string cardID, CardModel card1, Vector3 card1Pos)
     {
         card1 = Instantiate(cardPrefab).GetComponent<CardModel>();
 
         card1.transform.position = deckPosition;
+
+        if(cardID.Equals("p1c"))
+        {
+            card1.transform.rotation = Quaternion.Euler(90f, -20f, 0f); //rotate -20 degrees in y axis
+        }
+
 
         // The step size is equal to speed times frame time.
         float speed = 3.5f;
@@ -281,7 +301,7 @@ public class HandleCardsOperations : MonoBehaviour
         player1CardPos += offset; //position of previous card
 
         //Debug.Log(player1CardPos);
-        CoroutineWithData cd = new CoroutineWithData(this, DistributeCards(card, player1CardPos));
+        CoroutineWithData cd = new CoroutineWithData(this, DistributeCards("p1c", card, player1CardPos));
         yield return cd.coroutine;
 
         //flip the card and add it to the player hand
@@ -339,7 +359,7 @@ public class HandleCardsOperations : MonoBehaviour
         dealerCardPos += offset; //position of previous card
 
         //Debug.Log(player1CardPos);
-        CoroutineWithData cd = new CoroutineWithData(this, DistributeCards(card, dealerCardPos));
+        CoroutineWithData cd = new CoroutineWithData(this, DistributeCards("", card, dealerCardPos));
         yield return cd.coroutine;
 
         //flip the card and add it to the player hand

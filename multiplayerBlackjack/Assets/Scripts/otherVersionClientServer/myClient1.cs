@@ -120,7 +120,7 @@ public class myClient1 : MonoBehaviour
                 {
                     UserConnected(data_received[i], false); //not a host received from server
                 }
-                SendData("CWHO|" + clientName + "|" + ((isHost)?0:ID+=1).ToString()); //1 is host, 0 is not host
+                SendData("CWHO|" + clientName + "|" + ((isHost)?1:0).ToString()); //1 is host, 0 is not host
                 break;
             case "SCNN":
                 UserConnected(data_received[1], false);
@@ -134,10 +134,15 @@ public class myClient1 : MonoBehaviour
                                               float.Parse(data_received[6]),  //end pos y
                                               float.Parse(data_received[7])); //end pos z
                 break;
-            case "SEC":
-                GiveChips.Instance.EnableChips();
+            //case "SEC":
+                //GiveChips.Instance.EnableChips();
+                //break;
+            case "SIBET":
+                GiveChips.Instance.playerBet.text = "$ " + data_received[1];
+                GiveChips.Instance.player1Bet.text = "$ " + data_received[2];
+                GiveChips.Instance.balance.text = "$ " + data_received[3];
+                GiveChips.Instance.balance1.text = "$ " + data_received[4];
                 break;
-           
 
             default:
                 break;
@@ -156,8 +161,8 @@ public class myClient1 : MonoBehaviour
 
         Debug.Log(players.Count);
 
-        //if there are 2 or 3 players connected
-        if (players.Count == 3 || players.Count == 4)
+        //if there are 2 players connected
+        if (players.Count == 3)
         {
             GameController.Instance.StartGame(); //go to the game scene
         }

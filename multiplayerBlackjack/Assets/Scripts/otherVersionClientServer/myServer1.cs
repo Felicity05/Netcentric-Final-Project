@@ -61,7 +61,7 @@ public class myServer1 : MonoBehaviour
             {
                 sc.tcpSocket.Close(); //close the socket 
                 disconnectList.Add(sc);
-                continue;
+                continue; //go to the next client
             }
 
             /// client is connected to the server
@@ -205,6 +205,8 @@ public class myServer1 : MonoBehaviour
 
         Debug.Log("Server: " + data);
 
+        //Debug.Log("number of clients: " + clients.Count);
+
         string[] data_received = data.Split('|');
 
         string command = data_received[0];  //command to execute action
@@ -213,8 +215,8 @@ public class myServer1 : MonoBehaviour
         {
             case "CWHO":
                 c.clientName = data_received[1];
-                c.isHost = (data_received[2] == "0");  //is host is true (data_received[2] == "0") ? true : false
-                c.id = (data_received[2] != "0") ? data_received[2] : "0";
+                c.isHost = (data_received[2] != "0");  //is host is true (data_received[2] == "0") ? true : false
+                //c.id = (data_received[2] != "0") ? data_received[2] : "0";
                 BroadcastData("SCNN|" + c.clientName, clients);
                 break;
             case "CBET":
@@ -222,8 +224,12 @@ public class myServer1 : MonoBehaviour
                                       + data_received[4] + "|" + data_received[5] + "|" + data_received[6] + "|"
                                       + data_received[7] + "|", clients);
                 break;
-            case "CEC":
-                BroadcastData("SEC|", clients);
+            //case "CEC":
+                //BroadcastData("SEC|", clients);
+                //break;
+            case "CIBET":
+                BroadcastData("SIBET|" + data_received[1] + "|" + data_received[2] + "|" + data_received[3] + "|" 
+                              + data_received[4], clients);
                 break;
             
 

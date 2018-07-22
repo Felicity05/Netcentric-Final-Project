@@ -168,7 +168,7 @@ e763036081c708b34f78f5a56f72c23d TextMeshPro-2017.3-Runtime.dll:TMPro.TMP_StyleS
 5833a86cc374f497ae8d9fb9d8c3e5f4 TextMeshPro-2017.3-Runtime.dll:TMPro.TMP_SubMeshUI
 22bb40270d2bfc0d0884e2aefd3d1c60 TextMeshPro-2017.3-Runtime.dll:TMPro.TMP_Text
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:TMPro.Examples.TMP_TextSelector_A
-4f0e0dfc13b93ca40f32335867d6d7c9 Assembly-CSharp.dll:.GiveChips
+5ec7edb35040fe0ffae150704555f079 Assembly-CSharp.dll:.GiveChips
 b900ead596b2fb1093b31cb63a678767 Assembly-CSharp.dll:TMPro.Examples.TextMeshProFloatingText
 f99082b9ef98f4f222686e96debb01e9 Assembly-CSharp.dll:.PickUpCards
 dad1c1272dfe1898bb613dcb2631bcce Assembly-CSharp.dll:TMPro.Examples.Benchmark02
@@ -251,4 +251,4 @@ a69b3ee0402770d02d1c122324e4b00e Assembly-CSharp.dll:TMPro.Examples.SkewTextExam
 34e025057ef78b1bf238460cdf6583a3 Assembly-CSharp.dll:TMPro.Examples.ObjectSpin
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:TMPro.Examples.SimpleScript
 fded009f981c9c00a34c12f12fd48ae7 Assembly-CSharp.dll:.LoadingAnimation
-c39294b6ecda4350d16ac49e0407e864 Assembly-CSharp.dll:.HandleCardsOperations
+f0bf65d4d1aec3e6d6295298284d6ece Assembly-CSharp.dll:.HandleCardsOperations
