@@ -118,7 +118,8 @@ public class myClient1 : MonoBehaviour
             case "SWHO":
                 for (int i = 1; i < data_received.Length; i++)
                 {
-                    UserConnected(data_received[i], false); //not a host received from server
+                    if (data_received[i] != "")
+                        UserConnected(data_received[i], false); //not a host received from server
                 }
                 SendData("CWHO|" + clientName + "|" + ((isHost)?1:0).ToString()); //1 is host, 0 is not host
                 break;
@@ -162,7 +163,7 @@ public class myClient1 : MonoBehaviour
         Debug.Log(players.Count);
 
         //if there are 2 players connected
-        if (players.Count == 3)
+        if (players.Count == 2)
         {
             GameController.Instance.StartGame(); //go to the game scene
         }

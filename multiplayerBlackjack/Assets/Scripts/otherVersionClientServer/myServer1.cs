@@ -140,7 +140,7 @@ public class myServer1 : MonoBehaviour
 
         string allUsers = "";
         foreach (ServerClient c in clients)
-        {
+        {           
             allUsers += c.clientName + "|";
         }
 
@@ -149,8 +149,12 @@ public class myServer1 : MonoBehaviour
         //add client to the list of clients. |dictionary key: client value: stake|
         clients.Add(handler);
 
+        Debug.Log("server clients in clients: " + clients.Count);
+
         //accept incoming connections again
         StartListeing();
+
+
 
         //Debug.Log("S. Someone has connected!!!!");
 

@@ -229,7 +229,7 @@ public class GiveChips : MonoBehaviour {
                 //player1Bet.text = "$ " + inBet1.ToString();
 
                 Debug.Log("isHost: " + client1.isHost);
-                Debug.Log(client1.players[1].name + ": " + inBet + client1.players[2].name + ": " + inBet1);
+                Debug.Log(client1.players[0].name + ": " + inBet + client1.players[1].name + ": " + inBet1);
             }
             else
             {
@@ -239,7 +239,7 @@ public class GiveChips : MonoBehaviour {
                 //player1Bet.text = "$ " + inBet1.ToString();
 
                 Debug.Log("player 2: " + client1.isHost);
-                Debug.Log(client1.players[1].name + ": " + inBet + client1.players[2].name + ": " + inBet1);
+                Debug.Log(client1.players[0].name + ": " + inBet + client1.players[1].name + ": " + inBet1);
             }
 
             client1.SendData("CIBET|" + inBet.ToString() + "|" + inBet1.ToString() + "|" + iniBalance.ToString() + "|" + iniBalance1.ToString());
