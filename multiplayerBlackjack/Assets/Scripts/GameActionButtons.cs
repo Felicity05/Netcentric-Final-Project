@@ -92,16 +92,11 @@ public class GameActionButtons : MonoBehaviour {
         InputField input = GameObject.Find("SendDialog").GetComponent<InputField>();
 
         if (input.text == ""){
-            Debug.Log("no text chat to send");
+            //Debug.Log("no text chat to send");
             return;
         }
 
-        if(Input.GetKeyDown(KeyCode.Return)){
-
-            client1.SendData("CMSG|" + input.text);
-        }
-
-        Debug.Log("text in input field:" + input.text);
+        //Debug.Log("text in input field:" + input.text);
         client1.SendData("CMSG|" + input.text);
 
         input.text = "";

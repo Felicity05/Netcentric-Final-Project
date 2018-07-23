@@ -149,7 +149,7 @@ public class myServer1 : MonoBehaviour
         //add client to the list of clients. |dictionary key: client value: stake|
         clients.Add(handler);
 
-        Debug.Log("server clients in clients: " + clients.Count);
+        //Debug.Log("server clients in clients: " + clients.Count);
 
         //accept incoming connections again
         StartListeing();

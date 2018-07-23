@@ -86,7 +86,7 @@ public class GiveChips : MonoBehaviour {
 
         whoIsThis.text = "user: " + client1.clientName + " is hosting: " + isHosting;
 
-        Debug.Log("user:" + client1.clientName + "is hosting:" + isHosting);
+        //Debug.Log("user:" + client1.clientName + "is hosting:" + isHosting);
 
         //PlayersTurn();
 

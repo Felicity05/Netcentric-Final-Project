@@ -163,7 +163,7 @@ public class myClient1 : MonoBehaviour
 
         players.Add(gameClient);
 
-        Debug.Log(players.Count);
+        //Debug.Log(players.Count);
 
         //if there are 2 players connected
         if (players.Count == 2)
