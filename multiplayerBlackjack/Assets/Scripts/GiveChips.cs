@@ -12,10 +12,7 @@ public class GiveChips : MonoBehaviour {
     public GameObject chip10Prefab;
     public GameObject chip25Prefab;
 
-    //public List<int> bet = new List<int>();
-
-    public Text balance; //player1
-    public Text balance1; //player2
+    public Text balance; //player
     public Text playerBet; //player 1
     public Text player1Bet; //player 2
 
@@ -34,7 +31,7 @@ public class GiveChips : MonoBehaviour {
 
     GameObject[] chips; //to pick up the chips when someone wins
 
-    int minBet = 5;
+    int minBet = 1;
     int maxBet = 25;
 
     //chips buttons
@@ -44,59 +41,47 @@ public class GiveChips : MonoBehaviour {
     public Button chip25;
     public Button deal;
 
-
     bool isHosting; //if the player is the actual server then it is the first one in playing
 
     public bool betSelected; //to let know the server the bet is been selected
 
-
-    //reference to the server script
-    public myServer1 server1;
-
+    //reference to the client script
     myClient1 client1;
-
-
-
-    public int chipVal;
 
     int numPlayers;
 
     int player1;
     int player2;
 
+    bool firstTurn;
+
 
     //HERE IS WHERE THE PLAYER STARTS TO PLAY BY PLACING THE MIN BET AND ENABLING THE DEAL BUTTON TO BEGING RECEIVING CARDS
 
-    /* players turns 
-     */
-
     public Text whoIsThis;
 
+    public GameController controller;
 
     // Use this for initialization
     void Start () {
 
         Instance = this;
 
-        balance.text = "$ " + iniBalance.ToString();
+        balance.text = "$ " + iniBalance1.ToString();
 
         client1 = FindObjectOfType<myClient1>();
+
+        controller = FindObjectOfType<GameController>();
 
         isHosting = client1.isHost;
 
         whoIsThis.text = "user: " + client1.clientName + " is hosting: " + isHosting;
 
-        //Debug.Log("user:" + client1.clientName + "is hosting:" + isHosting);
-
-        //PlayersTurn();
-
-        //Debug.Log("player1: "+ client1.players[1].name + "player2: " + client1.players[2].name);
-
 	}
 	
 	// Update is called once per frame
 	void Update () {
-
+        
         whoIsThis.text = "user: " + client1.clientName + " is hosting: " + isHosting;
         
         chips = GameObject.FindGameObjectsWithTag("Chip");
@@ -104,7 +89,7 @@ public class GiveChips : MonoBehaviour {
 
     public void ButtonChip1()
     {
-        chipVal = 1;
+        chipValue = 1;
 
         changePos = true;
 
@@ -130,10 +115,10 @@ public class GiveChips : MonoBehaviour {
 
     void SendPositionToServer(Vector3 startPos, Vector3 endPos)
     {
-        string msg = "CBET|";
+        string msg = "CCHIP1|";
 
         //send the position to the server
-        msg += chipVal + "|";
+        msg += chipValue + "|";
 
         //start position
         msg += startPos.x.ToString() + "|";
@@ -150,7 +135,7 @@ public class GiveChips : MonoBehaviour {
 
         client1.SendData(msg); //send position to server
 
-        msg = "CBET|"; //reset the message
+        msg = "CCHIP1|"; //reset the message
     }
 
 
@@ -162,74 +147,47 @@ public class GiveChips : MonoBehaviour {
 
         Vector3 epos = new Vector3(eposX, eposY, eposZ);
 
-        chip = chipVal;
+        chip = chipValue;
 
         switch (chip)
         {
             case 1:
-                PlaceChip1(spos, epos);    
+                PlaceChip1(spos, epos);    //function that actually moves the chips
+                break;
+
+            case 5:
+                break;
+
+            case 10:
                 break;
             
-            default:
+            case 25:
                 break;
         }
 
     }
-
-    void PlaceChipsByPlayer()
-    {
-
-
-        
-    }
-
-
-
-
-
-    //public int IdentifyChip5()
-    //{
-    //    int chip 5;
-    //}
-
-    //public int IdentifyChip10()
-    //{
-    //    int chip 10;
-    //}
-
-    //public int IdentifyChip25()
-    //{
-    //    int chip 25;
-    //}
-
-
-
-
 
 
 
     //chips of 1
     public void PlaceChip1(Vector3 chip1Pos, Vector3 chip1endPos)
     {
-        chipValue = 1;
-
         if (iniBalance - chipValue >= 0 && inBet + chipValue <= maxBet && inBet1 + chipValue <= maxBet)
         {
             StartCoroutine(Chips(chip1Prefab, chip1Pos, chip1endPos));
 
-            //Debug.Log(chipValue);
-
-            //iniBalance -= chipValue;
-
-            if (isHosting)
+            if (firstTurn == false)
             {
                 inBet += chipValue;
                 iniBalance -= chipValue;
                 //playerBet.text = "$ " + inBet.ToString();
                 //player1Bet.text = "$ " + inBet1.ToString();
+                balance.text = iniBalance.ToString();
 
-                Debug.Log("isHost: " + client1.isHost);
-                Debug.Log(client1.players[0].name + ": " + inBet + client1.players[1].name + ": " + inBet1);
+                Debug.Log("bet first player: " + inBet.ToString());
+
+                client1.SendData("CIBET1|" + inBet.ToString());
+
             }
             else
             {
@@ -237,18 +195,17 @@ public class GiveChips : MonoBehaviour {
                 iniBalance1 -= chipValue;
                 //playerBet.text = "$ " + inBet.ToString();
                 //player1Bet.text = "$ " + inBet1.ToString();
+                balance.text = iniBalance1.ToString();
 
-                Debug.Log("player 2: " + client1.isHost);
-                Debug.Log(client1.players[0].name + ": " + inBet + client1.players[1].name + ": " + inBet1);
+                Debug.Log("bet second player: " + inBet1.ToString());
+
+                client1.SendData("CIBET2|" + inBet1.ToString());
             }
 
-            client1.SendData("CIBET|" + inBet.ToString() + "|" + inBet1.ToString() + "|" + iniBalance.ToString() + "|" + iniBalance1.ToString());
+
         }
 
         //balance.text = "$ " + iniBalance.ToString();
-
-
-
 
 
         //Debug.Log(iniBalance);
@@ -364,8 +321,13 @@ public class GiveChips : MonoBehaviour {
             betSelected = true;
             deal.interactable = true; //------> maybe i have to activate this button in other place 
             //client1.SendData("CEC|"); //send to the server
+
         }
+
         EnableChips();
+
+        firstTurn = !firstTurn;
+
 
         yield return null;
     }

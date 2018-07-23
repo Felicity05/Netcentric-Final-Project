@@ -227,8 +227,8 @@ public class HandleCardsOperations : MonoBehaviour
             DisableAllButtons();
 
             //give the chips to the player
-            handleChips.iniBalance += (2 * handleChips.inBet);
-            handleChips.balance.text = "$ " + handleChips.iniBalance.ToString();
+            handleChips.iniBalance1 += (2 * handleChips.inBet);
+            handleChips.balance.text = "$ " + handleChips.iniBalance1.ToString();
             StartCoroutine(handleChips.GetChips(playerPos));
 
             //pick cards and start again
@@ -440,8 +440,8 @@ public class HandleCardsOperations : MonoBehaviour
             winnerText.text = "Player Wins!!!";
 
             //give the chips to the player
-            handleChips.iniBalance += (2 * handleChips.inBet);
-            handleChips.balance.text = "$ " + handleChips.iniBalance.ToString();
+            handleChips.iniBalance1 += (2 * handleChips.inBet);
+            handleChips.balance.text = "$ " + handleChips.iniBalance1.ToString();
             StartCoroutine(handleChips.GetChips(playerPos));
 
             //pick cards and start again
@@ -466,7 +466,7 @@ public class HandleCardsOperations : MonoBehaviour
     /////////Re Start the game/////////
     public void ResetGame(){
 
-        if (handleChips.iniBalance == 0)
+        if (handleChips.iniBalance1 == 0)
         {
             panelNoMoreMoney.gameObject.SetActive(true);
 
@@ -586,9 +586,9 @@ public class HandleCardsOperations : MonoBehaviour
     {
         Debug.Log("Start with 50 chips again!");
 
-        handleChips.iniBalance = 50;
+        handleChips.iniBalance1 = 50;
 
-        handleChips.balance.text = "$ " + handleChips.iniBalance; 
+        handleChips.balance.text = "$ " + handleChips.iniBalance1; 
 
         //handleChips.chipEndPos = new Vector3(-0.446f, 0.325f, -1.061f);
 

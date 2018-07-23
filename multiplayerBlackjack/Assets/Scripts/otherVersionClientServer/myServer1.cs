@@ -223,21 +223,19 @@ public class myServer1 : MonoBehaviour
                 //c.id = (data_received[2] != "0") ? data_received[2] : "0";
                 BroadcastData("SCNN|" + c.clientName, clients);
                 break;
-            case "CBET":
-                BroadcastData("SBET|" + data_received[1] + "|" + data_received[2] + "|" + data_received[3] + "|"
+            case "CCHIP1":
+                BroadcastData("SCHIP1|" + data_received[1] + "|" + data_received[2] + "|" + data_received[3] + "|"
                                       + data_received[4] + "|" + data_received[5] + "|" + data_received[6] + "|"
                                       + data_received[7] + "|", clients);
                 break;
-            //case "CEC":
-                //BroadcastData("SEC|", clients);
-                //break;
-            case "CIBET":
-                BroadcastData("SIBET|" + data_received[1] + "|" + data_received[2] + "|" + data_received[3] + "|" 
-                              + data_received[4], clients);
-                break;
-
             case "CMSG":
                 BroadcastData("SMSG|" + c.clientName + ": " + data_received[1], clients);
+                break;
+            case "CIBET1":
+                BroadcastData("SIBET1|" + data_received[1], clients);
+                break;
+            case "CIBET2":
+                BroadcastData("SIBET2|" + data_received[1], clients);
                 break;
             
 

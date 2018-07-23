@@ -14,10 +14,10 @@ public class GameController : MonoBehaviour {
     public GameObject clientPrefab;
 
     public GameObject ConnectMenu;
-    //public InputField userMessages;
-
 
     string playerName;
+
+    public bool firstPlayer;
 
 
     //allows to erase after writing into the textfield
@@ -107,8 +107,9 @@ public class GameController : MonoBehaviour {
             }
 
             //connect to localhost because you are connecting to yourself
-            client1.ConnectToServer("127.0.0.1", 8000); 
+            client1.ConnectToServer("127.0.0.1", 8000);
 
+            firstPlayer = true;
 
         }
         catch (Exception ex)
@@ -133,6 +134,8 @@ public class GameController : MonoBehaviour {
         {
             myClient1 client1 = Instantiate(clientPrefab).GetComponent<myClient1>();
 
+            client1.isHost = false;
+
             //if no name is entered assigned a unique client name
             client1.clientName = nameInput.text;
             if (client1.clientName == "")
@@ -148,6 +151,7 @@ public class GameController : MonoBehaviour {
             client1.ConnectToServer(hostAdd, 8000);
             ConnectMenu.SetActive(false);
 
+            firstPlayer = false;
 
             //TODO change scene to go to GAME
         }
