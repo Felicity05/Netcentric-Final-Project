@@ -3,35 +3,39 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GiveChips : MonoBehaviour {
-
-    public static GiveChips Instance { set; get; }
+public class GiveChips : MonoBehaviour
+{
 
     public GameObject chip1Prefab;
     public GameObject chip5Prefab;
     public GameObject chip10Prefab;
     public GameObject chip25Prefab;
+    //public GameObject chip50Prefab;
+    //public GameObject chip100Prefab;
+    //public GameObject chip500Prefab;
 
-    public Text balance; //player
-    public Text playerBet; //player 1
-    public Text player1Bet; //player 2
+
+    public List<int> bet = new List<int>();
+
+    public Text balance;
+    public Text playerBet;
 
     int chipValue;
 
-    public int iniBalance = 50; //player 1
-    public int iniBalance1 = 50; //payer 2
-    public int inBet = 0; //bet player 1
-    public int inBet1 = 0; //bet player 2
+    public int iniBalance = 50;
+    public int inBet = 0;
+
+    public Vector3 chipEndPos = new Vector3(-0.446f, 0.325f, -1.061f);
 
     Vector3 dealerPos = new Vector3(-0.07f, 0.325f, 0.953f);
 
     Vector3 playerPos = new Vector3(-0.07f, 0.323f, 0.953f);
 
-    bool changePos;
+    bool changePos = true;
 
-    GameObject[] chips; //to pick up the chips when someone wins
+    GameObject[] chips;
 
-    int minBet = 1;
+    int minBet = 5;
     int maxBet = 25;
 
     //chips buttons
@@ -41,177 +45,47 @@ public class GiveChips : MonoBehaviour {
     public Button chip25;
     public Button deal;
 
-    bool isHosting; //if the player is the actual server then it is the first one in playing
-
-    public bool betSelected; //to let know the server the bet is been selected
-
-    //reference to the client script
-    myClient1 client1;
-
-    int numPlayers;
-
-    int player1;
-    int player2;
-
-    bool firstTurn;
-
-
-    //HERE IS WHERE THE PLAYER STARTS TO PLAY BY PLACING THE MIN BET AND ENABLING THE DEAL BUTTON TO BEGING RECEIVING CARDS
-
-    public Text whoIsThis;
-
-    public GameController controller;
-
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
 
-        Instance = this;
+        balance.text = "$ " + iniBalance.ToString();
+    }
 
-        balance.text = "$ " + iniBalance1.ToString();
+    // Update is called once per frame
+    void Update()
+    {
 
-        client1 = FindObjectOfType<myClient1>();
-
-        controller = FindObjectOfType<GameController>();
-
-        isHosting = client1.isHost;
-
-        whoIsThis.text = "user: " + client1.clientName + " is hosting: " + isHosting;
-
-	}
-	
-	// Update is called once per frame
-	void Update () {
-        
-        whoIsThis.text = "user: " + client1.clientName + " is hosting: " + isHosting;
-        
         chips = GameObject.FindGameObjectsWithTag("Chip");
-	}
-
-    public void ButtonChip1()
-    {
-        chipValue = 1;
-
-        changePos = true;
-
-        Vector3 startPos = new Vector3(-0.446f, 0.33f, -1.334f);
-
-        Vector3 chipEndPos;
-
-        if (isHosting) //first player
-        {
-            chipEndPos = new Vector3(0.689f, 0.325f, -0.901f);
-        } 
-        else //second player
-        {
-            chipEndPos = new Vector3(-0.76f, 0.325f, -0.901f);
-        }
-
-
-        Debug.Log("button chip 1 cliked");
-
-        SendPositionToServer(startPos, chipEndPos);
-
-    }
-
-    void SendPositionToServer(Vector3 startPos, Vector3 endPos)
-    {
-        string msg = "CCHIP1|";
-
-        //send the position to the server
-        msg += chipValue + "|";
-
-        //start position
-        msg += startPos.x.ToString() + "|";
-        msg += startPos.y.ToString() + "|";
-        msg += startPos.z.ToString() + "|";
-
-        //end position
-        msg += endPos.x.ToString() + "|";
-        msg += endPos.y.ToString() + "|";
-        msg += endPos.z.ToString() + "|";
-
-      
-        //Debug.Log("data to send: " + msg);
-
-        client1.SendData(msg); //send position to server
-
-        msg = "CCHIP1|"; //reset the message
-    }
-
-
-    //ALL THE PLACE CHIP FUNCTIONS ARE CALLED WHEN THE BUTTON OF THAT CHIP IS CLICKED ON THE GAME
-
-    public void PlaceChips(int chip, float sposX, float sposY, float sposZ, float eposX, float eposY, float eposZ)
-    {
-        Vector3 spos = new Vector3(sposX, sposY, sposZ);
-
-        Vector3 epos = new Vector3(eposX, eposY, eposZ);
-
-        chip = chipValue;
-
-        switch (chip)
-        {
-            case 1:
-                PlaceChip1(spos, epos);    //function that actually moves the chips
-                break;
-
-            case 5:
-                break;
-
-            case 10:
-                break;
-            
-            case 25:
-                break;
-        }
-
     }
 
 
 
     //chips of 1
-    public void PlaceChip1(Vector3 chip1Pos, Vector3 chip1endPos)
+    public void PlaceChip1()
     {
-        if (iniBalance - chipValue >= 0 && inBet + chipValue <= maxBet && inBet1 + chipValue <= maxBet)
+        chipValue = 1;
+
+        if (iniBalance - chipValue >= 0 && inBet + chipValue <= maxBet)
         {
-            StartCoroutine(Chips(chip1Prefab, chip1Pos, chip1endPos));
+            StartCoroutine(Chips(chip1Prefab, new Vector3(-0.45f, 0.33f, -1.334f)));
 
-            if (firstTurn == false)
-            {
-                inBet += chipValue;
-                iniBalance -= chipValue;
-                //playerBet.text = "$ " + inBet.ToString();
-                //player1Bet.text = "$ " + inBet1.ToString();
-                balance.text = iniBalance.ToString();
+            //Debug.Log(chipValue);
 
-                Debug.Log("bet first player: " + inBet.ToString());
+            iniBalance -= chipValue;
 
-                client1.SendData("CIBET1|" + inBet.ToString());
-
-            }
-            else
-            {
-                inBet1 += chipValue;
-                iniBalance1 -= chipValue;
-                //playerBet.text = "$ " + inBet.ToString();
-                //player1Bet.text = "$ " + inBet1.ToString();
-                balance.text = iniBalance1.ToString();
-
-                Debug.Log("bet second player: " + inBet1.ToString());
-
-                client1.SendData("CIBET2|" + inBet1.ToString());
-            }
+            inBet += chipValue;
 
 
         }
 
-        //balance.text = "$ " + iniBalance.ToString();
+        balance.text = "$ " + iniBalance.ToString();
+        playerBet.text = "$ " + inBet.ToString();
 
 
         //Debug.Log(iniBalance);
     }
 
-    /*
     //chip of 5
     public void PlaceChip5()
     {
@@ -266,16 +140,18 @@ public class GiveChips : MonoBehaviour {
 
         balance.text = "$ " + iniBalance.ToString();
         playerBet.text = "$ " + inBet.ToString();
-    }*/
-
-
+    }
 
 
     //place the player's chips in the correct position in the screen
-    public IEnumerator Chips(GameObject chipPrefab, Vector3 startPos, Vector3 chipEndPos){
+    public IEnumerator Chips(GameObject chipPrefab, Vector3 startPos)
+    {
 
         //disable all the chip buttons 
-        DisableChips();
+        chip1.interactable = false;
+        chip5.interactable = false;
+        chip10.interactable = false;
+        chip25.interactable = false;
 
         Chip chip = Instantiate(chipPrefab).GetComponent<Chip>();
 
@@ -299,16 +175,17 @@ public class GiveChips : MonoBehaviour {
             yield return null; //wait for the function to end
         }
 
-        ////offset to change the position of the chips every time they get placed in the table
-        //if (changePos){
-        //    chipEndPos += new Vector3(0.089f, 0.004f, 0.032f);   // for player 1
-        //    changePos = false;
-        //}
-        //else
-        //{
-        //    chipEndPos += new Vector3(-0.0817381f, 0.02f, 0.02f);
-        //    changePos = true;
-        //}
+        //offset
+        if (changePos)
+        {
+            chipEndPos += new Vector3(0.089f, 0.004f, 0.032f);
+            changePos = false;
+        }
+        else
+        {
+            chipEndPos += new Vector3(-0.0817381f, 0.02f, 0.02f);
+            changePos = true;
+        }
 
         //  Debug.Log("change pos= " + changePos);
 
@@ -318,39 +195,23 @@ public class GiveChips : MonoBehaviour {
 
         if (inBet >= minBet)
         {
-            betSelected = true;
-            deal.interactable = true; //------> maybe i have to activate this button in other place 
-            //client1.SendData("CEC|"); //send to the server
-
+            deal.interactable = true;
         }
-
-        EnableChips();
-
-        firstTurn = !firstTurn;
+        chip1.interactable = true;
+        chip5.interactable = true;
+        chip10.interactable = true;
+        chip25.interactable = true;
 
 
         yield return null;
     }
 
 
-    public void EnableChips(){
-        chip1.interactable = true;
-        chip5.interactable = true;
-        chip10.interactable = true;
-        chip25.interactable = true;
-    }
-
-    public void DisableChips(){
-        chip1.interactable = false;
-        chip5.interactable = false;
-        chip10.interactable = false;
-        chip25.interactable = false;
-    }
-
     //FINISH THIS FUNCTION AND CALL IT WHERE PLAYER OR DEALER WINS 
     // if dealer wins endPos Dealer 
     //if player wins endPos player 
-    public IEnumerator GetChips(Vector3 endPos){
+    public IEnumerator GetChips(Vector3 endPos)
+    {
 
         //get the chips gameobject
 
@@ -361,17 +222,17 @@ public class GiveChips : MonoBehaviour {
 
         foreach (GameObject chip in chips)
         {
-            if (chip.transform.localScale == new Vector3 (400f, 400f, 400f))
+            if (chip.transform.localScale == new Vector3(400f, 400f, 400f))
             {
                 while (Vector3.Distance(chip.transform.position, endPos) > 0.01)
                 {
 
                     //Debug.Log("chip pos= " + chip.transform.position);
-                   // Debug.Log("chip end pos = " + chipEndPos);
+                    // Debug.Log("chip end pos = " + chipEndPos);
 
                     chip.transform.position = Vector3.MoveTowards(chip.transform.position, endPos, step);
 
-                  //  Debug.Log("picking up the chips");
+                    //  Debug.Log("picking up the chips");
 
                     yield return null; //wait for the function to end
                 }

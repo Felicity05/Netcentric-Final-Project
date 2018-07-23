@@ -126,24 +126,24 @@ public class myClient1 : MonoBehaviour
             case "SCNN":
                 UserConnected(data_received[1], false);
                 break;
-            case "SCHIP1":
-                GiveChips.Instance.PlaceChips(int.Parse(data_received[1]),    //chip value
-                                              float.Parse(data_received[2]),  //start pos x
-                                              float.Parse(data_received[3]),  //start pos y
-                                              float.Parse(data_received[4]),  //start pos z
-                                              float.Parse(data_received[5]),  //end pos x
-                                              float.Parse(data_received[6]),  //end pos y
-                                              float.Parse(data_received[7])); //end pos z
-                break;
+            //case "SCHIP1":
+                //GiveChips.Instance.PlaceChips(int.Parse(data_received[1]),    //chip value
+                //                              float.Parse(data_received[2]),  //start pos x
+                //                              float.Parse(data_received[3]),  //start pos y
+                //                              float.Parse(data_received[4]),  //start pos z
+                //                              float.Parse(data_received[5]),  //end pos x
+                //                              float.Parse(data_received[6]),  //end pos y
+                //                              float.Parse(data_received[7])); //end pos z
+                //break;
             case "SMSG":
                 GameActionButtons.Instance.ChatMessage(data_received[1]);
                 break;
-            case "SIBET1":
-                GiveChips.Instance.playerBet.text = "$ " + data_received[1];
-                break;
-            case "SIBET2":
-                GiveChips.Instance.player1Bet.text = "$ " + data_received[1];
-                break;
+            //case "SIBET1":
+            //    GiveChips.Instance.playerBet.text = "$ " + data_received[1];
+            //    break;
+            //case "SIBET2":
+                //GiveChips.Instance.player1Bet.text = "$ " + data_received[1];
+                //break;
             default:
                 break;
         }
