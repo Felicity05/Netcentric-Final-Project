@@ -235,6 +235,10 @@ public class myServer1 : MonoBehaviour
                 BroadcastData("SIBET|" + data_received[1] + "|" + data_received[2] + "|" + data_received[3] + "|" 
                               + data_received[4], clients);
                 break;
+
+            case "CMSG":
+                BroadcastData("SMSG|" + c.clientName + ": " + data_received[1], clients);
+                break;
             
 
 

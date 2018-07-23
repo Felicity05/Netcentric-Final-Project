@@ -239,7 +239,7 @@ a764ed39791e886a53f13cfce418447e Assembly-CSharp.dll:UnityEngine.PostProcessing.
 9de3a22eca9aefadba2d10d5987cefe3 UnityEngine.SpatialTracking.dll:UnityEngine.SpatialTracking.TrackedPoseDriver
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.CardStack
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:TMPro.Examples.TextConsoleSimulator
-b88c3888e08ba6340e776e5e3d242b95 Assembly-CSharp.dll:.GameActionButtons
+15719a7b8b01c76bcca77d6dbaa18bc2 Assembly-CSharp.dll:.GameActionButtons
 75cd0c6c744b9733ef29aa6c59ece2b1 Assembly-CSharp.dll:TMPro.Examples.VertexShakeB
 6826e26f7cc718f870001971f13e79c7 Assembly-CSharp.dll:TMPro.TMP_TextEventHandler
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:TMPro.Examples.VertexColorCycler

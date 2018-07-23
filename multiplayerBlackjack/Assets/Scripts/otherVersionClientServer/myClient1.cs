@@ -145,6 +145,9 @@ public class myClient1 : MonoBehaviour
                 GiveChips.Instance.balance1.text = "$ " + data_received[4];
                 break;
 
+            case "SMSG":
+                GameActionButtons.Instance.ChatMessage(data_received[1]);
+                break;
             default:
                 break;
         }
