@@ -237,8 +237,12 @@ public class myServer1 : MonoBehaviour
             case "CIBET2":
                 BroadcastData("SIBET2|" + data_received[1], clients);
                 break;
-            
-
+            case "CPWIN":
+                BroadcastData("SPWIN|" + data_received[1] + "|" + data_received[2], clients);
+                break;
+            case "CDWIN":
+                BroadcastData("SDWIN|" + data_received[1], clients);
+                break;
 
             default:
                 break;

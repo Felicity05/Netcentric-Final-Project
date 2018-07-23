@@ -8,6 +8,10 @@ public class GameActionButtons : MonoBehaviour {
 
     myClient1 client1;
 
+    public CanvasGroup alertCanvas;
+    float lastAlert;
+    bool alertActive;
+
     public Button deal; //button to start the game
     public Button stand;
     public Button leave;
@@ -26,13 +30,19 @@ public class GameActionButtons : MonoBehaviour {
 
         client1 = FindObjectOfType<myClient1>();
 
+        Alert(client1.players[client1.players.Count - 1].name + " has joined!");
+
         stand.interactable = false;
         deal.interactable = false;
         hit.interactable = false;
 
         //DON'T LET PLAYERS PLAY UNTIL BET IS PLACED
 	}
-	
+
+    private void Update()
+    {
+        UpdateAlert();
+    }
 
     //GET ONE CARD FROM DEALER 
     public void Hit()
@@ -102,8 +112,35 @@ public class GameActionButtons : MonoBehaviour {
         input.text = "";
     }
 
-    public void Quit(){
+    public void Quit()
+    {
         Debug.Log("quit");
         Application.Quit();
+    }
+
+
+    public void Alert(string text)
+    {
+        alertCanvas.GetComponentInChildren<Text>().text = text;
+        lastAlert = Time.time;
+        alertActive = true;
+    }
+
+
+    public void UpdateAlert()
+    {
+        if (alertActive)
+        {
+            if (Time.time - lastAlert > 1.5f)
+            {
+
+                alertCanvas.alpha = 1 - ((Time.time - lastAlert) - 1.5f);
+
+                if (Time.time - lastAlert > 2.5f)
+                {
+                    alertActive = false;
+                }
+            }
+        }
     }
 }

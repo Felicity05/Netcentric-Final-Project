@@ -125,6 +125,7 @@ public class myClient1 : MonoBehaviour
                 break;
             case "SCNN":
                 UserConnected(data_received[1], false);
+                //send message that someone has connected
                 break;
             //case "SCHIP1":
                 //GiveChips.Instance.PlaceChips(int.Parse(data_received[1]),    //chip value
@@ -144,6 +145,12 @@ public class myClient1 : MonoBehaviour
             //case "SIBET2":
                 //GiveChips.Instance.player1Bet.text = "$ " + data_received[1];
                 //break;
+            case "SPWIN":
+                HandleCardsOperations.Instance.winnerText.text = data_received[1] + data_received[2];
+                break;
+            case "SDWIN":
+                HandleCardsOperations.Instance.winnerText.text = data_received[1];
+                break;
             default:
                 break;
         }
@@ -161,8 +168,8 @@ public class myClient1 : MonoBehaviour
 
         //Debug.Log(players.Count);
 
-        //if there are 2 players connected
-        if (players.Count == 2)
+        //if there are from 2 to 5 players connected
+        if (players.Count >= 2 && players.Count <= 5)
         {
             GameController.Instance.StartGame(); //go to the game scene
         }

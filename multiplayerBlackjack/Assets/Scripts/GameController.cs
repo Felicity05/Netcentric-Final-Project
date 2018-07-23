@@ -192,7 +192,6 @@ public class GameController : MonoBehaviour {
         Debug.Log("Client and server shutted down!");
     }
 
-
     //option for single player 
     public void Play() 
     {

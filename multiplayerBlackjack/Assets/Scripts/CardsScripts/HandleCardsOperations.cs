@@ -169,6 +169,8 @@ public class HandleCardsOperations : MonoBehaviour
 
                     yield return new WaitForSeconds(0.8f);
 
+                    playerHandVal.text = PlayerHandValue.ToString();
+
                     //if (client1.isHost){
                     //    playerHandVal.text = PlayerHandValue.ToString();
                     //}
@@ -221,7 +223,9 @@ public class HandleCardsOperations : MonoBehaviour
         //check if player has blackjack
         if (PlayerHandValue == 21 && playerHand.Count == 2)
         {
-            winnerText.text = "Player has Blackjack!!!";
+
+            client1.SendData("CPWIN|" + client1.clientName + " has Blackjack!!!");
+            //winnerText.text = "Player has Blackjack!!!";
 
             //disable buttons 
             DisableAllButtons();
@@ -335,6 +339,7 @@ public class HandleCardsOperations : MonoBehaviour
             //disable buttons 
             DisableAllButtons();
 
+            //client1.SendData("CDWIN|" + "Dealer win!!!");
             winnerText.text = "Dealer wins!!!";
 
             playerHandVal.text = "Busted!";
@@ -422,6 +427,7 @@ public class HandleCardsOperations : MonoBehaviour
         //check for who wins dealer or player
         if (DealerHandValue == PlayerHandValue)
         {
+            //client1.SendData("CDWIN|" + "Dealer win!!!");
             winnerText.text = "Dealer wins!!!";
 
             //disable buttons 
@@ -437,6 +443,8 @@ public class HandleCardsOperations : MonoBehaviour
         }
         else if ((DealerHandValue > 21) || (PlayerHandValue <= 21 && PlayerHandValue > DealerHandValue))
         {
+
+            //client1.SendData("CPWIN|" + client1.clientName + " win!!!");
             winnerText.text = "Player Wins!!!";
 
             //give the chips to the player
@@ -451,6 +459,7 @@ public class HandleCardsOperations : MonoBehaviour
         }
         else
         {
+            //client1.SendData("CDWIN|" + "Dealer win!!!");
             winnerText.text = "Dealer wins!!!";
 
             //give the chips to the dealer
