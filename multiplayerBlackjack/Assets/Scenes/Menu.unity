@@ -302,7 +302,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000082254, y: -34.115}
+  m_AnchoredPosition: {x: 0.000082254, y: -8}
   m_SizeDelta: {x: 171, y: 44.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &45961885
@@ -1740,7 +1740,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &286089777
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3739,7 +3739,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &672847979
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6098,7 +6098,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000076413, y: -78.715}
+  m_AnchoredPosition: {x: 0.000076413, y: -67.59999}
   m_SizeDelta: {x: 171, y: 44.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1329667645
@@ -8865,6 +8865,7 @@ MonoBehaviour:
   clientPrefab: {fileID: 1079812836279166, guid: fc769f6b3385a4364bc73d3b09247d13,
     type: 2}
   ConnectMenu: {fileID: 2027731725}
+  firstPlayer: 0
   nameInput: {fileID: 1156014968}
 --- !u!4 &1872409377
 Transform:
@@ -9548,7 +9549,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2049157852
 RectTransform:
   m_ObjectHideFlags: 0

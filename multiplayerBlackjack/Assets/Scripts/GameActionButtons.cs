@@ -101,4 +101,9 @@ public class GameActionButtons : MonoBehaviour {
 
         input.text = "";
     }
+
+    public void Quit(){
+        Debug.Log("quit");
+        Application.Quit();
+    }
 }
