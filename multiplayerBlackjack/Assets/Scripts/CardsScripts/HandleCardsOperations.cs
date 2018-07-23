@@ -491,6 +491,8 @@ public class HandleCardsOperations : MonoBehaviour
             //disable buttons 
             DisableAllButtons();
 
+            leave.interactable = true;
+
             //enable chips
             EnableChips();
 
