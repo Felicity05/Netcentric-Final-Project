@@ -117,10 +117,6 @@ public class HandleCardsOperations : MonoBehaviour
 
         /* After each player has selected their bet 
          * 
-         * 
-         * 
-         * 
-         * 
          * distribute cards in the following order
          * case 2 players:
          *      card1 player1
@@ -219,6 +215,8 @@ public class HandleCardsOperations : MonoBehaviour
         yield return new WaitForSeconds(0.8f);
 
         dealerHandVal.text = DealerHandValue.ToString();
+
+        leave.interactable = true;
 
         //check if player has blackjack
         if (PlayerHandValue == 21 && playerHand.Count == 2)

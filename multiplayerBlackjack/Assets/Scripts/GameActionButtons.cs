@@ -30,11 +30,13 @@ public class GameActionButtons : MonoBehaviour {
 
         client1 = FindObjectOfType<myClient1>();
 
-        Alert(client1.players[client1.players.Count - 1].name + " has joined!");
-
         stand.interactable = false;
         deal.interactable = false;
         hit.interactable = false;
+
+        Alert(client1.players[client1.players.Count - 1].name + " has joined!");
+
+
 
         //DON'T LET PLAYERS PLAY UNTIL BET IS PLACED
 	}
