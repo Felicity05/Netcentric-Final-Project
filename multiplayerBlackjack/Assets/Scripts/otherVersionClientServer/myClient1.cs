@@ -169,7 +169,7 @@ public class myClient1 : MonoBehaviour
         //Debug.Log(players.Count);
 
         //if there are from 2 to 5 players connected
-        if (players.Count >= 2 && players.Count <= 5)
+        if (players.Count >= 2 && players.Count <= 25)
         {
             GameController.Instance.StartGame(); //go to the game scene
         }

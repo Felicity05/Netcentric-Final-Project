@@ -305,7 +305,7 @@ public class HandleCardsOperations : MonoBehaviour
         player1CardPos += offset; //position of previous card
 
         //Debug.Log(player1CardPos);
-        CoroutineWithData cd = new CoroutineWithData(this, DistributeCards("p1c", card, player1CardPos));
+        CoroutineWithData cd = new CoroutineWithData(this, DistributeCards("", card, player1CardPos));
         yield return cd.coroutine;
 
         //flip the card and add it to the player hand
